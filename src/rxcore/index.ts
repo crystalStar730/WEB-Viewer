@@ -553,6 +553,11 @@ export class RXCore {
         RxCore.markupSymbol(onoff);
     }
 
+    public static markupinteractiveStamp(onoff: boolean): void {
+        RxCore.markupinteractiveStamp(onoff);
+    }
+
+
     public static markupLink(onoff: boolean): void {
         RxCore.markupLink(onoff);
     }

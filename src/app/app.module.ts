@@ -81,6 +81,7 @@ import { SymbolsLibraryComponent } from './components/annotation-tools/symbols-l
 import { LinksLibraryComponent } from './components/annotation-tools/links-library/links-library.component';
 import { LinkDragDropDirective } from './components/annotation-tools/links-library/link-draggable.directive';
 import { InteractiveStampTemplateDirective } from './components/annotation-tools/stamp-panel/interactive-stamp-template.directive ';
+import { SafeHtmlPipe } from './SafeHtmlPipe';
 
 import { SearchPanelComponent } from './components/annotation-tools/search-panel/search-panel.component';
 import { HighlightPipe } from './components/annotation-tools/search-panel/highligth.pipe';
@@ -92,6 +93,7 @@ import { SelectComponent } from './components/common/select/select.component';
 import { ThumbnailDirective } from './components/side-nav-menu/insert-modal/thumbnail.directive';
 import { RecentFilesComponent } from './components/recent-files/recent-files.component';
 import { SizeModalComponent } from './components/size-modal/size-modal.component';
+import { CommentStatusIconComponent } from './components/annotation-tools/comment-status-icon/comment-status-icon.component';
 
 
 
@@ -168,7 +170,9 @@ import { SizeModalComponent } from './components/size-modal/size-modal.component
     InsertModalComponent,
     RecentFilesComponent,
     HighlightPipe,
-    SizeModalComponent
+    SizeModalComponent,
+    SafeHtmlPipe,
+    CommentStatusIconComponent
   ],
   imports: [
     BrowserModule,

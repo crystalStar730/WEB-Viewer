@@ -180,3 +180,14 @@ export const METRIC = {
 
     }
 };
+
+export const COMMENT_STATUS = {
+    ACCEPTED: 'accepted',
+    REJECTED: 'rejected',
+    CANCELLED: 'cancelled',
+    COMPLETED: 'completed',
+    NONE: 'none',
+    MAKRED: 'marked',
+    UNMARKED: 'unmarked',
+  };
+  

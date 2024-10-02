@@ -72,6 +72,19 @@ export class NotePanelComponent implements OnInit {
   leaderLine: any = undefined;
   rectangle: any;
 
+  visibleStatusMenuIndex: number | null = null;
+  statusTypes = [
+    { value: 'accepted', text: 'Accepted' },
+    { value: 'rejected', text: 'Rejected' },
+    { value: 'cancelled', text: 'Cancelled' },
+    { value: 'completed', text: 'Completed' },
+    { value: 'none', text: 'None' },
+    { value: 'marked', text: 'Marked' },
+    { value: 'unmarked', text: 'Unmarked' },
+  ];
+  objectType: string | null = null;
+
+
   constructor(
     private readonly rxCoreService: RxCoreService,
     private readonly annotationToolsService: AnnotationToolsService) {
@@ -136,6 +149,29 @@ export class NotePanelComponent implements OnInit {
   private _processList(list: Array<IMarkup> = []): void {
     /*modified for comment list panel */
     const query = list
+    .filter((i: any) => {
+      if (this.objectType === 'measure') {
+        return (
+          i.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+          (i.type === MARKUP_TYPES.MEASURE.AREA.type &&
+            i.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
+          (i.type === MARKUP_TYPES.MEASURE.PATH.type &&
+            i.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
+          (i.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
+            i.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)
+        );
+      } else {
+        return !(
+          i.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+          (i.type === MARKUP_TYPES.MEASURE.AREA.type &&
+            i.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
+          (i.type === MARKUP_TYPES.MEASURE.PATH.type &&
+            i.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
+          (i.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
+            i.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)
+        );
+      }
+    })
     .filter((i: any) => {
       if (this.search) {
         if (this.connectorLine)
@@ -333,6 +369,12 @@ export class NotePanelComponent implements OnInit {
         RXCore.setLayout(0, 0, false);
         RXCore.doResize(false,0, 0);/*added for comment list panel */
       }
+
+      if (state?.objectType !== this.objectType) {
+        this.objectType = state?.objectType;
+        this._processList(this.rxCoreService.getGuiMarkupList());
+      }
+
 
       this._hideLeaderLine();
     });
@@ -887,5 +929,40 @@ export class NotePanelComponent implements OnInit {
   
     }
   }
+
+  toogleStatusMenu(index: number) {
+    if (this.visibleStatusMenuIndex === index) {
+      this.visibleStatusMenuIndex = null;
+    } else {
+      this.visibleStatusMenuIndex = index;
+    }
+    event?.stopPropagation();
+  }
+
+  closeStatusMenu() {
+    this.visibleStatusMenuIndex = null;
+  }
+  @HostListener('document:mousedown', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const menus = document.querySelectorAll('.statusMenu');
+    const buttons = document.querySelectorAll('.statusMenuButton');
+
+    let isClickInsideMenu = Array.from(menus).some((menu) =>
+      menu.contains(event.target as Node)
+    );
+    let isClickInsideButton = Array.from(buttons).some((button) =>
+      button.contains(event.target as Node)
+    );
+
+    if (!isClickInsideMenu && !isClickInsideButton) {
+      this.closeStatusMenu();
+    }
+  }
+  onSetStatus(markup: any, statusValue: string) {
+    markup.status = statusValue;
+    this.closeStatusMenu();
+    event?.stopPropagation();
+  }
+
 
 }

@@ -345,6 +345,12 @@ export class TopNavMenuComponent implements OnInit {
       this.annotationToolsService.hide();
     }
 
+    this.annotationToolsService.setNotePanelState({
+      visible: this.isActionSelected && this.actionType === 'Comment',
+      objectType: this.selectedValue.value,
+    });
+
+
     if (broadcast) {
       this.rxCoreService.setGuiMode(option.value);
     }

@@ -105,9 +105,7 @@
                                 {{ item.createdStr }}
                               </div>
                               <div
-                                class="comments-count"
-                                *ngIf="item.markupnumber !== activeMarkupNumber"
-                              >
+                                class="comments-count">
                                 <img src="/assets/images/comment-ico.svg" />{{
                                   item.GetComments().length
                                 }}
@@ -116,6 +114,32 @@
                             <p *ngIf="item.text">{{ item.text }}</p>
                             <p *ngIf="item.dimtext">{{ item.dimtext }}</p>
                           </div>
+                          <div style="flex: 1"></div>
+                          <div
+                            class="statusMenuButton"
+                            (click)="toogleStatusMenu(item.markupnumber)"
+                          >
+                            <rx-comment-status-icon
+                              [type]="item.status"
+                            ></rx-comment-status-icon>
+                          </div>
+                          <menu
+                            *ngIf="visibleStatusMenuIndex === item.markupnumber"
+                            class="statusMenu"
+                          >
+                            <li *ngFor="let statusItem of statusTypes">
+                              <button
+                                (click)="onSetStatus(item, statusItem.value)"
+                              >
+                                <div>
+                                  <rx-comment-status-icon
+                                    [type]="statusItem.value"
+                                  ></rx-comment-status-icon>
+                                  <span>{{ statusItem.text }}</span>
+                                </div>
+                              </button>
+                            </li>
+                          </menu>
                         </div>
                         <div class="close-list" *ngIf="item.IsExpanded">
                           <div
@@ -167,12 +191,7 @@
                           </div>
                         </div>
                         <div
-                          *ngIf="
-                            !item.text &&
-                            !item.dimtext &&
-                            i === 0 &&
-                            item.IsExpanded
-                          "
+                          *ngIf="!item.text && !item.dimtext && item.IsExpanded"
                           class="close-list"
                         >
                           <div
