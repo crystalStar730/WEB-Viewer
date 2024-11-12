@@ -1,3 +1,12 @@
+November 12, 2024
+
+# 1. Consolidation update.
+# 2. Thumbnails was not generated for all pages, fixed.
+# 3. Configuration updated to support setting user name on startup.
+# 4. Minified RxCore now reinstated as default RxCore in project.
+# 5. Introduced versioning for UI project this is version 12.0.0.7. Value in src\app\app.component.ts uiversion : string = '12.0.0.7'
+
+
 October 1, 2024
 
 # 1. Comment Status Menu
@@ -43,15 +52,6 @@ September 26, 2024
 
 Component Paths: `src\app\components\annotation-tools\note-panel\note-panel.component.html`
                  `src\assets\scripts\rxcorefunctions.js`
-
-November 12, 2024
-
-# 1. Consolidation update.
-# 2. Thumbnails was not generated for all pages, fixed.
-# 3. Configuration updated to support setting user name on startup.
-# 4. Minified RxCore now reinstated as default RxCore in project.
-# 5. Introduced versioning for UI project this is version 12.0.0.7. Value in src\app\app.component.ts uiversion : string = '12.0.0.7'
-
 
 
 September 20, 2024
