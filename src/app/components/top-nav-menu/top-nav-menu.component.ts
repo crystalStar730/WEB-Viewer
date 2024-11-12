@@ -380,6 +380,11 @@ export class TopNavMenuComponent implements OnInit {
     this.burgerOpened = false;
   }
 
+  /* handleGetJSONMarkup():void{
+    RXCore.markupGetJSON(false);
+    this.burgerOpened = false;
+  } */
+
   openModalCompare(): void {
     if (!this.state?.activefile || this.state?.is3D || this.guiConfig.disableBurgerMenuCompare) return;
 

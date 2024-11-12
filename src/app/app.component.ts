@@ -16,6 +16,7 @@ import { Title } from '@angular/platform-browser';
 export class AppComponent implements AfterViewInit {
   guiConfig$ = this.rxCoreService.guiConfig$;
   title: string = 'rasterex-viewer';
+  uiversion : string = '12.0.0.7'
   numOpenFiles$ = this.rxCoreService.numOpenedFiles$;
   annotation: any;
   rectangle: any;
@@ -64,7 +65,7 @@ export class AppComponent implements AfterViewInit {
     ];
 
 
-
+    
     
     RXCore.setJSONConfiguration(JSNObj);
 
@@ -92,10 +93,11 @@ export class AppComponent implements AfterViewInit {
     RXCore.onGuiReady((initialDoc: any) => {
 
       this.bguireadycalled = true;
-      this.bfoxitreadycalled = true;
+      //this.bfoxitreadycalled = true;
 
       console.log('RxCore GUI_Ready.');
       console.log(`Read Only Mode - ${RXCore.getReadOnly()}.`);
+      console.log('UI version',this.uiversion);
 
       RXCore.setLayout(0, 0, false);
       RXCore.doResize(false,0, 0);/*added to set correct canvas size on startup */
@@ -104,12 +106,9 @@ export class AppComponent implements AfterViewInit {
       RXCore.setdisplayBackground(document.documentElement.style.getPropertyValue("--background") || '#D6DADC');
       RXCore.setrxprintdiv(document.getElementById('printdiv'));
 
-
+      this.openInitFile(initialDoc);  
       
 
-      if(this.bfoxitreadycalled){
-        this.openInitFile(initialDoc);  
-      }
       /*if(this.bguireadycalled){
         return;
       }*/
@@ -175,7 +174,8 @@ export class AppComponent implements AfterViewInit {
       //this.titleService.setTitle(this.title);
 
       this.recentfilesService.addRecentFile(FileInfo);
-      
+
+            
       this.rxCoreService.guiFileLoadComplete.next();
 
       
@@ -194,6 +194,15 @@ export class AppComponent implements AfterViewInit {
       }
 
     });
+
+    RXCore.onGuiMarkupJSON((list: String) => {
+      
+
+      console.log('RxCore GUI_MarkupJSON:', list);
+
+
+    });
+
 
     RXCore.onGuiMarkupIndex((annotation: any, operation: any) => {
       console.log('RxCore GUI_Markup index:', annotation, operation);
@@ -307,17 +316,17 @@ export class AppComponent implements AfterViewInit {
 
 
   openInitFile(initialDoc){
-    if(initialDoc.open && !this.binitfileopened){
+
+    if (this.bguireadycalled && this.bfoxitreadycalled){
+
+      if(initialDoc.open && !this.binitfileopened){
 
 
-      if(initialDoc.openfileobj != null){
-
-        this.binitfileopened = true;
-        RXCore.openFile(initialDoc.openfileobj);
-
+        if(initialDoc.openfileobj != null){
+            this.binitfileopened = true;
+          RXCore.openFile(initialDoc.openfileobj);
+          }
       }
-
-
     }
   }
 

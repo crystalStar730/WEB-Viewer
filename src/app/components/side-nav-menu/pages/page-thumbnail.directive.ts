@@ -10,6 +10,9 @@ export class PageThumbnailDirective implements OnInit {
   @Input() pageThumbnail: any;
   @Input() pageIndex: number;
 
+  //fileInfo: {};
+  //fileFormat : string;
+
   constructor(
     private element: ElementRef,
     private readonly rxCoreService: RxCoreService) {}
@@ -17,7 +20,11 @@ export class PageThumbnailDirective implements OnInit {
   private subscription: Subscription;
 
   ngOnInit(): void {
+
+
     //RXCore.loadThumbnail(this.pageIndex);
+
+    RXCore.loadThumbnailPDF(this.pageIndex);
 
     this.element.nativeElement.width = this.pageThumbnail.thumbnailobj.thumbnail.width;
     this.element.nativeElement.height = this.pageThumbnail.thumbnailobj.thumbnail.height;
@@ -54,5 +61,13 @@ export class PageThumbnailDirective implements OnInit {
         this.pageThumbnail.thumbnailobj.draw(ctx);
         RXCore.markUpRedraw();
     })
+
+    /*RXCore.onGuiFileInfo((fileInfo) => {
+      this.fileInfo = fileInfo;
+      this.fileFormat = fileInfo.format;
+
+    });*/
+
+
   }
 }

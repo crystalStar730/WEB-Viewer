@@ -44,7 +44,8 @@
         </div>
         <div class="add-custom-stamp">
           <input  type="file" id="uploadScript" (change)="uploadInteractiveStampScript($event)" accept=".js" hidden #uploadScript/>
-          <button class="btn btn-primary" (click)="interactiveStampOpened = true">Create Interactive Stamp</button>
+          <!-- <button class="btn btn-primary" (click)="interactiveStampOpened = true">Create Interactive Stamp</button> -->
+          <button class="btn btn-primary" (click)="uploadScript.click()">Add Interactive Stamp</button>
         </div>
       </section>
       
@@ -65,6 +66,7 @@
         <div class="add-custom-stamp">
           <input type="file" id="uploadScript" (change)="uploadInteractiveStampScript($event)" accept=".js" hidden #uploadScript/>
           <button class="btn btn-primary" (click)="uploadScript.click()">Add Interactive Stamp</button>
+          
         </div>
       </section>
 

@@ -1064,6 +1064,31 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
 
     };
 
+    function getRect(page, rect, pageRender) {
+        
+        let scale = pageRender.scale;
+        var deviceRect = page.getDeviceRect(rect, scale);
+        return deviceRect;
+
+    };
+
+
+
+    this.getDeviceRect = function(npagenum, rectobj, callback){
+
+        if (foxview.pdfViewer && npagenum == foxview.curpage){
+
+            foxview.pdfViewer.getCurrentPDFDoc().getPageByIndex(npagenum).then(function (page) {
+
+                let dvrect = getRect(page, rectobj, foxview.curpagerender);
+
+                callback(dvrect);
+            }
+
+        )};
+
+    };
+
     this.selectText = function(npagenum, tselectobj, callback){
 
 
@@ -2952,6 +2977,8 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
         return scale;
 
     };
+
+
 
 
 

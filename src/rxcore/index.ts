@@ -529,6 +529,11 @@ export class RXCore {
         RxCore.loadThumbnail(pageindex);
     }
 
+    public static loadThumbnailPDF(pageindex: number): void {
+        RxCore.loadThumbnailPDF(pageindex);
+    }
+
+
     public static lockMarkup(onoff: boolean): void {
         RxCore.lockMarkup(onoff);
     }
@@ -543,6 +548,12 @@ export class RXCore {
 
     public static markUpSave(): void {
         RxCore.markUpSave();
+    }
+
+    public static markupGetJSON(unselect : boolean) : void {
+
+        RxCore.markupGetJSON(unselect);
+
     }
 
     public static markupCount(onoff: boolean, type?: number): void {
@@ -822,6 +833,11 @@ export class RXCore {
     public static onGuiMarkupList(callback: (list: Array<IMarkup>) => void): void {
         RxCore.GUI_Markuplist.connect(callback);
     }
+
+    public static onGuiMarkupJSON(callback: (list: String) => void): void {
+        RxCore.GUI_MarkuplistJSON.connect(callback);
+    }
+
 
     /*public static onGuiMarkupPaths(callback: (list: Array<any>) => void): void {
         RxCore.GUI_MarkupPaths.connect(callback);

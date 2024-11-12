@@ -58,6 +58,8 @@ var RxConfig = (function() {
 
     var serverComparefiles = baseURLBin + "RxCSISAPI.dll?CommandJSON";
 
+    var serverJSONcommand = baseURLBin + "RxCSISAPI.dll?CommandJSON";
+
     var putSignature = baseURLBin + "RxCSISAPI.dll?WebClientPutSignature";
     var getSignature = baseURLBin + "RxCSISAPI.dll?WebClientGetSignature";
 
@@ -100,6 +102,7 @@ var RxConfig = (function() {
         noCachFolder : noCachFolder,
         configurationLocation: configurationLocation,
         serverComparefiles: serverComparefiles,
+        serverJSONcommand : serverJSONcommand,
         putSignature : putSignature,
         getSignature : getSignature,
         putInitial : putInitial,
