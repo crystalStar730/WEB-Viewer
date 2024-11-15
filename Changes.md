@@ -1,3 +1,9 @@
+November 15, 2024
+
+# 1. Introduced versioning for UI project this is version 12.0.0.8. Value in src\app\app.component.ts uiversion
+# 2. Updated src\rxstyles.scss with background color setting for 3D canvas to prevent visibility of other open files.
+
+
 November 12, 2024
 
 # 1. Consolidation update.

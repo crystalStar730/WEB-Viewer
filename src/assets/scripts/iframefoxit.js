@@ -1959,6 +1959,22 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
                     RxCore.hidedisplayCanvas(true);
                 }
                 //console.log('file open', pnum);
+
+                pdfDoc.getAnnots().then(function (annotarray) {
+                    const newAnnotList = [];
+                    const annotarrayLength = annotarray.length;
+                    for (let i = 0; i < annotarrayLength; ++i) {
+                      const iLength = annotarray[i].length;
+                      for (let j = 0; j < iLength; ++j) {
+                        const type = annotarray[i][j].getType();
+                        if (type === "popup" || type === "link" || type === "widget") continue;
+                        newAnnotList.push(annotarray[i][j]);
+                      }
+                    }
+                    RxCore.foxitAnnotlist(newAnnotList);
+                });
+        
+
                 foxview.fileOpen = true;
             });
         }

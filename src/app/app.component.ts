@@ -16,7 +16,7 @@ import { Title } from '@angular/platform-browser';
 export class AppComponent implements AfterViewInit {
   guiConfig$ = this.rxCoreService.guiConfig$;
   title: string = 'rasterex-viewer';
-  uiversion : string = '12.0.0.7'
+  uiversion : string = '12.0.0.8'
   numOpenFiles$ = this.rxCoreService.numOpenedFiles$;
   annotation: any;
   rectangle: any;

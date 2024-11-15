@@ -11,9 +11,17 @@
     z-index: 0;
 }
 
+#canv3D {
+    
+    position: absolute; top: 0px; left: 0px;
+    background: -webkit-linear-gradient(#FFFFFF, #b5b5b5); /* Safari 5.1-6.0 */
+    background: -o-linear-gradient(#FFFFFF, #b5b5b5);      /* Opera 11.1-12.0 */
+    background: -moz-linear-gradient(#FFFFFF, #b5b5b5);    /* Firefox 3.6-15 */
+    background: linear-gradient(#FFFFFF, #b5b5b5);         /* Standard syntax */
+    
+}
 #imageDisp,
 #imageTemp,
-#canv3D,
 #imagemag {
     position: absolute;
     top: 0;
