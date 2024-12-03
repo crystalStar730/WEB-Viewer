@@ -7,6 +7,8 @@ import { MARKUP_TYPES } from 'src/rxcore/constants';
 import { AnnotationToolsService } from './components/annotation-tools/annotation-tools.service';
 import { RecentFilesService } from './components/recent-files/recent-files.service';
 import { Title } from '@angular/platform-browser';
+import { IGuiConfig } from 'src/rxcore/models/IGuiConfig';
+
 
 @Component({
   selector: 'app-root',
@@ -14,7 +16,10 @@ import { Title } from '@angular/platform-browser';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements AfterViewInit {
+  //@ViewChild('progressBar') progressBar: ElementRef;
+  
   guiConfig$ = this.rxCoreService.guiConfig$;
+  guiConfig: IGuiConfig | undefined;
   title: string = 'rasterex-viewer';
   uiversion : string = '12.0.0.8'
   numOpenFiles$ = this.rxCoreService.numOpenedFiles$;
@@ -22,6 +27,7 @@ export class AppComponent implements AfterViewInit {
   rectangle: any;
   isVisible: boolean = true;
   followLink: boolean = false;
+  convertPDFAnnots : boolean | undefined = false;
   eventUploadFile: boolean = false;
   lists: any[] = [];
   state: any;
@@ -29,6 +35,7 @@ export class AppComponent implements AfterViewInit {
   bguireadycalled : boolean = false;
   binitfileopened : boolean = false;
   timeoutId: any;
+  isUploadFile: boolean = false;
   pasteStyle: { [key: string]: string } = { display: 'none' };
 
 
@@ -41,6 +48,13 @@ export class AppComponent implements AfterViewInit {
 
   ngOnInit() {
 
+    
+    this.guiConfig$.subscribe(config => {
+      this.guiConfig = config;
+      this.convertPDFAnnots = this.guiConfig.convertPDFAnnots;
+
+    });
+
     this.titleService.setTitle(this.title);
     this.fileGaleryService.getEventUploadFile().subscribe(event => this.eventUploadFile = event);
     this.fileGaleryService.modalOpened$.subscribe(opened => {
@@ -50,10 +64,18 @@ export class AppComponent implements AfterViewInit {
     });
     
   }
+  
 
   ngAfterViewInit(): void {
     
-    
+
+    /*this.guiConfig$.subscribe(config => {
+
+      RXCore.convertPDFAnnots(config.convertPDFAnnots);
+      
+    });*/
+
+    RXCore.convertPDFAnnots(this.convertPDFAnnots);
 
     let JSNObj = [
       {
@@ -65,16 +87,21 @@ export class AppComponent implements AfterViewInit {
     ];
 
 
+
     
     
     RXCore.setJSONConfiguration(JSNObj);
 
+    RXCore.limitZoomOut(false);
     RXCore.usePanToMarkup(true);
     RXCore.disablewelcome(true);
     RXCore.forceUniqueMarkup(true);
     RXCore.scaleOnResize(false);
     RXCore.restrictPan(false);
     RXCore.overrideLinewidth(true, 1.0);
+
+
+    //guiConfig
 
 
     //RXCore.setThumbnailSize(240,334);
@@ -308,12 +335,24 @@ export class AppComponent implements AfterViewInit {
       this.rxCoreService.guiOnZoomUpdate.next({zoomparams, type});
     });
 
+    /*RXCore.onGuiUpload((upload :any) =>{
+      
+      this.isUploadFile = true;
 
+      if(upload < 100){
+        
+        if(this.progressBar){
+          this.progressBar.nativeElement.value = upload;
+        }  
+        
+      }else{
+        this.isUploadFile = false;
+      }
+
+    });*/
   
 
   }
-
-
 
   openInitFile(initialDoc){
 
@@ -353,6 +392,27 @@ export class AppComponent implements AfterViewInit {
   onMouseUp(event): void {
     if (event.button === 2 || event.type === 'touchend') clearTimeout(this.timeoutId);
   }
+
+  onKeydown(event):void{
+
+    if (event.key == "z" ) {
+      event.preventDefault();
+      RXCore.pageLock(true);
+      console.log( event.key, "kay pressed");
+    }
+   
+  }
+
+  onKeyup(event):void{
+
+    if (event.key == "z" ) {
+      event.preventDefault();
+      RXCore.pageLock(false);
+      console.log( event.key, "kay released");
+    }
+   
+  }
+
 
   pasteMarkUp(): void {
     RXCore.pasteMarkUp();

@@ -10,4 +10,6 @@ export class AnnotationShapeIconComponent {
   markerType = MARKUP_TYPES;
   @Input() type: number; 
   @Input() subtype: number; 
+  @Input() pdfannotproxy: boolean; 
+  @Input() pdfannotproxyType: string; 
 }

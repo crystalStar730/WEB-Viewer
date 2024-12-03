@@ -60,7 +60,7 @@ export class SignatureComponent implements OnInit {
       this.visible = state.isPDF;
       this.numpages = state.numpages;
       RXCore.lockMarkup(false);
-      RXCore.singlePageScrollPan(this.visible);
+      
     });
 
     this.guiMode$.subscribe((mode: string) => {
@@ -69,8 +69,10 @@ export class SignatureComponent implements OnInit {
       if (mode == "signature" && this.visible) {
         RXCore.getTextRects('Please Sign Here', true);
         this.signatureService.getSignatures();
+        RXCore.singlePageScrollPan(true);
       } else {
         this.onConfirmDismiss(false);
+        RXCore.singlePageScrollPan(false);
       }
     });
 

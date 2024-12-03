@@ -1,16 +1,32 @@
+December 3, 2024
+
+### 1. Fixed fill problem for rectangular measurement.
+### 2. Zoom out is no longer limited to viewspace size.
+### 3. Zoom in/out is now default for single page PDF files. Used to be vertical scroll.
+### 4.Added button for comment list items to zoom to an annotation.
+### 5.Added upload/export support for locally modified PDF files.
+
+### 6. Added support for login, this require a woriking database back-end.
+### 7. Added support for converting PDF annotations to Rasterex annotations.
+
+These settings need to be turned on in src\assets\config\config.json
+
+"canLogin" : true,
+"convertPDFAnnots" : true,
+
 November 15, 2024
 
-# 1. Introduced versioning for UI project this is version 12.0.0.8. Value in src\app\app.component.ts uiversion
-# 2. Updated src\rxstyles.scss with background color setting for 3D canvas to prevent visibility of other open files.
+### 1. Introduced versioning for UI project this is version 12.0.0.8. Value in src\app\app.component.ts uiversion
+### 2. Updated src\rxstyles.scss with background color setting for 3D canvas to prevent visibility of other open files.
 
 
 November 12, 2024
 
-# 1. Consolidation update.
-# 2. Thumbnails was not generated for all pages, fixed.
-# 3. Configuration updated to support setting user name on startup.
-# 4. Minified RxCore now reinstated as default RxCore in project.
-# 5. Introduced versioning for UI project this is version 12.0.0.7. Value in src\app\app.component.ts uiversion : string = '12.0.0.7'
+### 1. Consolidation update.
+### 2. Thumbnails was not generated for all pages, fixed.
+### 3. Configuration updated to support setting user name on startup.
+### 4. Minified RxCore now reinstated as default RxCore in project.
+### 5. Introduced versioning for UI project this is version 12.0.0.7. Value in src\app\app.component.ts uiversion : string = '12.0.0.7'
 
 
 October 1, 2024

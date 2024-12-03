@@ -399,6 +399,18 @@ export class TopNavMenuComponent implements OnInit {
     }
   }
 
+  //uploadPDF
+
+  onPDFUploadClick(): void {
+    if (this.state?.activefile) {
+      this.burgerOpened = false;
+      //RXCore.exportPDF();
+      RXCore.uploadPDF();
+    }
+  }
+
+
+
   onPDFDownloadClick():void{
     if (this.state?.activefile) {
       this.burgerOpened = false;

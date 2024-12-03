@@ -19,6 +19,9 @@ var RxConfig = (function() {
     var openMsessionurl = baseURLBin + "RxCSISAPI.dll?OpenMarkupSession";
     var closesessionurl = baseURLBin + "RxCSISAPI.dll?CloseSession";
     var xmlurlmarkupsave = baseURLBin + "RxCSISAPI.dll?WebClientSaveMarkup";
+
+    var WebClientPDFUpload = baseURLBin + "RxCSISAPI.dll?WebClientPDFUpload";
+
     var markupsave = baseURLBin + "RxCSISAPI.dll?MarkupSave";
     var savefile = baseURLBin + "RxCSISAPI.dll?WebClientSaveFile";
 
@@ -86,6 +89,7 @@ var RxConfig = (function() {
         CanvasSaveUrl: CanvasSaveUrl,
         UploadServerfolder: UploadServerfolder,
         UploadServerfolderd: UploadServerfolderd,
+        WebClientPDFUpload : WebClientPDFUpload,
         baseFileURL: baseFileURL,
         baseURLWeb : baseURLWeb,
         xmlurlrel: xmlurlrel,

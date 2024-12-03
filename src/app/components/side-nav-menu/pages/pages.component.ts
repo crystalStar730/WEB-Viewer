@@ -367,6 +367,23 @@ export class PagesComponent implements OnInit {
     this.showContextMenu = false;
   }
 
+  getpagename(title: string, i: number) : string{
+
+    let pagenum = (i+1) + "/" + this.numpages;
+    let retval = pagenum;
+
+    if(title == "Default"){
+      retval = pagenum;
+      
+    }else{
+      retval = title;  
+    }
+
+    return retval;
+
+
+  }
+
   onAction(action: Action) {
     const pageRange: number[][] = [];
     if(this.multiSelect) {

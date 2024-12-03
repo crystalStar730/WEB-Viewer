@@ -96,6 +96,8 @@
                             <rx-annotation-shape-icon
                               [type]="item.type"
                               [subtype]="item.subtype"
+                              [pdfannotproxy]="item.pdfannotproxy"
+                              [pdfannotproxyType]="item.pdfannotproxyType"
                             ></rx-annotation-shape-icon>
                           </div>
                           <div>
@@ -113,6 +115,10 @@
                             </div>
                             <p *ngIf="item.text">{{ item.text }}</p>
                             <p *ngIf="item.dimtext">{{ item.dimtext }}</p>
+                          </div>
+                          <div style="flex: 1"></div>
+                          <div (click)="zoomTo(item)">
+                            <img src="/assets/images/zoom-window-ico.svg" />
                           </div>
                           <div style="flex: 1"></div>
                           <div
@@ -166,6 +172,8 @@
                             <rx-annotation-shape-icon
                               [type]="item.type"
                               [subtype]="item.subtype"
+                              [pdfannotproxy]="item.pdfannotproxy"
+                              [pdfannotproxyType]="item.pdfannotproxyType"
                             ></rx-annotation-shape-icon>
                           </div>
                           <div>

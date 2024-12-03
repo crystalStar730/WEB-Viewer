@@ -50,7 +50,12 @@ export class RXCore {
     public static setThumbnailSize(w:number, h:number): void {
         RxCore.setThumbnailSize(w,h);
     }
-    
+
+    public static setUser(sign:string, displayname:string): void {
+        
+        RxCore.setUser(sign, displayname);
+        
+    }
 
     public static scaleOnResize(onoff: boolean): void {
         RxCore.scaleOnResize(onoff);
@@ -335,6 +340,11 @@ export class RXCore {
         RxCore.copyPage(pageRange)
     }
 
+    public static convertPDFAnnots(onOff: boolean | undefined): void {
+        RxCore.convertPDFAnnots(onOff);
+    }
+
+
     public static pastePage(pasteId: number): void {
         RxCore.pastePage(pasteId)
     }
@@ -489,6 +499,11 @@ export class RXCore {
         return RxCore.getSnapState();
     }
 
+    //pageLock
+    public static pageLock(onoff: boolean): void {
+        RxCore.pageLock(onoff);
+    }
+
     public static printSizeEx(paperSize: any): void {
         RxCore.printSizeEx(null, paperSize);
     }
@@ -524,6 +539,11 @@ export class RXCore {
     public static hidedisplayCanvas(bhide: boolean): void {
         RxCore.hidedisplayCanvas(bhide);
     }
+
+    public static limitZoomOut(onOff: boolean): void {
+        RxCore.limitZoomOut(onOff);
+    }
+    
 
     public static loadThumbnail(pageindex: number): void {
         RxCore.loadThumbnail(pageindex);
@@ -681,8 +701,10 @@ export class RXCore {
         RxCore.downloadPDF();
     }
 
+    public static uploadPDF(): void {
+        RxCore.uploadPDF();
+    }
 
-    
 
     public static get markupChanged(): boolean {
         return RxCore.markupChanged();
@@ -842,6 +864,12 @@ export class RXCore {
     /*public static onGuiMarkupPaths(callback: (list: Array<any>) => void): void {
         RxCore.GUI_MarkupPaths.connect(callback);
     }*/
+
+    //RxCore_GUI_Upload
+
+    public static onGuiUpload(callback: (upload: any) => void): void {
+        RxCore.GUI_Upload.connect(callback);
+    }
 
 
     public static onGuiMarkupHover(callback: (markup: IMarkup, x: number, y: number) => void): void {

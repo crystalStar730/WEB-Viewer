@@ -11,6 +11,8 @@
             "canCompare": true,
             "canSignature": true,
             "canConsolidate": true,
+            "canLogin" : false,
+            "convertPDFAnnots" : false,
             "logoUrl": "/assets/images/logo.svg"
         
     },

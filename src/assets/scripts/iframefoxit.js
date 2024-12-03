@@ -851,6 +851,23 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
         }
     };
 
+    this.exportPDFupload = function () {
+        if (foxview.pdfViewer) {
+            const pdfDoc = foxview.pdfViewer.getCurrentPDFDoc();
+      
+            pdfDoc.extractPages([[0, pdfDoc.getPageCount() - 1]]).then((doc) => {
+                
+
+               const blob = new Blob(doc, { type: "application/pdf" });
+               const uploadname = foxview.filename;
+       
+
+               RxCore.uploadCustomPDF({filename : uploadname, binfile : blob});
+                
+            });
+        }
+    };
+
     this.exportPDF1 = function () {
         if (foxview.pdfViewer) {
             const pdfDoc = foxview.pdfViewer.getCurrentPDFDoc();
@@ -868,7 +885,7 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
         link.click();
         link.remove();
     };
-    
+
 
 
     this.rotatePage = function (pagenum, nrotation){

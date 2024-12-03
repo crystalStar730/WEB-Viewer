@@ -87,7 +87,12 @@ export class FileGaleryComponent implements OnInit {
         this.leftTabActiveIndex = 0;
       }
     });
+
+    
+
   }
+
+  
 
   handleFileSelect(item): void {
     this.uploadFile(item);

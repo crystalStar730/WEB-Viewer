@@ -95,6 +95,8 @@ import { RecentFilesComponent } from './components/recent-files/recent-files.com
 import { SizeModalComponent } from './components/size-modal/size-modal.component';
 import { CommentStatusIconComponent } from './components/annotation-tools/comment-status-icon/comment-status-icon.component';
 
+import { LoginComponent } from './components/user/login/login.component';
+
 
 
 @NgModule({
@@ -172,7 +174,8 @@ import { CommentStatusIconComponent } from './components/annotation-tools/commen
     HighlightPipe,
     SizeModalComponent,
     SafeHtmlPipe,
-    CommentStatusIconComponent
+    CommentStatusIconComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
