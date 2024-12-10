@@ -851,7 +851,7 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
         }
     };
 
-    this.exportPDFupload = function () {
+    this.exportPDFupload = function (bcustom, endpoint) {
         if (foxview.pdfViewer) {
             const pdfDoc = foxview.pdfViewer.getCurrentPDFDoc();
       
@@ -862,7 +862,14 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
                const uploadname = foxview.filename;
        
 
-               RxCore.uploadCustomPDF({filename : uploadname, binfile : blob});
+               if(bcustom){
+                RxCore.uploadCustomPDF({filename : uploadname, binfile : blob}, bcustom, endpoint);
+               }else{
+                RxCore.uploadCustomPDF({filename : uploadname, binfile : blob});
+               } 
+               
+
+
                 
             });
         }

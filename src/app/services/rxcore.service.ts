@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { RXCore } from 'src/rxcore';
+//import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { BehaviorSubject, Subject, Observable } from "rxjs";
 import { GuiMode } from 'src/rxcore/enums/GuiMode';
 import { IBlock3D } from 'src/rxcore/models/IBlock3D';
@@ -7,7 +9,7 @@ import { IMarkup } from 'src/rxcore/models/IMarkup';
 import { IPageThumb } from 'src/rxcore/models/IPageThumb';
 import { IVectorBlock } from 'src/rxcore/models/IVectorBlock';
 import { IVectorLayer } from 'src/rxcore/models/IVectorLayer';
-import UIConfigData from 'src/assets/config/config.json';
+//import UIConfigData from 'src/assets/config/config.json';
 
 
 @Injectable({
@@ -15,6 +17,8 @@ import UIConfigData from 'src/assets/config/config.json';
 })
 export class RxCoreService {
   constructor() {
+
+    
     this._defaultGuiConfig = {
       canFileOpen: true,
       canSaveFile: true,
@@ -28,11 +32,16 @@ export class RxCoreService {
       logoUrl: "/assets/images/logo.svg"
     };
 
-    this._defaultGuiConfig = UIConfigData.UIConfig;
+
+    //import { RXCore } from 'src/rxcore';
+
+    //this._defaultGuiConfig = UIConfigData.UIConfig; 
+
+    this._defaultGuiConfig = RXCore.ViewUIConfig.UIConfig;
 
     this.setGuiConfig(this._defaultGuiConfig);
 
-    this.setUIStyles(UIConfigData.UIStyles);
+    this.setUIStyles(RXCore.ViewUIConfig.UIStyles);
 
   }
 

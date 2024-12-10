@@ -4,6 +4,9 @@ import { RXCore } from 'src/rxcore';
 import { RxCoreService } from 'src/app/services/rxcore.service';
 import { MARKUP_TYPES } from 'src/rxcore/constants';
 import { IGuiConfig } from 'src/rxcore/models/IGuiConfig';
+import { UserService } from '../user/user.service';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
+
 
 @Component({
   selector: 'rx-annotation-tools',
@@ -41,6 +44,7 @@ export class AnnotationToolsComponent implements OnInit {
     "SYMBOLS_LIBRARY": false,
     "LINKS_LIBRARY": false,
     "CALIBRATE": false,
+    "MEASURE_CONTINUOUS" : false,
     "MEASURE_LENGTH": false,
     "MEASURE_AREA": false,
     "MEASURE_PATH": false,
@@ -77,9 +81,14 @@ export class AnnotationToolsComponent implements OnInit {
       || this.isActionSelected["MEASURE_PATH"];
   };
 
+  canAddAnnotation = this.userService.canAddAnnotation$;
+  canUpdateAnnotation = this.userService.canUpdateAnnotation$;
+  canDeleteAnnotation = this.userService.canDeleteAnnotation$;
+
   constructor(
     private readonly service: AnnotationToolsService,
-    private readonly rxCoreService: RxCoreService) { }
+    private readonly rxCoreService: RxCoreService,
+    private readonly userService: UserService) { }
 
   ngOnInit(): void {
     this.guiConfig$.subscribe(config => {
@@ -172,7 +181,7 @@ export class AnnotationToolsComponent implements OnInit {
     Object.entries(this.isActionSelected).forEach(([key, value]) => {
 
 
-      if (key !== 'MARKUP_LOCK' && key !== 'SNAP' && key !== 'NO_SCALE') {
+      if (key !== 'MARKUP_LOCK' && key !== 'SNAP' && key !== 'NO_SCALE' && key !== "MEASURE_CONTINUOUS") {
         this.isActionSelected[key] = false;
       }
       
@@ -315,6 +324,11 @@ export class AnnotationToolsComponent implements OnInit {
           this.calibrate(true);
           break;*/
   
+      case 'MEASURE_CONTINUOUS':  
+
+        RXCore.markupAddMulti(this.isActionSelected[actionName]);
+        break;
+
       case 'MEASURE_LENGTH':
 
       //MeasureDetailPanelComponent

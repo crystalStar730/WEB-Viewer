@@ -1,3 +1,16 @@
+December 10, 2024
+
+### 1. Merged new login code with permission settings.'
+### 2. Added continuous measure mode button.
+### 3. Added new configuration object src\assets\config\UIConfig.js that allow UI behaviour changes without recompiling.
+
+Settings are then moved from src\assets\config\config.json to the new src\assets\config\UIConfig.js
+"canLogin" : true,
+"convertPDFAnnots" : true,
+
+### 4. this is version 12.1.0.1
+
+
 December 3, 2024
 
 ### 1. Fixed fill problem for rectangular measurement.

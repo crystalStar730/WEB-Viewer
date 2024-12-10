@@ -25,6 +25,7 @@ export interface IGuiConfig {
     disableMarkupTextButton?: boolean;
     disableMarkupCalloutButton?: boolean;
     disableMarkupStampButton?: boolean;
+    disableContinuousButton?: boolean;
     disableMarkupPaintButton?: boolean;
     disableMarkupShapeButton?: boolean;
     disableMarkupShapeRectangleButton?: boolean;

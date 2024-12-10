@@ -8,9 +8,13 @@ import { ISignatureData } from "./models/ISignatures";
 
 declare var RxCore: any;
 declare var RxConfig: any;
+declare var UIConfig: any;
+
+
 
 export class RXCore {
     public static Config: any = RxConfig;
+    public static ViewUIConfig: any = UIConfig.ConfigJSON;
 
     public static birdseyetool(): void {
         RxCore.birdseyetool();
