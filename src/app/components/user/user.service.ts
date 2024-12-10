@@ -77,7 +77,7 @@ export class UserService {
       this.http.post<any>(url, body, options).subscribe({
         next: (v: any) => {
           this.accessToken = v.accessToken;
-          resolve(v);
+          resolve(v.user);
         },
         error: (e: ResponseMessage) => {
           reject(e);
