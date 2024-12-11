@@ -1,7 +1,9 @@
 December 11, 2024
 
 ### 1. Merged new measurement/annotation switch functionality.
-### 4. this is version 12.1.0.2
+### 2. Removed non functioning use of title on annotation object.
+### 3. this is version 12.1.0.2
+
 
 
 December 10, 2024
