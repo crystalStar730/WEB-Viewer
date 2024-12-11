@@ -54,6 +54,7 @@ export class TopNavMenuComponent implements OnInit {
   actionType: ActionType = "None";
   private guiOnNoteSelected: Subscription;
   currentScaleValue: string;
+  annotSwitch: boolean = false;
 
   constructor(
     private readonly fileGaleryService: FileGaleryService,
@@ -516,5 +517,8 @@ export class TopNavMenuComponent implements OnInit {
     this.guiOnNoteSelected.unsubscribe();
   }
 
+  onAnnotChange(onoff: boolean): void {
+    this.onModeChange(this.options[onoff ? 2 : 1]);
+  }
 
 }

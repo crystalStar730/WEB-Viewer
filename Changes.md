@@ -1,3 +1,9 @@
+December 11, 2024
+
+### 1. Merged new measurement/annotation switch functionality.
+### 4. this is version 12.1.0.2
+
+
 December 10, 2024
 
 ### 1. Merged new login code with permission settings.'

@@ -146,10 +146,11 @@ export class NotePanelComponent implements OnInit {
     document.querySelectorAll(".leader-line-end,.leader-line").forEach(el => el.remove());
   }
 
-  private _processList(list: Array<IMarkup> = []): void {
+  private _processList(list: Array<IMarkup> = [], annotList: Array<IMarkup> = []): void {
     /*modified for comment list panel */
-    const query = list
-    .filter((i: any) => {
+
+    const mergeList = [...list, ...annotList];
+    const query = mergeList.filter((i: any) => {
       if (this.objectType === 'measure') {
         return (
           i.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
@@ -218,7 +219,8 @@ export class NotePanelComponent implements OnInit {
     }
     )
     .map((item: any) => {
-      item.author = RXCore.getDisplayName(item.signature);
+      item.author = item.title !== '' ? item.title : RXCore.getDisplayName(item.signature);
+
       item.createdStr = dayjs(item.timestamp).format(`MMM D,${dayjs().year() != dayjs(item.timestamp).year() ? 'YYYY ': ''} h:mm A`);
       //item.IsExpanded = item?.IsExpanded;
       //item.IsExpanded = this.activeMarkupNumber > 0 ? item?.IsExpanded : false;
@@ -339,6 +341,20 @@ export class NotePanelComponent implements OnInit {
         this.markupNoteList.push(this.activeMarkupNumber);
         this.markupNoteList = [...new Set(this.markupNoteList)];
         let markupList = this.rxCoreService.getGuiMarkupList();
+
+        for(const markupItem of markupList) {
+          if(markupItem.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+            (markupItem.type === MARKUP_TYPES.MEASURE.AREA.type &&
+              markupItem.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
+            (markupItem.type === MARKUP_TYPES.MEASURE.PATH.type &&
+              markupItem.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
+            (markupItem.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
+              markupItem.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)) 
+              markupItem.setdisplay(this.objectType === "measure");
+          else markupItem.setdisplay(this.objectType !== "measure");
+        }
+
+
         this._processList(markupList);
         if (Object.values(this.list).length > 0) {
           setTimeout(() => {
@@ -372,7 +388,21 @@ export class NotePanelComponent implements OnInit {
 
       if (state?.objectType !== this.objectType) {
         this.objectType = state?.objectType;
-        this._processList(this.rxCoreService.getGuiMarkupList());
+
+        let markupList = this.rxCoreService.getGuiMarkupList();
+        for(const markupItem of markupList) {
+          if(markupItem.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+            (markupItem.type === MARKUP_TYPES.MEASURE.AREA.type &&
+              markupItem.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
+            (markupItem.type === MARKUP_TYPES.MEASURE.PATH.type &&
+              markupItem.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
+            (markupItem.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
+              markupItem.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)) 
+              markupItem.setdisplay(this.objectType === "measure");
+          else markupItem.setdisplay(this.objectType !== "measure");
+        }
+        this._processList(markupList);
+
       }
 
 
@@ -414,7 +444,7 @@ export class NotePanelComponent implements OnInit {
 
 
         }else{
-          this._processList(list);
+          this._processList(list, this.rxCoreService.getGuiAnnotList());
         } 
 
       }
@@ -424,13 +454,17 @@ export class NotePanelComponent implements OnInit {
             this.activeMarkupNumber = -1;
               //console.log(itm.selected);
 
-          this._processList(list);
+          this._processList(list, this.rxCoreService.getGuiAnnotList());
         }, 250);
       }else{
-        this._processList(list);
+        this._processList(list, this.rxCoreService.getGuiAnnotList());
       }
         
 
+    });
+
+    this.rxCoreService.guiAnnotList$.subscribe((list = []) => {
+      this._processList(this.rxCoreService.getGuiMarkupList(), list);
     });
 
 

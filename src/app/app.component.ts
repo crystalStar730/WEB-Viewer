@@ -22,7 +22,7 @@ export class AppComponent implements AfterViewInit {
   guiConfig$ = this.rxCoreService.guiConfig$;
   guiConfig: IGuiConfig | undefined;
   title: string = 'rasterex-viewer';
-  uiversion : string = '12.1.0.1'
+  uiversion : string = '12.1.0.2'
   numOpenFiles$ = this.rxCoreService.numOpenedFiles$;
   annotation: any;
   rectangle: any;

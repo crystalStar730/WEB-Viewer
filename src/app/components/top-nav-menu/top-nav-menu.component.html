@@ -165,6 +165,12 @@
         <rx-login></rx-login>
     </div>
 
+    <div class="top-nav-item switch">
+        Annote
+        <rx-switch [checked]="annotSwitch" (change)="onAnnotChange($event)"></rx-switch>
+        Measure
+    </div>
+    
 
     <div class="top-nav-item current-scale">
         <span>{{currentScaleValue}}</span>

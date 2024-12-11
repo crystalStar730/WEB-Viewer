@@ -34,4 +34,5 @@ export interface IMarkup {
     GetAttributes: () => Array<any>;
     ClearAttributes: () => void;
     getselected : () => boolean;
+    setdisplay: (flag: boolean) => void;
 }
