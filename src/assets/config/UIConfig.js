@@ -15,6 +15,8 @@ var UIConfig = (function() {
                 "canConsolidate": true,
                 "convertPDFAnnots" : false,
                 "canLogin" : false,
+                "showmarkupZoom" : false,
+                "showAnnotSwitch" : false,
                 "logoUrl": "/assets/images/logo.svg"
             
         },

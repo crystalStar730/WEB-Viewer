@@ -10,6 +10,7 @@ import updateLocale from 'dayjs/plugin/updateLocale';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import { Subscription } from 'rxjs';
+import { IGuiConfig } from 'src/rxcore/models/IGuiConfig';
 
 declare var LeaderLine: any;
 
@@ -25,8 +26,13 @@ export class NotePanelComponent implements OnInit {
   visible: boolean = false;
   
   list: { [key: string]: Array<IMarkup> };
+  annotlist: Array<IMarkup>;
   search: string;
   panelwidth : number = 300;
+
+  guiConfig$ = this.rxCoreService.guiConfig$;
+  guiConfig: IGuiConfig | undefined;
+
 
 
   /*added for comment list panel */
@@ -220,7 +226,7 @@ export class NotePanelComponent implements OnInit {
     )
     .map((item: any) => {
       //item.author = item.title !== '' ? item.title : RXCore.getDisplayName(item.signature);
-      
+
       item.author = RXCore.getDisplayName(item.signature);
 
       item.createdStr = dayjs(item.timestamp).format(`MMM D,${dayjs().year() != dayjs(item.timestamp).year() ? 'YYYY ': ''} h:mm A`);
@@ -342,39 +348,43 @@ export class NotePanelComponent implements OnInit {
       if (this.activeMarkupNumber) {
         this.markupNoteList.push(this.activeMarkupNumber);
         this.markupNoteList = [...new Set(this.markupNoteList)];
+
+        
         let markupList = this.rxCoreService.getGuiMarkupList();
 
-        for(const markupItem of markupList) {
-          if(markupItem.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
-            (markupItem.type === MARKUP_TYPES.MEASURE.AREA.type &&
-              markupItem.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
-            (markupItem.type === MARKUP_TYPES.MEASURE.PATH.type &&
-              markupItem.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
-            (markupItem.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
-              markupItem.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)) 
-              markupItem.setdisplay(this.objectType === "measure");
-          else markupItem.setdisplay(this.objectType !== "measure");
-        }
+        if(markupList){
+          for(const markupItem of markupList) {
+            if(markupItem.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+              (markupItem.type === MARKUP_TYPES.MEASURE.AREA.type &&
+                markupItem.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
+              (markupItem.type === MARKUP_TYPES.MEASURE.PATH.type &&
+                markupItem.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
+              (markupItem.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
+                markupItem.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)) 
+                markupItem.setdisplay(this.objectType === "measure");
+            else markupItem.setdisplay(this.objectType !== "measure");
+          }
 
+          this._processList(markupList);
+          if (Object.values(this.list).length > 0) {
+            setTimeout(() => {
+              markupList.filter((i: any) => {
+                if (i.markupnumber === this.activeMarkupNumber) {
+                  let page = i.pagenumber + 1;
+                  this.pageNumbers = [];
+                  this.pageNumbers.push({ value: -1, label: 'Select' });
+                  for (let itm = 1; page >= itm; itm++) {
+                    this.pageNumbers.push({ value: itm, label: itm });
+                  }
 
-        this._processList(markupList);
-        if (Object.values(this.list).length > 0) {
-          setTimeout(() => {
-            markupList.filter((i: any) => {
-              if (i.markupnumber === this.activeMarkupNumber) {
-                let page = i.pagenumber + 1;
-                this.pageNumbers = [];
-                this.pageNumbers.push({ value: -1, label: 'Select' });
-                for (let itm = 1; page >= itm; itm++) {
-                  this.pageNumbers.push({ value: itm, label: itm });
+                  this.onSelectAnnotation(i);
+                  this._setPosition(i);
                 }
-
-                this.onSelectAnnotation(i);
-                this._setPosition(i);
-              }
-            });
-          }, 200);
+              });
+            }, 200);
+          }
         }
+
       }
       /*added for comment list panel */
 
@@ -388,28 +398,36 @@ export class NotePanelComponent implements OnInit {
         RXCore.doResize(false,0, 0);/*added for comment list panel */
       }
 
-      if (state?.objectType !== this.objectType) {
+      if (state?.objectType && state?.objectType !== this.objectType) {
         this.objectType = state?.objectType;
 
-        let markupList = this.rxCoreService.getGuiMarkupList();
-        for(const markupItem of markupList) {
-          if(markupItem.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
-            (markupItem.type === MARKUP_TYPES.MEASURE.AREA.type &&
-              markupItem.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
-            (markupItem.type === MARKUP_TYPES.MEASURE.PATH.type &&
-              markupItem.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
-            (markupItem.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
-              markupItem.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)) 
-              markupItem.setdisplay(this.objectType === "measure");
-          else markupItem.setdisplay(this.objectType !== "measure");
+        //let markupList = this.rxCoreService.getGuiMarkupList();
+
+        if(this.annotlist){
+          for(const markupItem of this.annotlist) {
+            if(markupItem.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+              (markupItem.type === MARKUP_TYPES.MEASURE.AREA.type &&
+                markupItem.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
+              (markupItem.type === MARKUP_TYPES.MEASURE.PATH.type &&
+                markupItem.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
+              (markupItem.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
+                markupItem.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)) 
+                markupItem.setdisplay(this.objectType === "measure");
+            else markupItem.setdisplay(this.objectType !== "measure");
+          }
+          this._processList(this.annotlist);
         }
-        this._processList(markupList);
 
       }
 
 
       this._hideLeaderLine();
     });
+
+    this.guiConfig$.subscribe(config => {
+      this.guiConfig = config;
+    });
+
 
     this.rxCoreService.guiMarkupList$.subscribe((list = []) => {
       this.createdByFilter = new Set();
@@ -429,6 +447,7 @@ export class NotePanelComponent implements OnInit {
         
         
         if (list.length > 0){
+          
           
           //this._processList(list);
           setTimeout(() => {
@@ -450,7 +469,11 @@ export class NotePanelComponent implements OnInit {
         } 
 
       }
+
+      this.annotlist = list;
+
       if (list.length > 0 && !this.isHideAnnotation){
+
         setTimeout(() => {
           if (list.find((itm) => itm.getselected()) === undefined)
             this.activeMarkupNumber = -1;
@@ -817,6 +840,10 @@ export class NotePanelComponent implements OnInit {
       let dx = 0 + _dx;
       let dy = -10 + _dy;
 
+      let xright = xscaled;
+      let yright = yscaled;
+
+
       switch (markup.type) {
         case MARKUP_TYPES.ERASE.type:
         case MARKUP_TYPES.SHAPE.POLYGON.type:
@@ -863,17 +890,36 @@ export class NotePanelComponent implements OnInit {
           break;*/
         case MARKUP_TYPES.ARROW.type:
           dx = -26 + _dx;
+
+          if(xscaled > wscaled){
+            xright = xscaled;
+            yright = yscaled;
+          }else{
+            xright = wscaled;
+            yright = hscaled;
+
+          }
+
           this.rectangle = {
-            x: xscaled + dx,
-            y: yscaled + dy,
+            x: xright,
+            y: yright,
             x_1: xscaled + wscaled - 20,
             y_1: yscaled - 20,
           };
           break;
         case MARKUP_TYPES.MEASURE.LENGTH.type:
+
+        if(xscaled > wscaled){
+          xright = xscaled;
+          yright = yscaled;
+        }else{
+          xright = wscaled;
+          yright = hscaled;
+
+        }
           this.rectangle = {
-            x: xscaled - 5,
-            y: yscaled - 5,
+            x: xright,
+            y: yright,
             x_1: xscaled + wscaled - 20,
             y_1: yscaled - 20,
           };

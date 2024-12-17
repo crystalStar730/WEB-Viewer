@@ -1,3 +1,11 @@
+December 17, 2024
+
+### 1. Annotate/measure switch can now be turned off using a setting in UIConfig.js
+### 2. Markup zoom button for each annotation item in the annotation list can now be turned off using a setting in UIConfig.js
+### 3. Minor corrections to comment list update and state functionality.
+
+
+
 December 11, 2024
 
 ### 1. Merged new measurement/annotation switch functionality.

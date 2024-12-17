@@ -3,6 +3,8 @@ export interface IGuiConfig {
     canConsolidate?: boolean;
     canLogin?: boolean;
     convertPDFAnnots?: boolean;
+    showmarkupZoom? : boolean;
+    showAnnotSwitch? : boolean;
     canSignature?: boolean;
     disableImages?: boolean;
     disableSymbol?: boolean;

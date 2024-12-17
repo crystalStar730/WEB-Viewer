@@ -117,7 +117,7 @@
                             <p *ngIf="item.dimtext">{{ item.dimtext }}</p>
                           </div>
                           <div style="flex: 1"></div>
-                          <div (click)="zoomTo(item)">
+                          <div *ngIf="(guiConfig$ | async).showmarkupZoom" (click)="zoomTo(item)">
                             <img src="/assets/images/zoom-window-ico.svg" />
                           </div>
                           <div style="flex: 1"></div>
