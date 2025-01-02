@@ -90,6 +90,16 @@ export class NotePanelComponent implements OnInit {
   ];
   objectType: string | null = null;
 
+  showAnnotations: boolean = true;
+  showMeasurements: boolean = true;
+  showSignatures: boolean = true;
+  showAll: boolean = true;
+  showEllipse: boolean = true;
+  showFreehand: boolean = true;
+  showFreeText: boolean = true;
+  showLine: boolean = true;
+  showRectangle: boolean = true;
+  showStamp: boolean = true;
 
   constructor(
     private readonly rxCoreService: RxCoreService,
@@ -157,73 +167,76 @@ export class NotePanelComponent implements OnInit {
 
     const mergeList = [...list, ...annotList];
     const query = mergeList.filter((i: any) => {
-      if (this.objectType === 'measure') {
-        return (
-          i.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
-          (i.type === MARKUP_TYPES.MEASURE.AREA.type &&
-            i.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
-          (i.type === MARKUP_TYPES.MEASURE.PATH.type &&
-            i.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
-          (i.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
-            i.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)
-        );
-      } else {
-        return !(
-          i.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
-          (i.type === MARKUP_TYPES.MEASURE.AREA.type &&
-            i.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
-          (i.type === MARKUP_TYPES.MEASURE.PATH.type &&
-            i.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
-          (i.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
-            i.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)
-        );
-      }
+      // Check if markup is a measurement type
+      if(i.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+        (i.type === MARKUP_TYPES.MEASURE.AREA.type &&
+          i.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
+        (i.type === MARKUP_TYPES.MEASURE.PATH.type &&
+          i.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
+        (i.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
+          i.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType))
+          return this.showMeasurements;
+
+          if(i.type === MARKUP_TYPES.SIGNATURE.type && i.subtype === MARKUP_TYPES.SIGNATURE.subType) {
+            return this.showSignatures;
+          }
+  
+          if(i.type === MARKUP_TYPES.SHAPE.ELLIPSE.type) {
+            return this.showEllipse;
+          }
+  
+          if(i.type === MARKUP_TYPES.PAINT.FREEHAND.type && i.subtype === MARKUP_TYPES.PAINT.FREEHAND.subType) {
+            return this.showFreehand;
+          }
+  
+          if(i.type === MARKUP_TYPES.TEXT.type) {
+            return this.showFreeText;
+          }
+  
+          if(i.type === MARKUP_TYPES.STAMP.type && i.subtype === MARKUP_TYPES.STAMP.subType) {
+            return this.showStamp;
+          }
+  
+          if(i.type === MARKUP_TYPES.SHAPE.RECTANGLE.type && i.subtype === MARKUP_TYPES.SHAPE.RECTANGLE.subType) {
+            return this.showRectangle;
+          }
+  
+          if(i.type === MARKUP_TYPES.PAINT.POLYLINE.type && i.subtype === MARKUP_TYPES.PAINT.POLYLINE.subType) {
+            return this.showLine;
+          }
+
+        return this.showAnnotations;
     })
     .filter((i: any) => {
-      if (this.search) {
-        if (this.connectorLine)
-        this.connectorLine.hide();
-        let searchQuery = this.search.toLocaleLowerCase();
-        let comments: any = i.comments.map((i: any) => { return i.value.toLocaleLowerCase(); });
-
-        /* if (comments.find((x:string) => x.indexOf(searchQuery) > -1) || i.author.toLocaleLowerCase().includes(searchQuery) || i.getMarkupType().label.toLocaleLowerCase().includes(searchQuery)) {
-          return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
-            && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow
-        }
-        return;
-      } else {
-        return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
-          && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow
-      }
-     }
-    ) */
     /*modified for comment list panel */
 
-
         if (this.pageNumber > 0) {
-          if (comments.find((x: string) => x.indexOf(searchQuery) > -1) || i.author.toLocaleLowerCase().includes(searchQuery) || i.getMarkupType().label.toLocaleLowerCase().includes(searchQuery)) {
-            return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
-              && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow && i.pagenumber === (this.pageNumber - 1)
-          }
+          return (
+            (this.dateFilter.startDate
+              ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate)
+              : true) &&
+            (this.dateFilter.endDate
+              ? dayjs(i.timestamp).isSameOrBefore(
+                  this.dateFilter.endDate.endOf('day')
+                )
+              : true) &&
+            !i.bisTextArrow &&
+            i.pagenumber === this.pageNumber - 1
+          );
         } else {
-          if (comments.find((x: string) => x.indexOf(searchQuery) > -1) || i.author.toLocaleLowerCase().includes(searchQuery) || i.getMarkupType().label.toLocaleLowerCase().includes(searchQuery)) {
-            return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
-              && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow
-          }
+          return (
+            (this.dateFilter.startDate
+              ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate)
+              : true) &&
+            (this.dateFilter.endDate
+              ? dayjs(i.timestamp).isSameOrBefore(
+                  this.dateFilter.endDate.endOf('day')
+                )
+              : true) &&
+            !i.bisTextArrow
+          );
         }
-        return;
-      } else {
-        if (this.pageNumber > 0) {
-          return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
-            && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow && i.pagenumber === (this.pageNumber - 1)
-        }
-        else {
-          return (this.dateFilter.startDate ? dayjs(i.timestamp).isSameOrAfter(this.dateFilter.startDate) : true)
-            && (this.dateFilter.endDate ? dayjs(i.timestamp).isSameOrBefore(this.dateFilter.endDate.endOf('day')) : true) && !i.bisTextArrow
-        }
-      }
-    }
-    )
+    })
     .map((item: any) => {
       //item.author = item.title !== '' ? item.title : RXCore.getDisplayName(item.signature);
 
@@ -353,7 +366,7 @@ export class NotePanelComponent implements OnInit {
         let markupList = this.rxCoreService.getGuiMarkupList();
 
         if(markupList){
-          for(const markupItem of markupList) {
+          /* for(const markupItem of markupList) {
             if(markupItem.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
               (markupItem.type === MARKUP_TYPES.MEASURE.AREA.type &&
                 markupItem.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
@@ -363,7 +376,7 @@ export class NotePanelComponent implements OnInit {
                 markupItem.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)) 
                 markupItem.setdisplay(this.objectType === "measure");
             else markupItem.setdisplay(this.objectType !== "measure");
-          }
+          } */
 
           this._processList(markupList);
           if (Object.values(this.list).length > 0) {
@@ -403,7 +416,7 @@ export class NotePanelComponent implements OnInit {
 
         //let markupList = this.rxCoreService.getGuiMarkupList();
 
-        if(this.annotlist){
+/*         if(this.annotlist){
           for(const markupItem of this.annotlist) {
             if(markupItem.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
               (markupItem.type === MARKUP_TYPES.MEASURE.AREA.type &&
@@ -417,7 +430,7 @@ export class NotePanelComponent implements OnInit {
           }
           this._processList(this.annotlist);
         }
-
+ */
       }
 
 
@@ -431,6 +444,13 @@ export class NotePanelComponent implements OnInit {
 
     this.rxCoreService.guiMarkupList$.subscribe((list = []) => {
       this.createdByFilter = new Set();
+
+      /*if (list.length > 0){
+        
+      }*/
+      this.annotlist = list;
+      
+
       if (this.activeMarkupNumber > 0){
         //this.createdByFilterOptions = Object.values(list.filter(i => i.text.length > 0).reduce((options, item) => {
         this.createdByFilterOptions = Object.values(list.filter((i: any) => i.text.length > 0).reduce((options, item: any) => {
@@ -447,8 +467,7 @@ export class NotePanelComponent implements OnInit {
         
         
         if (list.length > 0){
-          
-          
+        
           //this._processList(list);
           setTimeout(() => {
             list.filter((itm: any) => {
@@ -467,10 +486,10 @@ export class NotePanelComponent implements OnInit {
         }else{
           this._processList(list, this.rxCoreService.getGuiAnnotList());
         } 
-
+        
       }
 
-      this.annotlist = list;
+      
 
       if (list.length > 0 && !this.isHideAnnotation){
 
@@ -582,9 +601,10 @@ export class NotePanelComponent implements OnInit {
     //this._showLeaderLine(markup);
   }
 
-  onSearch(event): void {
+/*   onSearch(event): void {
     this._processList(this.rxCoreService.getGuiMarkupList());
   }
+ */
 
   onSortFieldChanged(event): void {
     this.sortByField = event.value;
@@ -1060,5 +1080,217 @@ export class NotePanelComponent implements OnInit {
     event?.stopPropagation();
   }
 
+  private _updateMarkupDisplay(markupList: any[], filterFn: (markup: any) => boolean, onoff: boolean) {
+
+
+    if (!markupList) return;
+    for (const markup of markupList) {
+      if (filterFn(markup)) {
+        markup.setdisplay(onoff);
+        
+      }
+    }
+    RXCore.markUpRedraw();
+    this._processList(markupList);
+  }
+
+
+  /* onShowAnnotations(onoff: boolean) {
+    const markupList = this.rxCoreService.getGuiMarkupList();
+    this.showAnnotations = onoff;
+    if(!markupList) return;
+    for (const markupItem of markupList) {
+      if (
+        !(
+          markupItem.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+          (markupItem.type === MARKUP_TYPES.MEASURE.AREA.type &&
+            markupItem.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
+          (markupItem.type === MARKUP_TYPES.MEASURE.PATH.type &&
+            markupItem.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
+          (markupItem.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
+            markupItem.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType) ||
+          markupItem.type === MARKUP_TYPES.SIGNATURE.type
+        )
+      )
+        markupItem.setdisplay(onoff);
+    }
+    this._processList(markupList);
+  } */
+
+  onShowAnnotations(onoff: boolean) {
+    const markupList = this.rxCoreService.getGuiMarkupList();
+    this.showAnnotations = onoff;
+    this.showEllipse = onoff;
+    this.showFreehand = onoff;
+    this.showFreeText = onoff;
+    this.showLine = onoff;
+    this.showRectangle = onoff;
+    this.showStamp = onoff;
+    this._updateMarkupDisplay(
+      markupList,
+      (markup) => !(
+        markup.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+        (markup.type === MARKUP_TYPES.MEASURE.AREA.type &&
+          markup.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
+        (markup.type === MARKUP_TYPES.MEASURE.PATH.type &&
+          markup.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
+        (markup.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
+          markup.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType) ||
+        markup.type === MARKUP_TYPES.SIGNATURE.type
+      ),
+      onoff
+    );
+  }
+
+  onShowMeasurements(onoff: boolean) {
+    const markupList = this.rxCoreService.getGuiMarkupList();
+    this.showMeasurements = onoff;
+    this._updateMarkupDisplay(
+      markupList,
+      (markup) =>
+        markup.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+        (markup.type === MARKUP_TYPES.MEASURE.AREA.type &&
+          markup.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
+        (markup.type === MARKUP_TYPES.MEASURE.PATH.type &&
+          markup.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
+        (markup.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
+          markup.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType),
+      onoff
+    );
+  }
+
+
+  /* onShowMarkups(onoff: boolean) {
+    const markupList = this.rxCoreService.getGuiMarkupList();
+    this.showMarkups = onoff;
+    if(!markupList) return;
+    for (const markupItem of markupList) {
+      if (
+          markupItem.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+          (markupItem.type === MARKUP_TYPES.MEASURE.AREA.type &&
+            markupItem.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
+          (markupItem.type === MARKUP_TYPES.MEASURE.PATH.type &&
+            markupItem.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
+          (markupItem.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
+            markupItem.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)
+      )
+        markupItem.setdisplay(onoff);
+    }
+    this._processList(markupList);
+  } */
+
+  onShowSignatures(onoff: boolean) {
+    const markupList = this.rxCoreService.getGuiMarkupList();
+    this.showSignatures = onoff;
+    if(!markupList) return;
+    for (const markupItem of markupList) {
+      if (markupItem.type === MARKUP_TYPES.SIGNATURE.type)
+        markupItem.setdisplay(onoff);
+    }
+    this._processList(markupList);
+  }
+
+  onShowAll(onoff: boolean) {
+    this.showAll = onoff;
+    this.onShowAnnotations(onoff);
+    this.onShowMeasurements(onoff);
+    this.onShowSignatures(onoff);
+  }
+
+  onShowEllipse($event: any) {
+    this.showEllipse = $event.target.checked;
+    this._updateMarkupDisplay(
+      this.rxCoreService.getGuiMarkupList(),
+      (markup) => markup.type === MARKUP_TYPES.SHAPE.ELLIPSE.type,
+      $event.target.checked
+    );
+  }
+
+  onShowFreehand($event: any) {
+    this.showFreehand = $event.target.checked;
+    this._updateMarkupDisplay(
+      this.rxCoreService.getGuiMarkupList(),
+      (markup) => markup.type === MARKUP_TYPES.PAINT.FREEHAND.type && 
+                  markup.subtype === MARKUP_TYPES.PAINT.FREEHAND.subType,
+      $event.target.checked
+    );
+  }
+
+  onShowFreeText($event: any) {
+    this.showFreeText = $event.target.checked;
+    this._updateMarkupDisplay(
+      this.rxCoreService.getGuiMarkupList(),
+      (markup) => markup.type === MARKUP_TYPES.TEXT.type,
+      $event.target.checked
+    );
+  }
+
+  onShowLine($event: any) {
+    this.showLine = $event.target.checked;
+    this._updateMarkupDisplay(
+      this.rxCoreService.getGuiMarkupList(),
+      (markup) => markup.type === MARKUP_TYPES.PAINT.POLYLINE.type && 
+                  markup.subtype === MARKUP_TYPES.PAINT.POLYLINE.subType,
+      $event.target.checked
+    );
+  }
+
+  onShowRectangle($event: any) {
+    this.showRectangle = $event.target.checked;
+    this._updateMarkupDisplay(
+      this.rxCoreService.getGuiMarkupList(),
+      (markup) => markup.type === MARKUP_TYPES.SHAPE.RECTANGLE.type && 
+                  markup.subtype === MARKUP_TYPES.SHAPE.RECTANGLE.subType,
+      $event.target.checked
+    );
+  }
+
+  onShowStamp($event: any) {
+    this.showStamp = $event.target.checked;
+    this._updateMarkupDisplay(
+      this.rxCoreService.getGuiMarkupList(),
+      (markup) => markup.type === MARKUP_TYPES.STAMP.type && 
+                  markup.subtype === MARKUP_TYPES.STAMP.subType,
+      $event.target.checked
+    );
+  }
+
+  calcAnnotationCount() {
+    const markupList = this.rxCoreService.getGuiMarkupList();
+    return markupList.filter(markup => 
+      !(
+        markup.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+        (markup.type === MARKUP_TYPES.MEASURE.AREA.type &&
+          markup.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
+        (markup.type === MARKUP_TYPES.MEASURE.PATH.type &&
+          markup.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
+        (markup.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
+          markup.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType) ||
+        markup.type === MARKUP_TYPES.SIGNATURE.type
+      )
+    ).length;
+  }
+
+  calcMeasurementsCount() {
+    const markupList = this.rxCoreService.getGuiMarkupList();
+    return markupList.filter(markup => 
+        markup.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+        (markup.type === MARKUP_TYPES.MEASURE.AREA.type &&
+          markup.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
+        (markup.type === MARKUP_TYPES.MEASURE.PATH.type &&
+          markup.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
+        (markup.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
+          markup.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)
+    ).length;
+  }
+
+  calcSignaturesCount() {
+    const markupList = this.rxCoreService.getGuiMarkupList();
+    return markupList.filter(markup => markup.type === MARKUP_TYPES.SIGNATURE.type).length;
+  }
+
+  calcAllCount() {
+    return this.calcAnnotationCount() + this.calcMeasurementsCount() + this.calcSignaturesCount();
+  }
 
 }

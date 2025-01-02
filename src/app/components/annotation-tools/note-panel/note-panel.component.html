@@ -1,12 +1,12 @@
 <rx-panel
   *ngIf="visible"
-  [title]="'Comments (' + GetCommentLength() + ')'"
+  [title]="'Annotations and Measurements'"
   (onClose)="onClose()"
   [draggable]="false"
 >
   <div class="note-panel-container">
     <div class="header-section">
-      <div class="search">
+      <!-- <div class="search">
         <img src="/assets/images/search-ico.svg" />
         <input
           type="text"
@@ -14,6 +14,27 @@
           [(ngModel)]="search"
           (keyup)="onSearch($event)"
         />
+      </div> -->
+      <div class="switch-container">
+        <!-- <h5>Show/Hide</h5> -->
+        <div class="switch-all">
+          <rx-switch [checked]="showAll" (change)="onShowAll($event)"></rx-switch>
+          <span>Show/Hide All ({{ calcAllCount() }})</span>
+        </div>
+        <div class="switch-group">
+          <div>
+            <rx-switch [checked]="showAnnotations" (change)="onShowAnnotations($event)"></rx-switch>
+            <span>Annotations ({{ calcAnnotationCount() }})</span>
+          </div>
+          <div>
+            <rx-switch [checked]="showMeasurements" (change)="onShowMeasurements($event)"></rx-switch>
+            <span>Measurements ({{ calcMeasurementsCount() }})</span>
+          </div>
+          <div>
+            <rx-switch [checked]="showSignatures" (change)="onShowSignatures($event)"></rx-switch>
+            <span>Signatures ({{ calcSignaturesCount() }})</span>
+          </div>
+        </div>
       </div>
       <div class="sort">
         <span>Sort:</span>
@@ -60,6 +81,35 @@
                 (valueChange)="onPageChange($event)"
               >
               </rx-dropdown>
+              <div class="filters-type">
+                <div class="type-item">
+                  <input type="checkbox" [checked]="showEllipse" (change)="onShowEllipse($event)" />
+                  <span>Ellipse</span>
+                </div>
+                <div class="type-item">
+                  <input type="checkbox" [checked]="showFreehand" (change)="onShowFreehand($event)" />
+                  <span>Freehand</span>
+                </div>
+                <div class="type-item">
+                  <input type="checkbox" [checked]="showFreeText" (change)="onShowFreeText($event)" />
+                  <span>Free Text</span>
+                </div>
+              </div>
+
+              <div class="filters-type">
+                <div class="type-item">
+                  <input type="checkbox" [checked]="showLine" (change)="onShowLine($event)" />
+                  <span>Line</span>
+                </div>
+                <div class="type-item">
+                  <input type="checkbox" [checked]="showRectangle" (change)="onShowRectangle($event)" />
+                  <span>Rectangle</span>
+                </div>
+                <div class="type-item">
+                  <input type="checkbox" [checked]="showStamp" (change)="onShowStamp($event)" />
+                  <span>Stamp</span>
+                </div>
+              </div>
             </div>
           </div>
           <div class="filters-footer">
@@ -106,8 +156,7 @@
                               <div class="date-and-time">
                                 {{ item.createdStr }}
                               </div>
-                              <div
-                                class="comments-count">
+                              <div class="comments-count">
                                 <img src="/assets/images/comment-ico.svg" />{{
                                   item.GetComments().length
                                 }}

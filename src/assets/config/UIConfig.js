@@ -14,9 +14,9 @@ var UIConfig = (function() {
                 "canSignature": true,
                 "canConsolidate": true,
                 "convertPDFAnnots" : false,
+                "createPDFAnnotproxy" : false,
                 "canLogin" : false,
                 "showmarkupZoom" : false,
-                "showAnnotSwitch" : false,
                 "logoUrl": "/assets/images/logo.svg"
             
         },

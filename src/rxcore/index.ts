@@ -348,6 +348,10 @@ export class RXCore {
         RxCore.convertPDFAnnots(onOff);
     }
 
+    public static usePDFAnnotProxy(onOff: boolean | undefined): void {
+        RxCore.usePDFAnnotProxy(onOff);
+    }
+
 
     public static pastePage(pasteId: number): void {
         RxCore.pastePage(pasteId)
@@ -651,6 +655,14 @@ export class RXCore {
         RxCore.lockMarkup(onoff);
     }
  */
+
+    //RxCore.restoreCameraByName
+
+    public static restoreCameraByName(cameraname: string): void {
+        RxCore.restoreCameraByName(cameraname);
+    }
+
+
     public static singlePageScrollPan(onoff: boolean): void {
         RxCore.singlePageScrollPan(onoff);
     }
@@ -863,6 +875,12 @@ export class RXCore {
     public static onGuiMarkupJSON(callback: (list: String) => void): void {
         RxCore.GUI_MarkuplistJSON.connect(callback);
     }
+
+    public static onGui3DCameraSave(callback: (camera: any, fileActive : boolean) => void): void {
+        RxCore.GUI_3DCameraSave.connect(callback);
+
+    }
+
 
 
     /*public static onGuiMarkupPaths(callback: (list: Array<any>) => void): void {

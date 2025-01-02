@@ -29,6 +29,7 @@ export class AppComponent implements AfterViewInit {
   isVisible: boolean = true;
   followLink: boolean = false;
   convertPDFAnnots : boolean | undefined = false;
+  createPDFAnnotproxy : boolean | undefined = false;
   eventUploadFile: boolean = false;
   lists: any[] = [];
   state: any;
@@ -54,6 +55,7 @@ export class AppComponent implements AfterViewInit {
     this.guiConfig$.subscribe(config => {
       this.guiConfig = config;
       this.convertPDFAnnots = this.guiConfig.convertPDFAnnots;
+      this.createPDFAnnotproxy = this.guiConfig.createPDFAnnotproxy;
 
     });
 
@@ -78,6 +80,8 @@ export class AppComponent implements AfterViewInit {
     });*/
 
     RXCore.convertPDFAnnots(this.convertPDFAnnots);
+    RXCore.usePDFAnnotProxy(this.createPDFAnnotproxy);
+    
 
     let JSNObj = [
       {
@@ -268,14 +272,17 @@ export class AppComponent implements AfterViewInit {
     });
 
     RXCore.onGuiMarkupList(list => {
+
+      if (list){
+        this.rxCoreService.setGuiMarkupList(list);
+        this.lists = list?.filter(markup => markup.type != MARKUP_TYPES.SIGNATURE.type && markup.subtype != MARKUP_TYPES.SIGNATURE.subType);
+        this.lists?.forEach(list => {
+          setTimeout(() => {
+            list.rectangle = { x: list.x + list.w - 20, y: list.y - 20 };
+          }, 100);
+        });
+      }
       
-      this.rxCoreService.setGuiMarkupList(list);
-      this.lists = list?.filter(markup => markup.type != MARKUP_TYPES.SIGNATURE.type && markup.subtype != MARKUP_TYPES.SIGNATURE.subType);
-      this.lists?.forEach(list => {
-        setTimeout(() => {
-          list.rectangle = { x: list.x + list.w - 20, y: list.y - 20 };
-        }, 100);
-      });
     });
 
     /*RXCore.onGuiMarkupPaths((pathlist) => {
@@ -345,6 +352,15 @@ export class AppComponent implements AfterViewInit {
 
     RXCore.onGuiZoomUpdate((zoomparams, type) => { 
       this.rxCoreService.guiOnZoomUpdate.next({zoomparams, type});
+    });
+
+    RXCore.onGui3DCameraSave((camera, fileActive) => {
+
+      if(fileActive){
+        RXCore.restoreCameraByName(camera.name);
+
+      }
+
     });
 
     /*RXCore.onGuiUpload((upload :any) =>{

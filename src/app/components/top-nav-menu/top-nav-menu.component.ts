@@ -54,8 +54,7 @@ export class TopNavMenuComponent implements OnInit {
   actionType: ActionType = "None";
   private guiOnNoteSelected: Subscription;
   currentScaleValue: string;
-  annotSwitch: boolean = false;
-
+  
   constructor(
     private readonly fileGaleryService: FileGaleryService,
     private readonly rxCoreService: RxCoreService,
@@ -407,6 +406,9 @@ export class TopNavMenuComponent implements OnInit {
       this.burgerOpened = false;
       //RXCore.exportPDF();
       RXCore.uploadPDF();
+      //var szURL = "http://myserver.somedomain.com/mypdfhandlingapp?documentid";
+      //RXCore.uploadPDFCustom(szURL);
+
     }
   }
 
@@ -517,8 +519,5 @@ export class TopNavMenuComponent implements OnInit {
     this.guiOnNoteSelected.unsubscribe();
   }
 
-  onAnnotChange(onoff: boolean): void {
-    this.onModeChange(this.options[onoff ? 2 : 1]);
-  }
 
 }
