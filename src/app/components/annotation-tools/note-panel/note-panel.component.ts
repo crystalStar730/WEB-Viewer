@@ -661,7 +661,10 @@ export class NotePanelComponent implements OnInit {
           signature: markup.signature,
           value: this.note[markup.markupnumber]
         };*/
-        markup.AddComment(markup.comments.length, markup.signature, this.note[markup.markupnumber]);
+
+        let sign = RXCore.getSignature();
+
+        markup.AddComment(markup.comments.length, sign, this.note[markup.markupnumber]);
         //markup.comments.push(commentsObj);
       }
 

@@ -630,6 +630,10 @@ export class RXCore {
         return RxCore.getReadOnly();
     }
 
+    public static getSignature(): string {
+        return RxCore.GUI_Users.getSignature();
+    }
+
     public static getCanChangeSign(): boolean {
         return RxCore.GUI_Users.getCanChangeSign();
     }
