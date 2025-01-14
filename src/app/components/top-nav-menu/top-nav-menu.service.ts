@@ -22,4 +22,11 @@ export class TopNavMenuService {
   public openModalPrint: Subject<void> = new Subject<void>();
   public openModalPrint$: Observable<void> = this.openModalPrint.asObservable();
 
+  private fileLength: Subject<number> = new Subject<number>();
+  public fileLength$: Observable<number> = this.fileLength.asObservable();
+  setFileLength(length: number) {
+    this.fileLength.next(length);
+  }
+
+
 }

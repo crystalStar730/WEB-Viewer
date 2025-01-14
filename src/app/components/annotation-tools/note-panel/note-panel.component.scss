@@ -449,15 +449,18 @@
       color: $main;
     }
     .filters-type {
-      display: flex;
-      gap: 8px;
-      font-size: 10px;
+      display: grid;
+      grid-gap: 5px 5px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
 
       .type-item {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 3px;
         flex: 1;
+        span {
+          font-size: 10px;
+        }
       }
     }
 

@@ -54,6 +54,7 @@ export class TopNavMenuComponent implements OnInit {
   actionType: ActionType = "None";
   private guiOnNoteSelected: Subscription;
   currentScaleValue: string;
+  fileLength: number = 0;
   
   constructor(
     private readonly fileGaleryService: FileGaleryService,
@@ -149,6 +150,11 @@ export class TopNavMenuComponent implements OnInit {
         this.currentScaleValue = '';
       }
     });
+
+    this.service.fileLength$.subscribe(length => {
+      this.fileLength = length;
+    });
+
 
   }
 

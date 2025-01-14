@@ -771,12 +771,19 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
         if (foxview.pdfViewer) {
             foxview.pdfViewer.getCurrentPDFDoc().getPageByIndex(pagenum).then(function (page) {
                 var pgindex = page.info.index;
+
+
+
+                console.log(page.info.mediaWidth);
+                console.log(page.info.mediaHeight);
+
                 var ph = foxview.pagestates[pgindex].height;
                 var pw = foxview.pagestates[pgindex].width;
                 //var birdseye = RxCore.getBirdseyeDim(pgindex, foxview.pagestates[pgindex].width, foxview.pagestates[pgindex].height);
 
                 var birdseyeWidth = 350;
                 var birdseyeHeight = 275;
+
 
                 if (pw > ph) {
 
@@ -795,12 +802,11 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
                 var rotate = 0;
 
                 if(rotation == 270 || rotation == 90){
-                    var area = { x: 0, y: 0, width: foxview.pagestates[pgindex].height * scale, height: foxview.pagestates[pgindex].width * scale};
+                    var area = { x: 0, y: 0, width: page.info.mediaHeight * scale, height: page.info.mediaWidth * scale };
                 }else{
-                    area = { x: 0, y: 0, width: foxview.pagestates[pgindex].width * scale, height: foxview.pagestates[pgindex].height * scale };
+                    area = { x: 0, y: 0, width: page.info.mediaWidth * scale, height: page.info.mediaHeight * scale };
                 }
-
-
+                
                 //var area = { x: 0, y: 0, width: foxview.pagestates[pgindex].width * scale, height: foxview.pagestates[pgindex].height * scale };
 
                 var contentsFlags = ["page", "annot"];
@@ -895,7 +901,7 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
 
 
 
-    this.rotatePage = function (pagenum, nrotation){
+    this.rotatePage = function (pagenum, nrotation, callback){
 
         /*Enumerator
             rotation0 	0 degree rotation.
@@ -933,6 +939,16 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
                         // rotation change success
                         //console.log("rotate success");
                         foxview.pagestates[pagenum].rendered = false;
+
+                        if(callback ){
+
+                            if (typeof callback === "function") {
+                                callback(nrotation, pagenum);
+                            }
+
+                        }
+
+
                 });
                 
             });
@@ -985,7 +1001,19 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
                 pdfDoc.importAnnotsFromFDF(blob, true).then(function () {
 
                     pdfDoc.getAnnots().then(function(annotarray){
-                        console.log(annotarray);
+
+                        const newAnnotList = [];
+                        const annotarrayLength = annotarray.length;
+                        for (let i = 0; i < annotarrayLength; ++i) {
+                          const iLength = annotarray[i].length;
+                          for (let j = 0; j < iLength; ++j) {
+                            const type = annotarray[i][j].getType();
+                            if (type === "popup" || type === "link" || type === "widget") continue;
+                            newAnnotList.push(annotarray[i][j]);
+                          }
+                        }
+                        RxCore.foxitAnnotlist(newAnnotList);
+
                     })
                     
                 });
@@ -993,13 +1021,13 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
         }
     };
 
-    this.exportFDF = function () {
+    this.exportFDF = function (filetype) {
 
         if (foxview.pdfViewer) {
             pdfDoc = foxview.pdfViewer.getCurrentPDFDoc(); //.getLayerNodesJson().then(function (layernodes){
 
             if (pdfDoc) {
-                pdfDoc.exportAnnotsToFDF(0, null).then(function (blob) {
+                pdfDoc.exportAnnotsToFDF(filetype, null).then(function (blob) {
 
                     RxCore.exportFDF(blob);
                 });

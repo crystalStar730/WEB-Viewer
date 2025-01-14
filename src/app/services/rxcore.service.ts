@@ -115,6 +115,20 @@ export class RxCoreService {
     this._guiMarkupUnselect.next(markup);
   }
 
+  
+  /*private _guiRotatePage: Subject<{degree: number, pageIndex: number}> = new Subject<{degree: number, pageIndex: number}>();
+  guiRotatePage$: Observable<{degree: number, pageIndex: number}> = this._guiRotatePage.asObservable();
+  public setGuiRotatePage(degree: number, pageIndex: number): void {
+    this._guiRotatePage.next({degree, pageIndex});
+  }*/
+
+  private _guiRotatePage: Subject<{degree: number, pageIndex: number}> = new Subject<{degree: number, pageIndex: number}>();
+  guiRotatePage$: Observable<{degree : number, pageIndex : number}> = this._guiRotatePage.asObservable();
+  public setGuiRotatePage(degree :number, pageIndex : number): void {
+    this._guiRotatePage.next({degree, pageIndex});
+  }
+
+
   private _guiMarkupHover: Subject<{markup: IMarkup, x: number, y: number}> = new Subject<any>();
   guiMarkupHover$: Observable<{markup: IMarkup, x: number, y: number}> = this._guiMarkupHover.asObservable();
   public setGuiMarkupHover(markup, x, y): void {

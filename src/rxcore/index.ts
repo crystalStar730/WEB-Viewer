@@ -129,6 +129,12 @@ export class RXCore {
         RxCore.rotate(cycle, szrotatetool);
     }
 
+    public static rotateThumbnail(pagnumber: number, degree: number): void {
+        RxCore.rotateThumbnail(pagnumber, degree);
+    }
+
+    
+
     public static setPageSize(pageRange: number[][], width: number, height: number) {
         RxCore.setPageSize(pageRange, width, height);
     }
@@ -336,9 +342,6 @@ export class RXCore {
         RxCore.rotateClockwise(pageRange, clockwise)
     }
 
-    public static onRotatePage(callback: Function): void {
-        RxCore.GUI_RotatePage.connect(callback)
-    }
 
     public static copyPage(pageRange: number[][]): void {
         RxCore.copyPage(pageRange)
@@ -844,6 +847,11 @@ export class RXCore {
     public static onGuiReady(callback: Function) {
         RxCore.GUI_Ready.connect(callback);
     }
+
+    public static onRotatePage(callback: Function): void {
+        RxCore.GUI_RotatePage.connect(callback)
+    }
+
 
     public static onGuiState(callback: Function) {
         RxCore.GUI_State.connect(callback);

@@ -5,6 +5,8 @@ import { RxCoreService } from 'src/app/services/rxcore.service';
 import { FileGaleryService } from '../../file-galery/file-galery.service';
 import { BottomToolbarService } from '../../bottom-toolbar/bottom-toolbar.service';
 import { TopNavMenuService } from '../top-nav-menu.service';
+import { AnnotationToolsService } from '../../annotation-tools/annotation-tools.service';
+import { SideNavMenuService } from '../../side-nav-menu/side-nav-menu.service';
 import { GuiMode } from 'src/rxcore/enums/GuiMode';
 import { MeasurePanelService } from '../../annotation-tools/measure-panel/measure-panel.service';
 
@@ -29,7 +31,10 @@ export class OpenedFilesTabsComponent implements OnInit {
     private readonly fileGaleryService: FileGaleryService,
     private readonly bottomToolbarService: BottomToolbarService,
     private readonly compareService: CompareService,
-    private readonly measurePanelService: MeasurePanelService) {}
+    private readonly measurePanelService: MeasurePanelService,
+    private readonly annotationToolsService: AnnotationToolsService,
+    private readonly sideNavMenuService: SideNavMenuService
+    ) {}
 
   private _getOpenFilesList(): Array<any> {
     const hidden = new Set<number>();
@@ -77,6 +82,9 @@ export class OpenedFilesTabsComponent implements OnInit {
     this.compareService.decIndexesAfter(file.index);
 
     this.openedFiles = this._getOpenFilesList();
+
+    this.topNavMenuService.setFileLength(this.openedFiles.length);
+
     if (this.openedFiles.length) {
       const file = this.openedFiles.find(f => !f.hidden);
       if (file) {
@@ -87,6 +95,17 @@ export class OpenedFilesTabsComponent implements OnInit {
       RXCore.hidedisplayCanvas(false);
       this.bottomToolbarService.nextState();
       this.measurePanelService.setMeasureScaleState({visible: false});
+      this.annotationToolsService.setNotePanelState({visible: false});
+      this.annotationToolsService.setMeasurePanelState({visible: false});
+      this.annotationToolsService.setImagePanelState({visible: false});
+      this.annotationToolsService.setLinksPanelState({visible: false});
+      this.annotationToolsService.setSymbolPanelState({visible: false});
+      this.annotationToolsService.setPropertiesPanelState({visible: false});
+      this.annotationToolsService.setMeasurePanelDetailState({visible: false});
+      this.annotationToolsService.setErasePanelState({visible: false});
+      this.annotationToolsService.setContextPopoverState({visible: false});
+      this.sideNavMenuService.toggleSidebar(-1);
+
     }
   }
 
@@ -129,6 +148,7 @@ export class OpenedFilesTabsComponent implements OnInit {
       this.fileGaleryService.closeModal();
       const list = this._getOpenFilesList();
       this.openedFiles = list;
+      this.topNavMenuService.setFileLength(list.length);
       this.handleSelectTab(list[list.length - 1]);
       this.bottomToolbarService.addToStates(this.activeFile.index);
     });

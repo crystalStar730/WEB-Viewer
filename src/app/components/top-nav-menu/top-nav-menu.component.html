@@ -1,6 +1,6 @@
 <nav class="top-nav-menu">
     <img *ngIf="(guiConfig$ | async).logoUrl" class="top-nav-item logo" alt="Rasterex Logo" [src]="(guiConfig$ | async).logoUrl" />
-    <div class="top-nav-item button sidebar" #sidebar>
+    <div class="top-nav-item button sidebar" #sidebar *ngIf="fileLength > 0">
         <div class="dropdown" [class.opened]="sidebarOpened" (click)="handleOpenSidebarMenu()">
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
                 <path fill="currentColor" d="M6.75 1.5a.75.75 0 0 0 0 1.5h4.75A1.5 1.5 0 0 1 13 4.5v7a1.5 1.5 0 0 1-1.5 1.5H6.75a.75.75 0 0 0 0 1.5h4.75a3 3 0 0 0 3-3v-7a3 3 0 0 0-3-3zm3.03 5.97l-2.5-2.5a.75.75 0 0 0-1.06 1.06l1.22 1.22H1.75a.75.75 0 0 0 0 1.5h5.69L6.22 9.97a.75.75 0 1 0 1.06 1.06l2.5-2.5a.75.75 0 0 0 0-1.06"/>
@@ -169,7 +169,7 @@
         <span>{{currentScaleValue}}</span>
     </div>
 
-    <div class="top-nav-item dropdown">
+    <div class="top-nav-item dropdown" *ngIf="fileLength > 0">
         <rx-dropdown [options]="options" [value]="selectedValue" [align]="'right'" [transparent]="false" (valueChange)="onModeChange($event)"></rx-dropdown>
     </div>
     <div *ngIf="isPDF" [ngClass]="{'selected': isActionSelected && actionType === 'Search'}" class="tooltip Comments-icon"
@@ -181,7 +181,8 @@
         </svg>
         <span class="tooltip-text tooltip-bottom">Search</span>
     </div>
-    <div [ngClass]="{'selected': isActionSelected && actionType === 'Comment'}" class="tooltip Comments-icon" (click)="onCommentPanelSelect()">
+    <div *ngIf="fileLength > 0" [ngClass]="{'selected': isActionSelected && actionType === 'Comment'}" class="tooltip Comments-icon" (click)="onCommentPanelSelect()">
+    
         <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="M21.9788 22C21.7453 22 21.5156 21.9177 21.3268 21.7579L18.3639 19.2524H6.01897C5.45703 19.2527 5 18.7916 5 18.2246V6.02814C5 5.46115 5.45703 5 6.01897 5H21.9813C22.543 5.00028 23 5.46143 23 6.02814V20.9702C23 21.374 22.7747 21.7313 22.4119 21.9018C22.2724 21.9679 22.1248 22 21.9788 22ZM6.01897 6.02814V18.2243H18.5492C18.669 18.2243 18.7846 18.2668 18.8766 18.3443L21.9816 20.9699L21.981 6.02814H6.01897ZM13.0435 9.71987C13.0435 9.43581 12.8154 9.20594 12.5341 9.20594H9.03341C8.75187 9.20594 8.52406 9.43609 8.52406 9.71987C8.52406 10.0037 8.75216 10.2338 9.03341 10.2338H12.5341C12.8157 10.2341 13.0435 10.0039 13.0435 9.71987ZM19.4759 12.1263C19.4759 11.8423 19.2478 11.6124 18.9666 11.6124H9.03341C8.75187 11.6124 8.52406 11.8426 8.52406 12.1263C8.52406 12.4101 8.75216 12.6403 9.03341 12.6403H18.9666C19.2478 12.6406 19.4759 12.4104 19.4759 12.1263ZM19.4759 14.5328C19.4759 14.249 19.2478 14.0189 18.9666 14.0189H9.03341C8.75187 14.0189 8.52406 14.249 8.52406 14.5328C8.52406 14.8166 8.75216 15.0468 9.03341 15.0468H18.9666C19.2478 15.047 19.4759 14.8166 19.4759 14.5328Z"

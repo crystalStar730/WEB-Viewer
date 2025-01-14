@@ -31,6 +31,9 @@ export class NotePanelComponent implements OnInit {
   panelwidth : number = 300;
 
   guiConfig$ = this.rxCoreService.guiConfig$;
+  guiRotatePage$ = this.rxCoreService.guiRotatePage$;
+
+
   guiConfig: IGuiConfig | undefined;
 
 
@@ -43,6 +46,7 @@ export class NotePanelComponent implements OnInit {
   markupNoteList: number[] = [];
   noteIndex: number;
   pageNumber: number = -1;
+  pageRotation : number = 0;
   isHideAnnotation: boolean = false;
   pageNumbers: any[] = [];
   //sortByField: 'created' | 'author' = 'created';
@@ -92,14 +96,33 @@ export class NotePanelComponent implements OnInit {
 
   showAnnotations: boolean = true;
   showMeasurements: boolean = true;
-  showSignatures: boolean = true;
   showAll: boolean = true;
-  showEllipse: boolean = true;
-  showFreehand: boolean = true;
-  showFreeText: boolean = true;
-  showLine: boolean = true;
-  showRectangle: boolean = true;
-  showStamp: boolean = true;
+
+  authorFilter: Set<string> = new Set<string>();
+
+  typeFilter = {
+    showText: true,
+    showNote: true,
+    showCallout: true,
+    showRectangle: true,
+    showRoundedRectangle: true,
+    showEllipse: true,
+    showPolygon: true,
+    showCloud: true,
+    showSingleEndArrow: true,
+    showFilledSingleEndArrow: true,
+    showBothEndsArrow: true,
+    showFilledBothEndsArrow: true,
+    showHighlighter: true,
+    showFreehand: true,
+    showPolyline: true,
+    showMeasureLength: true,
+    showMeasureArea: true,
+    showMeasurePath: true,
+    showMeasureRectangle: true,
+    showLink: true,
+    showStamp: true,
+  };
 
   constructor(
     private readonly rxCoreService: RxCoreService,
@@ -176,34 +199,88 @@ export class NotePanelComponent implements OnInit {
         (i.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
           i.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType))
           return this.showMeasurements;
-
-          if(i.type === MARKUP_TYPES.SIGNATURE.type && i.subtype === MARKUP_TYPES.SIGNATURE.subType) {
-            return this.showSignatures;
-          }
-  
-          if(i.type === MARKUP_TYPES.SHAPE.ELLIPSE.type) {
-            return this.showEllipse;
-          }
-  
-          if(i.type === MARKUP_TYPES.PAINT.FREEHAND.type && i.subtype === MARKUP_TYPES.PAINT.FREEHAND.subType) {
-            return this.showFreehand;
-          }
-  
           if(i.type === MARKUP_TYPES.TEXT.type) {
-            return this.showFreeText;
+            return this.typeFilter.showText;
           }
-  
-          if(i.type === MARKUP_TYPES.STAMP.type && i.subtype === MARKUP_TYPES.STAMP.subType) {
-            return this.showStamp;
+
+          if(i.type === MARKUP_TYPES.NOTE.type) {
+            return this.typeFilter.showNote;
+          }
+
+          if(i.type === MARKUP_TYPES.CALLOUT.type) {
+            return this.typeFilter.showCallout;
           }
   
           if(i.type === MARKUP_TYPES.SHAPE.RECTANGLE.type && i.subtype === MARKUP_TYPES.SHAPE.RECTANGLE.subType) {
-            return this.showRectangle;
+            return this.typeFilter.showRectangle;
           }
   
           if(i.type === MARKUP_TYPES.PAINT.POLYLINE.type && i.subtype === MARKUP_TYPES.PAINT.POLYLINE.subType) {
-            return this.showLine;
+            return this.typeFilter.showPolyline;
           }
+
+          if(i.type === MARKUP_TYPES.SHAPE.POLYGON.type && i.subtype === MARKUP_TYPES.SHAPE.POLYGON.subType) {
+            return this.typeFilter.showPolygon;
+          }
+          
+          if(i.type === MARKUP_TYPES.SHAPE.CLOUD.type && i.subtype === MARKUP_TYPES.SHAPE.CLOUD.subtype) {
+            return this.typeFilter.showCloud;
+          }
+
+          if(i.type === MARKUP_TYPES.SHAPE.ROUNDED_RECTANGLE.type && i.subtype === MARKUP_TYPES.SHAPE.ROUNDED_RECTANGLE.subType) {
+            return this.typeFilter.showRoundedRectangle;
+          }
+
+          if(i.type === MARKUP_TYPES.ARROW.SINGLE_END.type && i.subtype === MARKUP_TYPES.ARROW.SINGLE_END.subtype) {
+            return this.typeFilter.showSingleEndArrow;
+          }
+
+          if(i.type === MARKUP_TYPES.ARROW.FILLED_SINGLE_END.type && i.subtype === MARKUP_TYPES.ARROW.FILLED_SINGLE_END.subtype) {
+            return this.typeFilter.showFilledSingleEndArrow;
+          }
+
+          if(i.type === MARKUP_TYPES.ARROW.BOTH_ENDS.type && i.subtype === MARKUP_TYPES.ARROW.BOTH_ENDS.subtype) {
+            return this.typeFilter.showBothEndsArrow;
+          }
+
+          if(i.type === MARKUP_TYPES.PAINT.HIGHLIGHTER.type && i.subtype === MARKUP_TYPES.PAINT.HIGHLIGHTER.subType) {
+            return this.typeFilter.showHighlighter;
+          }
+
+          if(i.type === MARKUP_TYPES.PAINT.FREEHAND.type && i.subtype === MARKUP_TYPES.PAINT.FREEHAND.subType) {
+            return this.typeFilter.showFreehand;
+          }
+
+          if(i.type === MARKUP_TYPES.MEASURE.LENGTH.type) {
+            return this.typeFilter.showMeasureLength;
+          }
+
+          if(i.type === MARKUP_TYPES.MEASURE.AREA.type && i.subtype === MARKUP_TYPES.MEASURE.AREA.subType) {
+            return this.typeFilter.showMeasureArea;
+          }
+
+          if(i.type === MARKUP_TYPES.MEASURE.PATH.type && i.subtype === MARKUP_TYPES.MEASURE.PATH.subType) {
+            return this.typeFilter.showMeasurePath;
+          }
+
+          if(i.type === MARKUP_TYPES.MEASURE.RECTANGLE.type && i.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType) {
+            return this.typeFilter.showMeasureRectangle;
+          }
+
+          if(i.type === MARKUP_TYPES.SHAPE.ELLIPSE.type) {
+            return this.typeFilter.showEllipse;
+          }
+
+          if(i.type === MARKUP_TYPES.LINK.type) {
+            return this.typeFilter.showLink;
+          }
+
+          if(i.type === MARKUP_TYPES.STAMP.type && i.subtype === MARKUP_TYPES.STAMP.subType) {
+            return this.typeFilter.showStamp;
+          }
+
+          
+
 
         return this.showAnnotations;
     })
@@ -236,6 +313,12 @@ export class NotePanelComponent implements OnInit {
             !i.bisTextArrow
           );
         }
+    })
+    .filter((item: any) => {
+      if(this.authorFilter.size > 0) {
+        return this.authorFilter.has(RXCore.getDisplayName(item.signature));
+      }
+      return false;
     })
     .map((item: any) => {
       //item.author = item.title !== '' ? item.title : RXCore.getDisplayName(item.signature);
@@ -441,6 +524,33 @@ export class NotePanelComponent implements OnInit {
       this.guiConfig = config;
     });
 
+    this.guiRotatePage$.subscribe(({degree, pageIndex}) => {
+
+        //this.pageNumber = pageIndex;
+        this.pageRotation = degree;
+
+    });
+
+    /*this.rxCoreService.guiRotatePage$.subscribe((degree,  pageIndex) => {
+      //this.currentPage = state.currentpage;
+
+      if (degree != 0){
+        console.log(degree);
+      }
+
+      if (pageIndex == 0){
+
+      }
+      /*if (this.connectorLine) {
+        //RXCore.unSelectAllMarkup();
+        this.annotationToolsService.hideQuickActionsMenu();
+        this.connectorLine.hide();
+        this._hideLeaderLine();
+      }
+
+    });*/
+
+
 
     this.rxCoreService.guiMarkupList$.subscribe((list = []) => {
       this.createdByFilter = new Set();
@@ -449,6 +559,7 @@ export class NotePanelComponent implements OnInit {
         
       }*/
       this.annotlist = list;
+      this.authorFilter = new Set(this.getUniqueAuthorList());
       
 
       if (this.activeMarkupNumber > 0){
@@ -824,13 +935,15 @@ export class NotePanelComponent implements OnInit {
 
   }
 
-
+  
   private _setPosition(markup: any): void {
     //RXCore.unSelectAllMarkup();
     //this.rxCoreService.setGuiMarkup(markup, {});
     //this.lineConnectorNativElement.style.top = (markup.yscaled + (markup.hscaled / 2) - 10) + 'px';
     //this.lineConnectorNativElement.style.left = (markup.xscaled + markup.wscaled - 5) + 'px';
     //this.DrawConnectorLine(document.getElementById('note-panel-' + this.activeMarkupNumber), this.lineConnectorNativElement);
+
+    
 
     if (markup.bisTextArrow && markup.textBoxConnected != null) {
       markup = markup.textBoxConnected;
@@ -841,13 +954,17 @@ export class NotePanelComponent implements OnInit {
       const hscaled = (markup.hscaled || markup.h) / window.devicePixelRatio;
       const xscaled = (markup.xscaled || markup.x) / window.devicePixelRatio;
       const yscaled = (markup.yscaled || markup.y) / window.devicePixelRatio;
+
+
       let rely = yscaled + (hscaled  * 0.5);
       let absy = yscaled + ((hscaled - yscaled) * 0.5);
+      let absx = xscaled + ((wscaled - xscaled) * 0.5);
 
-      let sidepointabs = {
+      let sidepointabsright = {
         x : wscaled,
         y : absy
       }
+
       
       let sidepointrel = {
         x : xscaled + wscaled,
@@ -866,6 +983,10 @@ export class NotePanelComponent implements OnInit {
       let xright = xscaled;
       let yright = yscaled;
 
+      let xval = xscaled + dx + (wscaled / 2) + 20;
+      let yval = yscaled + dy + (hscaled / 2) + 10;
+
+
 
       switch (markup.type) {
         case MARKUP_TYPES.ERASE.type:
@@ -879,25 +1000,107 @@ export class NotePanelComponent implements OnInit {
               p = point;
             }
           }
+
+
+          //let absy = yscaled + ((hscaled - yscaled) * 0.5);
+          //let absx = xscaled + ((wscaled - xscaled) * 0.5);
+    
+          /*let sidepointabsright = {
+            x : wscaled,
+            y : absy
+          }*/
+    
+
+          xval = sidepointabsright.x;
+          yval = sidepointabsright.y;
+
+
+          if(this.pageRotation != 0){
+            let rotpoint1 = markup.getrotatedPoint(xscaled, yscaled);
+            let rotpoint2 = markup.getrotatedPoint(absx, hscaled);
+            let rotpoint3 = markup.getrotatedPoint(absx, yscaled);
+            let rotpoint4 = markup.getrotatedPoint(xscaled, absy);
+  
+            if (this.pageRotation == 90){
+              xval = rotpoint3.x;
+              yval = rotpoint3.y;
+            }
+  
+            if (this.pageRotation == 180){
+              xval = rotpoint4.x;
+              yval = rotpoint4.y;
+            }
+
+            if (this.pageRotation == 270){
+              xval = rotpoint2.x;
+              yval = rotpoint2.y;
+            }
+       
+  
+          }
+    
+
           this.rectangle = {
             //x: (p.x / window.devicePixelRatio) - (markup.subtype == MARKUP_TYPES.SHAPE.POLYGON.subType ? 26 : 4),
             //y: (p.y / window.devicePixelRatio) - 16,
-            x : sidepointabs.x,
-            y : sidepointabs.y,
+            x : xval,
+            y : yval,
             //x_1: xscaled + wscaled - 20,
             x_1: wscaled - 20,
             y_1: yscaled - 20,
           };
+
+          
+
+
           break;
         }
         case MARKUP_TYPES.NOTE.type:
           dx = (wscaled / 2) - 5 + _dx;
           dy = -10 + _dy;
+
+          //let rely = yscaled + (hscaled  * 0.5);
+          /*let sidepointrel = {
+            x : xscaled + wscaled,
+            y : rely
+          }*/
+
+          
+    
+
+          xval = sidepointrel.x;
+          yval = sidepointrel.y;
+    
+
+          if(this.pageRotation != 0){
+            let rotpoint1 = markup.getrotatedPoint(xscaled, yscaled);
+            let rotpoint2 = markup.getrotatedPoint(xscaled + (wscaled * 0.5), yscaled + hscaled);
+            let rotpoint3 = markup.getrotatedPoint(xscaled + (wscaled * 0.5), yscaled);
+            let rotpoint4 = markup.getrotatedPoint(xscaled, yscaled + (hscaled * 0.5));
+  
+            if (this.pageRotation == 90){
+              xval = rotpoint3.x;
+              yval = rotpoint3.y;
+            }
+  
+            if (this.pageRotation == 180){
+              xval = rotpoint4.x;
+              yval = rotpoint4.y;
+            }
+
+            if (this.pageRotation == 270){
+              xval = rotpoint2.x;
+              yval = rotpoint2.y;
+            }
+       
+  
+          }
+
           this.rectangle = {
             //x: xscaled + dx,
             //y: yscaled + dy,
-            x : sidepointrel.x,
-            y:  sidepointrel.y,
+            x : xval,
+            y:  yval,
             x_1: xscaled + wscaled - 20,
             y_1: yscaled - 20,
           };
@@ -923,12 +1126,58 @@ export class NotePanelComponent implements OnInit {
 
           }
 
+          if(this.pageRotation != 0){
+            let rotpoint1 = markup.getrotatedPoint(xscaled, yscaled);
+            let rotpoint2 = markup.getrotatedPoint(wscaled, hscaled);
+  
+    
+            if (this.pageRotation == 90){
+              if(rotpoint1.x > rotpoint2.x){
+                xright = rotpoint1.x;
+                yright = rotpoint1.y;
+              }else{
+                xright = rotpoint2.x;
+                yright = rotpoint2.y;
+      
+              }
+            }
+  
+            if (this.pageRotation == 180){
+              
+              if(rotpoint1.x > rotpoint2.x){
+                xright = rotpoint1.x;
+                yright = rotpoint1.y;
+              }else{
+                xright = rotpoint2.x;
+                yright = rotpoint2.y;
+      
+              }
+  
+              
+            }
+  
+            if (this.pageRotation == 270){
+              if(rotpoint1.x > rotpoint2.x){
+                xright = rotpoint1.x;
+                yright = rotpoint1.y;
+              }else{
+                xright = rotpoint2.x;
+                yright = rotpoint2.y;
+      
+              }
+            }
+  
+  
+          }
+
           this.rectangle = {
             x: xright,
             y: yright,
             x_1: xscaled + wscaled - 20,
             y_1: yscaled - 20,
           };
+
+
           break;
         case MARKUP_TYPES.MEASURE.LENGTH.type:
 
@@ -940,26 +1189,114 @@ export class NotePanelComponent implements OnInit {
           yright = hscaled;
 
         }
+
+
+        if(this.pageRotation != 0){
+          let rotpoint1 = markup.getrotatedPoint(xscaled, yscaled);
+          let rotpoint2 = markup.getrotatedPoint(wscaled, hscaled);
+
+  
+          if (this.pageRotation == 90){
+            if(rotpoint1.x > rotpoint2.x){
+              xright = rotpoint1.x;
+              yright = rotpoint1.y;
+            }else{
+              xright = rotpoint2.x;
+              yright = rotpoint2.y;
+    
+            }
+          }
+
+          if (this.pageRotation == 180){
+            
+            if(rotpoint1.x > rotpoint2.x){
+              xright = rotpoint1.x;
+              yright = rotpoint1.y;
+            }else{
+              xright = rotpoint2.x;
+              yright = rotpoint2.y;
+    
+            }
+
+            
+          }
+
+          if (this.pageRotation == 270){
+            if(rotpoint1.x > rotpoint2.x){
+              xright = rotpoint1.x;
+              yright = rotpoint1.y;
+            }else{
+              xright = rotpoint2.x;
+              yright = rotpoint2.y;
+    
+            }
+          }
+
+
+        }
+
+
           this.rectangle = {
             x: xright,
             y: yright,
             x_1: xscaled + wscaled - 20,
             y_1: yscaled - 20,
           };
+
+
+
           break;
         default:
+
+
+
           dx = (wscaled / 2) - 24 + _dx;
+
+          xval = xscaled + (wscaled);
+          yval = yscaled + (hscaled / 2);
+
+
+          if(this.pageRotation != 0){
+            let rotpoint1 = markup.getrotatedPoint(xscaled, yscaled);
+            let rotpoint2 = markup.getrotatedPoint(xscaled + (wscaled * 0.5), yscaled + hscaled);
+            let rotpoint3 = markup.getrotatedPoint(xscaled + (wscaled * 0.5), yscaled);
+            let rotpoint4 = markup.getrotatedPoint(xscaled, yscaled + (hscaled * 0.5));
+  
+            if (this.pageRotation == 90){
+              xval = rotpoint3.x;
+              yval = rotpoint3.y;
+            }
+  
+            if (this.pageRotation == 180){
+              xval = rotpoint4.x;
+              yval = rotpoint4.y;
+            }
+
+            if (this.pageRotation == 270){
+              xval = rotpoint2.x;
+              yval = rotpoint2.y;
+            }
+       
+  
+          }
+  
+
+
           this.rectangle = {
 
             /* bugfix 2 */
-            x: xscaled + dx + (wscaled / 2) + 20,
-            y: yscaled + dy + (hscaled / 2) + 10,
+            x: xval,
+            y: yval,
             //x: xscaled + dx,
             //y: yscaled + dy,
             /* bugfix 2 */
             x_1: xscaled + wscaled - 20,
             y_1: yscaled - 20,
           };
+
+
+
+
           break;
       }
 
@@ -980,6 +1317,8 @@ export class NotePanelComponent implements OnInit {
       /* bugfix 2 */
       //this.lineConnectorNativElement.style.top = this.rectangle.y + (hscaled / 2) + 10 + 'px';
       //this.lineConnectorNativElement.style.left = this.rectangle.x + (wscaled / 2) + 20 + 'px';
+
+      
 
       this.lineConnectorNativElement.style.top = this.rectangle.y + 'px';
       this.lineConnectorNativElement.style.left = this.rectangle.x + 'px';
@@ -1123,12 +1462,21 @@ export class NotePanelComponent implements OnInit {
   onShowAnnotations(onoff: boolean) {
     const markupList = this.rxCoreService.getGuiMarkupList();
     this.showAnnotations = onoff;
-    this.showEllipse = onoff;
-    this.showFreehand = onoff;
-    this.showFreeText = onoff;
-    this.showLine = onoff;
-    this.showRectangle = onoff;
-    this.showStamp = onoff;
+    this.typeFilter.showEllipse = onoff;
+    this.typeFilter.showFreehand = onoff;
+    this.typeFilter.showText = onoff;
+    this.typeFilter.showPolyline = onoff;
+    this.typeFilter.showRectangle = onoff;
+    this.typeFilter.showStamp = onoff;
+    this.typeFilter.showNote = onoff;
+    this.typeFilter.showCallout = onoff;
+    this.typeFilter.showLink = onoff;
+    this.typeFilter.showHighlighter = onoff;
+    this.typeFilter.showMeasureLength = onoff;
+    this.typeFilter.showMeasureArea = onoff;
+    this.typeFilter.showMeasurePath = onoff;
+    this.typeFilter.showMeasureRectangle = onoff;
+
     this._updateMarkupDisplay(
       markupList,
       (markup) => !(
@@ -1182,85 +1530,164 @@ export class NotePanelComponent implements OnInit {
     this._processList(markupList);
   } */
 
-  onShowSignatures(onoff: boolean) {
-    const markupList = this.rxCoreService.getGuiMarkupList();
-    this.showSignatures = onoff;
-    if(!markupList) return;
-    for (const markupItem of markupList) {
-      if (markupItem.type === MARKUP_TYPES.SIGNATURE.type)
-        markupItem.setdisplay(onoff);
-    }
-    this._processList(markupList);
-  }
 
   onShowAll(onoff: boolean) {
     this.showAll = onoff;
     this.onShowAnnotations(onoff);
     this.onShowMeasurements(onoff);
-    this.onShowSignatures(onoff);
+
+  }
+
+  private _handleShowMarkup(filterProp: string, event: any, typeCheck: (markup: any) => boolean) {
+    this.typeFilter[filterProp] = event.target.checked;
+    this._updateMarkupDisplay(
+      this.rxCoreService.getGuiMarkupList(),
+      typeCheck,
+      event.target.checked
+    );
   }
 
   onShowEllipse($event: any) {
-    this.showEllipse = $event.target.checked;
-    this._updateMarkupDisplay(
-      this.rxCoreService.getGuiMarkupList(),
-      (markup) => markup.type === MARKUP_TYPES.SHAPE.ELLIPSE.type,
-      $event.target.checked
-    );
+    this._handleShowMarkup('showEllipse', $event, 
+      markup => markup.type === MARKUP_TYPES.SHAPE.ELLIPSE.type);
   }
 
   onShowFreehand($event: any) {
-    this.showFreehand = $event.target.checked;
-    this._updateMarkupDisplay(
-      this.rxCoreService.getGuiMarkupList(),
-      (markup) => markup.type === MARKUP_TYPES.PAINT.FREEHAND.type && 
-                  markup.subtype === MARKUP_TYPES.PAINT.FREEHAND.subType,
-      $event.target.checked
-    );
+    this._handleShowMarkup('showFreehand', $event,
+      markup => markup.type === MARKUP_TYPES.PAINT.FREEHAND.type && 
+                markup.subtype === MARKUP_TYPES.PAINT.FREEHAND.subType);
+
+
+
+
   }
 
-  onShowFreeText($event: any) {
-    this.showFreeText = $event.target.checked;
-    this._updateMarkupDisplay(
-      this.rxCoreService.getGuiMarkupList(),
-      (markup) => markup.type === MARKUP_TYPES.TEXT.type,
-      $event.target.checked
-    );
+  onShowText($event: any) {
+    this._handleShowMarkup('showText', $event,
+      markup => markup.type === MARKUP_TYPES.TEXT.type);
+
+
+
+
   }
 
-  onShowLine($event: any) {
-    this.showLine = $event.target.checked;
-    this._updateMarkupDisplay(
-      this.rxCoreService.getGuiMarkupList(),
-      (markup) => markup.type === MARKUP_TYPES.PAINT.POLYLINE.type && 
-                  markup.subtype === MARKUP_TYPES.PAINT.POLYLINE.subType,
-      $event.target.checked
-    );
+  onShowPolyline($event: any) {
+    this._handleShowMarkup('showPolyline', $event,
+      markup => markup.type === MARKUP_TYPES.PAINT.POLYLINE.type && 
+                markup.subtype === MARKUP_TYPES.PAINT.POLYLINE.subType);
+
+
+
+
   }
 
   onShowRectangle($event: any) {
-    this.showRectangle = $event.target.checked;
-    this._updateMarkupDisplay(
-      this.rxCoreService.getGuiMarkupList(),
-      (markup) => markup.type === MARKUP_TYPES.SHAPE.RECTANGLE.type && 
-                  markup.subtype === MARKUP_TYPES.SHAPE.RECTANGLE.subType,
-      $event.target.checked
-    );
+    this._handleShowMarkup('showRectangle', $event,
+      markup => markup.type === MARKUP_TYPES.SHAPE.RECTANGLE.type && 
+                markup.subtype === MARKUP_TYPES.SHAPE.RECTANGLE.subType);
+
+
+
+
   }
 
   onShowStamp($event: any) {
-    this.showStamp = $event.target.checked;
-    this._updateMarkupDisplay(
-      this.rxCoreService.getGuiMarkupList(),
-      (markup) => markup.type === MARKUP_TYPES.STAMP.type && 
-                  markup.subtype === MARKUP_TYPES.STAMP.subType,
-      $event.target.checked
-    );
+    this._handleShowMarkup('showStamp', $event,
+      markup => markup.type === MARKUP_TYPES.STAMP.type && 
+                markup.subtype === MARKUP_TYPES.STAMP.subType);
   }
 
-  calcAnnotationCount() {
+  onShowNote($event: any) {
+    this._handleShowMarkup('showNote', $event,
+      markup => markup.type === MARKUP_TYPES.NOTE.type);
+  }
+
+  onShowCallout($event: any) {
+    this._handleShowMarkup('showCallout', $event,
+      markup => markup.type === MARKUP_TYPES.CALLOUT.type);
+  }
+
+  onShowLink($event: any) {
+    this._handleShowMarkup('showLink', $event,
+      markup => markup.type === MARKUP_TYPES.LINK.type);
+  }
+
+  onShowHighlighter($event: any) {
+    this._handleShowMarkup('showHighlighter', $event,
+      markup => markup.type === MARKUP_TYPES.PAINT.HIGHLIGHTER.type);
+  }
+
+  onShowMeasureLength($event: any) {
+    this._handleShowMarkup('showMeasureLength', $event,
+      markup => markup.type === MARKUP_TYPES.MEASURE.LENGTH.type);
+  }
+
+  onShowMeasureArea($event: any) {
+    this._handleShowMarkup('showMeasureArea', $event,
+      markup => markup.type === MARKUP_TYPES.MEASURE.AREA.type);
+  }
+
+  onShowMeasurePath($event: any) {
+    this._handleShowMarkup('showMeasurePath', $event,
+      markup => markup.type === MARKUP_TYPES.MEASURE.PATH.type);
+  }
+
+  onShowMeasureRectangle($event: any) {
+    this._handleShowMarkup('showMeasureRectangle', $event,
+      markup => markup.type === MARKUP_TYPES.MEASURE.RECTANGLE.type);
+  }
+  
+  onShowRoundedRectangle($event: any) {
+    this._handleShowMarkup('showRoundedRectangle', $event,
+      markup => markup.type === MARKUP_TYPES.SHAPE.ROUNDED_RECTANGLE.type);
+  }
+
+  onShowPolygon($event: any) {
+    this._handleShowMarkup('showPolygon', $event,
+      markup => markup.type === MARKUP_TYPES.SHAPE.POLYGON.type);
+  }
+
+  onShowCloud($event: any) {
+    this._handleShowMarkup('showCloud', $event,
+      markup => markup.type === MARKUP_TYPES.SHAPE.CLOUD.type);
+  }
+
+  onShowSingleEndArrow($event: any) {
+    this._handleShowMarkup('showSingleEndArrow', $event,
+      markup => markup.type === MARKUP_TYPES.ARROW.SINGLE_END.type);
+  }
+
+  onShowFilledSingleEndArrow($event: any) {
+    this._handleShowMarkup('showFilledSingleEndArrow', $event,
+      markup => markup.type === MARKUP_TYPES.ARROW.FILLED_SINGLE_END.type);
+  }
+
+  onShowBothEndsArrow($event: any) {
+    this._handleShowMarkup('showBothEndsArrow', $event,
+      markup => markup.type === MARKUP_TYPES.ARROW.BOTH_ENDS.type);
+  }
+
+  onShowFilledBothEndsArrow($event: any) {
+    this._handleShowMarkup('showFilledBothEndsArrow', $event,
+      markup => markup.type === MARKUP_TYPES.ARROW.FILLED_BOTH_ENDS.type);
+  }
+
+  onShowFreeHand($event: any) {
+    this._handleShowMarkup('showFreehand', $event,
+      markup => markup.type === MARKUP_TYPES.PAINT.FREEHAND.type);
+  }
+
+  private _calcCount(typeCheck: (markup: any) => boolean): number {
     const markupList = this.rxCoreService.getGuiMarkupList();
-    return markupList.filter(markup => 
+    return markupList.filter(typeCheck).length;
+  }
+
+  
+
+  calcAnnotationCount() {
+
+    return this._calcCount(markup => 
+
       !(
         markup.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
         (markup.type === MARKUP_TYPES.MEASURE.AREA.type &&
@@ -1271,29 +1698,121 @@ export class NotePanelComponent implements OnInit {
           markup.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType) ||
         markup.type === MARKUP_TYPES.SIGNATURE.type
       )
-    ).length;
+    );
+    
   }
 
   calcMeasurementsCount() {
-    const markupList = this.rxCoreService.getGuiMarkupList();
-    return markupList.filter(markup => 
-        markup.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
-        (markup.type === MARKUP_TYPES.MEASURE.AREA.type &&
-          markup.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
-        (markup.type === MARKUP_TYPES.MEASURE.PATH.type &&
-          markup.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
-        (markup.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
-          markup.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)
-    ).length;
+
+    return this._calcCount(markup => 
+
+      markup.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+      (markup.type === MARKUP_TYPES.MEASURE.AREA.type &&
+        markup.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
+      (markup.type === MARKUP_TYPES.MEASURE.PATH.type &&
+        markup.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
+      (markup.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
+        markup.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)
+    );
+
   }
 
-  calcSignaturesCount() {
-    const markupList = this.rxCoreService.getGuiMarkupList();
-    return markupList.filter(markup => markup.type === MARKUP_TYPES.SIGNATURE.type).length;
+  calcTextCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.TEXT.type);
   }
+
+  calcCalloutCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.CALLOUT.type && markup.subtype === MARKUP_TYPES.CALLOUT.subType);
+  }
+
+  calcNoteCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.NOTE.type && markup.subtype === MARKUP_TYPES.NOTE.subType);
+  }
+
+  calcRectangleCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.SHAPE.RECTANGLE.type && markup.subtype === MARKUP_TYPES.SHAPE.RECTANGLE.subType);
+  }
+
+  calcRoundedRectangleCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.SHAPE.ROUNDED_RECTANGLE.type && markup.subtype === MARKUP_TYPES.SHAPE.ROUNDED_RECTANGLE.subType);
+  }
+
+  calcEllipseCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.SHAPE.ELLIPSE.type);
+  }
+
+  calcPolygonCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.SHAPE.POLYGON.type && markup.subtype === MARKUP_TYPES.SHAPE.POLYGON.subType);
+  }
+
+  calcCloudCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.SHAPE.CLOUD.type && markup.subtype === MARKUP_TYPES.SHAPE.CLOUD.subtype);
+  }
+
+  calcSingleEndArrowCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.ARROW.SINGLE_END.type && markup.subtype === MARKUP_TYPES.ARROW.SINGLE_END.subtype);
+  }
+
+  calcFilledSingleEndArrowCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.ARROW.FILLED_SINGLE_END.type && markup.subtype === MARKUP_TYPES.ARROW.FILLED_SINGLE_END.subtype);
+  }
+
+  calcBothEndsArrowCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.ARROW.BOTH_ENDS.type && markup.subtype === MARKUP_TYPES.ARROW.BOTH_ENDS.subtype);
+  }
+
+  calcFilledBothEndsArrowCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.ARROW.FILLED_BOTH_ENDS.type && markup.subtype === MARKUP_TYPES.ARROW.FILLED_BOTH_ENDS.subtype);
+  }
+
+  calcHighlighterCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.PAINT.HIGHLIGHTER.type && markup.subType === MARKUP_TYPES.PAINT.HIGHLIGHTER.subType);
+  }
+
+  calcFreehandCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.PAINT.FREEHAND.type && markup.subType === MARKUP_TYPES.PAINT.FREEHAND.subType);
+  }
+
+  calcPolylineCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.PAINT.POLYLINE.type && markup.subType === MARKUP_TYPES.PAINT.POLYLINE.subType);
+  }
+
+  calcStampCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.STAMP.type && markup.subType === MARKUP_TYPES.STAMP.subType);
+  }
+
+  calcMeasureLengthCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.MEASURE.LENGTH.type);
+  }
+
+  calcMeasureAreaCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.MEASURE.AREA.type && markup.subtype === MARKUP_TYPES.MEASURE.AREA.subType);
+  }
+
+  calcMeasurePathCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.MEASURE.PATH.type && markup.subType === MARKUP_TYPES.MEASURE.PATH.subType);
+  }
+
+  calcMeasureRectangleCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.MEASURE.RECTANGLE.type && markup.subType === MARKUP_TYPES.MEASURE.RECTANGLE.subType);
+  }
+
 
   calcAllCount() {
-    return this.calcAnnotationCount() + this.calcMeasurementsCount() + this.calcSignaturesCount();
+    return this.calcAnnotationCount() + this.calcMeasurementsCount();
+  }
+
+  getUniqueAuthorList() {
+    const markupList = this.rxCoreService.getGuiMarkupList();
+    return [...new Set(markupList.map(markup => RXCore.getDisplayName(markup.signature)))];
+  }
+
+  onAuthorFilterChange(author: string) {
+    if(this.authorFilter.has(author)) {
+      this.authorFilter.delete(author);
+    } else {
+      this.authorFilter.add(author);
+    }
   }
 
 }

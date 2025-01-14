@@ -271,6 +271,11 @@ export class AppComponent implements AfterViewInit {
       this.rxCoreService.setGuiMarkupUnselect(markup);
     });
 
+    RXCore.onRotatePage((degree: number, pageIndex: number) => {
+      this.rxCoreService.setGuiRotatePage(degree, pageIndex);
+
+    });
+
     RXCore.onGuiMarkupList(list => {
 
       if (list){

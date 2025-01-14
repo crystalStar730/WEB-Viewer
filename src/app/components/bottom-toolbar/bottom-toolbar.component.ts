@@ -267,32 +267,45 @@ export class BottomToolbarComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    if (thumbnail.birdseyeobj.rotation == 90 || thumbnail.birdseyeobj.rotation == 270) {
-      this.beWidth = thumbnail.birdseyeobj.birdseye.height;
-      this.beHeight = thumbnail.birdseyeobj.birdseye.width;
-    } else {
+    if(thumbnail.usefoxitthumb){
+
       this.beWidth = thumbnail.birdseyeobj.birdseye.width;
       this.beHeight = thumbnail.birdseyeobj.birdseye.height;
+      
+    }else{
+
+      if (thumbnail.birdseyeobj.rotation == 90 || thumbnail.birdseyeobj.rotation == 270) {
+        this.beWidth = thumbnail.birdseyeobj.birdseye.height;
+        this.beHeight = thumbnail.birdseyeobj.birdseye.width;
+      } else {
+        this.beWidth = thumbnail.birdseyeobj.birdseye.width;
+        this.beHeight = thumbnail.birdseyeobj.birdseye.height;
+      }
+
     }
+
 
     this.birdseyeImage.nativeElement.width = this.birdseyeIndicator.nativeElement.width = this.birdseyeMarkup.nativeElement.width = this.beWidth;
     this.birdseyeImage.nativeElement.height = this.birdseyeIndicator.nativeElement.height = this.birdseyeMarkup.nativeElement.height = this.beHeight;
 
     let offsetx = 0;
     let offsety = 0;
-    
-    if (thumbnail.birdseyeobj.rotation == 90){
-      offsety = -this.beWidth;
-    } else if (thumbnail.birdseyeobj.rotation == 270){
-      offsetx = -this.beHeight;
-      offsety = 0;
-    } else if (thumbnail.birdseyeobj.rotation == 180){
-      offsetx = -this.beWidth;
-      offsety = -this.beHeight;
+
+    if(!thumbnail.usefoxitthumb){
+      if (thumbnail.birdseyeobj.rotation == 90){
+        offsety = -this.beWidth;
+      } else if (thumbnail.birdseyeobj.rotation == 270){
+        offsetx = -this.beHeight;
+        offsety = 0;
+      } else if (thumbnail.birdseyeobj.rotation == 180){
+        offsetx = -this.beWidth;
+        offsety = -this.beHeight;
+      }
     }
+    
 
     if (thumbnail.birdseyeGUIimgctx != null) {
-      if (thumbnail.birdseyeobj.rotation == 0) {
+      if (thumbnail.birdseyeobj.rotation == 0 || thumbnail.usefoxitthumb) {
         thumbnail.birdseyeGUIimgctx.drawImage(thumbnail.birdseyeobj.birdseye, 0,0);
       } else {
         thumbnail.birdseyeGUIimgctx.save();

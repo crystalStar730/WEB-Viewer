@@ -1,3 +1,21 @@
+January 14, 2025
+
+### 1. Thumbnails for all formats will now rotate with the page rotation in the viewer
+### 2. Annotations are now (again) drawn on thumbnails for all file formats.
+### 3. Annotations are now correctly drawn when the thumbnail is rotated.
+### 4. Comment list pointer line should now work for annoations on rotated pages.
+### 5. UI elements that has no effect when no files are open are now hidden on startup.
+### 6. UI elements open should now be hidden, when the last file is closed.
+### 7. Signature switch is removed from comment list.
+### 8. Comment list filter should now reflect the annoations loaded with the current document.
+
+Changes RxCore 
+### 1. New method on markup object getrotatedPoint(x,y). Used for calculating comment pointer line on rotated pages.
+
+Changes to iframefoxit.js
+                        
+### 1. this.getBirdsEye //modiefied to handle rotated PDF page.
+
 January 6, 2025
 
 ### 1. Added new switches in comment list to replace Annotate/measure switch on top toolbar.
