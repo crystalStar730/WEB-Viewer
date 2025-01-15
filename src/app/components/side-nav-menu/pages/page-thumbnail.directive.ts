@@ -14,6 +14,7 @@ export class PageThumbnailDirective implements OnInit {
   //fileFormat : string;
 
   guiRotatePage$ = this.rxCoreService.guiRotatePage$;
+  guiRotateDocument$ = this.rxCoreService.guiRotateDocument$;
 
   constructor(
     private element: ElementRef,
@@ -60,6 +61,12 @@ export class PageThumbnailDirective implements OnInit {
         
         //if (this.subscription) this.subscription.unsubscribe();
       }
+    });
+
+    this.guiRotateDocument$.subscribe(({degree}) => {
+
+      console.log("ROTATED");
+
     });
 
     this.guiRotatePage$.subscribe(({degree, pageIndex}) => {

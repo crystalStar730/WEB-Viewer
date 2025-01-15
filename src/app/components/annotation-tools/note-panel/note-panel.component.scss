@@ -83,7 +83,9 @@
         flex-wrap: wrap;
         font-weight: 600;
         margin-bottom: 8px;
-
+        span {
+          font-size: 14px;
+        }
       }
       .switch-group {
         display: flex;
@@ -97,7 +99,7 @@
           gap: 8px;
 
           span {
-            font-size: 12px;
+            font-size: 10px;
             font-weight: 400;
             color: $main;
           }

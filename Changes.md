@@ -1,3 +1,10 @@
+January 15, 2025
+
+### 1. Comment list and top menu switch now has connected logic to show/hide annotations and measurement respectively.
+### 2. Minor adjustments to comment list UI.
+### 3. Hide annoations button removed as this is now done from comment list.
+
+
 January 14, 2025
 
 ### 1. Thumbnails for all formats will now rotate with the page rotation in the viewer

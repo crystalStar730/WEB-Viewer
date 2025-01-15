@@ -100,5 +100,10 @@ export class AnnotationToolsService {
     this._linkPanelState.next(any);
   }
 
+  private _selectedOption: BehaviorSubject<any> = new BehaviorSubject<any>({});
+  public selectedOption$: Observable<any> = this._selectedOption.asObservable();
+  public setSelectedOption(any): void {
+    this._selectedOption.next(any);
+  }
 
 }

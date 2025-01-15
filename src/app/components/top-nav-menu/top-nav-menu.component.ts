@@ -80,6 +80,7 @@ export class TopNavMenuComponent implements OnInit {
     ];
 
     this.selectedValue = option ? option : this.options[0];
+    this.annotationToolsService.setSelectedOption(this.selectedValue);
   }
 
   ngOnInit(): void {
@@ -210,6 +211,7 @@ export class TopNavMenuComponent implements OnInit {
 
   onModeChange(option: any, broadcast: boolean = true) {
     this.selectedValue = option;
+    this.annotationToolsService.setSelectedOption(option);
 
     if (option.value === 'annotate' || option.value === 'compare' || option.value === 'measure') {
       if (option.value === 'compare') {

@@ -852,6 +852,13 @@ export class RXCore {
         RxCore.GUI_RotatePage.connect(callback)
     }
 
+    //GUI_RotateDocument
+    public static onRotateDocument(callback: Function): void {
+        RxCore.GUI_RotateDocument.connect(callback)
+    }
+
+
+      
 
     public static onGuiState(callback: Function) {
         RxCore.GUI_State.connect(callback);

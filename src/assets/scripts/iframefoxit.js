@@ -899,7 +899,37 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
         link.remove();
     };
 
+    this.rotateDocument = function (nrotation, callback){
 
+        var nfoxrot = 0;
+
+        if (nrotation == 0){nfoxrot = 0;}
+        if (nrotation == 90){nfoxrot = 1;}
+        if (nrotation == 180){nfoxrot = 2;}
+        if (nrotation == 270){nfoxrot = 3;}
+
+        if (foxview.pdfViewer) {
+         
+            foxview.pdfViewer.rotateTo(nrotation).then(function(){
+                //foxview.pagestates[pagenum].rendered = false;
+
+                if(callback ){
+
+                    if (typeof callback === "function") {
+                        callback(nrotation);
+                    }
+
+                }
+
+
+
+            }).catch(function (error) {
+                console.log(error);
+            });
+            
+        }
+
+    };
 
     this.rotatePage = function (pagenum, nrotation, callback){
 

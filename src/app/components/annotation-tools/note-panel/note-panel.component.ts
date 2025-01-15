@@ -191,14 +191,16 @@ export class NotePanelComponent implements OnInit {
     const mergeList = [...list, ...annotList];
     const query = mergeList.filter((i: any) => {
       // Check if markup is a measurement type
-      if(i.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+      /*if(i.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
         (i.type === MARKUP_TYPES.MEASURE.AREA.type &&
           i.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
         (i.type === MARKUP_TYPES.MEASURE.PATH.type &&
           i.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
         (i.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
           i.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType))
-          return this.showMeasurements;
+          return this.showMeasurements;*/
+
+
           if(i.type === MARKUP_TYPES.TEXT.type) {
             return this.typeFilter.showText;
           }
@@ -207,7 +209,7 @@ export class NotePanelComponent implements OnInit {
             return this.typeFilter.showNote;
           }
 
-          if(i.type === MARKUP_TYPES.CALLOUT.type) {
+          if(i.type === MARKUP_TYPES.CALLOUT.type && i.subtype === MARKUP_TYPES.CALLOUT.subType) {
             return this.typeFilter.showCallout;
           }
   
@@ -520,6 +522,24 @@ export class NotePanelComponent implements OnInit {
       this._hideLeaderLine();
     });
 
+
+    this.annotationToolsService.selectedOption$.subscribe(option => {
+      switch(option.label) {
+        case "View":
+          this.onShowAll(false);
+          break;
+        case "Annotate":
+          this.onShowAnnotations(true);
+          this.onShowMeasurements(false);
+          break;
+        case "Measure":
+          this.onShowMeasurements(true);
+          this.onShowAnnotations(false);
+          break;  
+      }
+    });
+
+
     this.guiConfig$.subscribe(config => {
       this.guiConfig = config;
     });
@@ -559,6 +579,9 @@ export class NotePanelComponent implements OnInit {
         
       }*/
       this.annotlist = list;
+
+      this.onShowAll(this.showAll)
+
       this.authorFilter = new Set(this.getUniqueAuthorList());
       
 
@@ -1472,10 +1495,13 @@ export class NotePanelComponent implements OnInit {
     this.typeFilter.showCallout = onoff;
     this.typeFilter.showLink = onoff;
     this.typeFilter.showHighlighter = onoff;
-    this.typeFilter.showMeasureLength = onoff;
-    this.typeFilter.showMeasureArea = onoff;
-    this.typeFilter.showMeasurePath = onoff;
-    this.typeFilter.showMeasureRectangle = onoff;
+
+    this.typeFilter.showSingleEndArrow = onoff;
+    this.typeFilter.showFilledSingleEndArrow = onoff;
+    this.typeFilter.showBothEndsArrow = onoff;
+    this.typeFilter.showFilledBothEndsArrow = onoff;
+
+
 
     this._updateMarkupDisplay(
       markupList,
@@ -1496,6 +1522,11 @@ export class NotePanelComponent implements OnInit {
   onShowMeasurements(onoff: boolean) {
     const markupList = this.rxCoreService.getGuiMarkupList();
     this.showMeasurements = onoff;
+    this.typeFilter.showMeasureLength = onoff;
+    this.typeFilter.showMeasureArea = onoff;
+    this.typeFilter.showMeasurePath = onoff;
+    this.typeFilter.showMeasureRectangle = onoff;
+
     this._updateMarkupDisplay(
       markupList,
       (markup) =>
@@ -1654,27 +1685,27 @@ export class NotePanelComponent implements OnInit {
 
   onShowSingleEndArrow($event: any) {
     this._handleShowMarkup('showSingleEndArrow', $event,
-      markup => markup.type === MARKUP_TYPES.ARROW.SINGLE_END.type);
+      markup => markup.type === MARKUP_TYPES.ARROW.SINGLE_END.type && markup.subtype === MARKUP_TYPES.ARROW.SINGLE_END.subtype);
   }
 
   onShowFilledSingleEndArrow($event: any) {
     this._handleShowMarkup('showFilledSingleEndArrow', $event,
-      markup => markup.type === MARKUP_TYPES.ARROW.FILLED_SINGLE_END.type);
+      markup => markup.type === MARKUP_TYPES.ARROW.FILLED_SINGLE_END.type && markup.subtype === MARKUP_TYPES.ARROW.FILLED_SINGLE_END.subtype);
   }
 
   onShowBothEndsArrow($event: any) {
     this._handleShowMarkup('showBothEndsArrow', $event,
-      markup => markup.type === MARKUP_TYPES.ARROW.BOTH_ENDS.type);
+      markup => markup.type === MARKUP_TYPES.ARROW.BOTH_ENDS.type && markup.subtype === MARKUP_TYPES.ARROW.BOTH_ENDS.subtype);
   }
 
   onShowFilledBothEndsArrow($event: any) {
     this._handleShowMarkup('showFilledBothEndsArrow', $event,
-      markup => markup.type === MARKUP_TYPES.ARROW.FILLED_BOTH_ENDS.type);
+      markup => markup.type === MARKUP_TYPES.ARROW.FILLED_BOTH_ENDS.type && markup.subtype === MARKUP_TYPES.ARROW.FILLED_BOTH_ENDS.subtype);
   }
 
   onShowFreeHand($event: any) {
     this._handleShowMarkup('showFreehand', $event,
-      markup => markup.type === MARKUP_TYPES.PAINT.FREEHAND.type);
+      markup => markup.type === MARKUP_TYPES.PAINT.FREEHAND.type && markup.subtype === MARKUP_TYPES.PAINT.FREEHAND.subType);
   }
 
   private _calcCount(typeCheck: (markup: any) => boolean): number {
@@ -1797,6 +1828,10 @@ export class NotePanelComponent implements OnInit {
     return this._calcCount(markup => markup.type === MARKUP_TYPES.MEASURE.RECTANGLE.type && markup.subType === MARKUP_TYPES.MEASURE.RECTANGLE.subType);
   }
 
+  calcLinkCount() {
+    return this._calcCount(markup => markup.type === MARKUP_TYPES.LINK.type);
+  }
+
 
   calcAllCount() {
     return this.calcAnnotationCount() + this.calcMeasurementsCount();
@@ -1813,6 +1848,7 @@ export class NotePanelComponent implements OnInit {
     } else {
       this.authorFilter.add(author);
     }
+    this._processList(this.rxCoreService.getGuiMarkupList());
   }
 
 }

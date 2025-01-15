@@ -104,6 +104,8 @@ export class OpenedFilesTabsComponent implements OnInit {
       this.annotationToolsService.setMeasurePanelDetailState({visible: false});
       this.annotationToolsService.setErasePanelState({visible: false});
       this.annotationToolsService.setContextPopoverState({visible: false});
+      this.annotationToolsService.hideQuickActionsMenu();
+      this.annotationToolsService.hide();
       this.sideNavMenuService.toggleSidebar(-1);
 
     }

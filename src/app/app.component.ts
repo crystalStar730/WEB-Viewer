@@ -276,6 +276,14 @@ export class AppComponent implements AfterViewInit {
 
     });
 
+    RXCore.onRotateDocument((degree: number) => {
+      this.rxCoreService.setGuiRotateDocument(degree);
+
+    });
+
+
+    
+
     RXCore.onGuiMarkupList(list => {
 
       if (list){
