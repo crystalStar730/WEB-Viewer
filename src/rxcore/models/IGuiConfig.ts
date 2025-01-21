@@ -5,6 +5,7 @@ export interface IGuiConfig {
     convertPDFAnnots?: boolean;
     createPDFAnnotproxy?: boolean;
     showmarkupZoom? : boolean;
+    showAnnotationsOnLoad ? : boolean;
     showAnnotSwitch? : boolean;
     canSignature?: boolean;
     disableImages?: boolean;

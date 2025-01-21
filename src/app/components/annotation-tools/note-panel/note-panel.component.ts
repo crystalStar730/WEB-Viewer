@@ -94,9 +94,11 @@ export class NotePanelComponent implements OnInit {
   ];
   objectType: string | null = null;
 
-  showAnnotations: boolean = true;
-  showMeasurements: boolean = true;
-  showAll: boolean = true;
+  showAnnotations: boolean | undefined = true;
+  showMeasurements: boolean | undefined = true;
+  showAll: boolean | undefined = true;
+  showAnnotationsOnLoad : boolean | undefined = false;
+
 
   authorFilter: Set<string> = new Set<string>();
 
@@ -540,8 +542,25 @@ export class NotePanelComponent implements OnInit {
     });
 
 
+    /*this.guiConfig$.subscribe(config => {
+      this.guiConfig = config;
+      this.convertPDFAnnots = this.guiConfig.convertPDFAnnots;
+      this.createPDFAnnotproxy = this.guiConfig.createPDFAnnotproxy;
+
+    });*/
+
+
     this.guiConfig$.subscribe(config => {
       this.guiConfig = config;
+
+
+      this.showAnnotationsOnLoad = this.guiConfig.showAnnotationsOnLoad;
+
+      this.showAnnotations = this.showAnnotationsOnLoad;
+      this.showMeasurements = this.showAnnotationsOnLoad;
+      this.showAll = this.showAnnotationsOnLoad;
+
+
     });
 
     this.guiRotatePage$.subscribe(({degree, pageIndex}) => {
@@ -580,7 +599,7 @@ export class NotePanelComponent implements OnInit {
       }*/
       this.annotlist = list;
 
-      this.onShowAll(this.showAll)
+      //this.onShowAll(this.showAll)
 
       this.authorFilter = new Set(this.getUniqueAuthorList());
       

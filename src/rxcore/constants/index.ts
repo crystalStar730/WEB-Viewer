@@ -73,7 +73,7 @@ export const MARKUP_TYPES = {
     },
     STAMP: {
         type: 11,
-        subType: 1,
+        subType: 12,
     },
     MEASURE: {
         LENGTH: {

@@ -212,24 +212,31 @@ export class BottomToolbarComponent implements OnInit, AfterViewInit {
         break;
       case 'EXPLODE_3D_DISTANCE':
         RXCore.explode3DDistance(this.distance3dValue);
+        this.state.isActionSelected["EXPLODE_3D_DISTANCE"] = true;
+        this.state.isActionSelected["EXPLODE_3D_MODEL"] = true;
         break;
       case 'TRANSPARENT_3D_MODEL':
         this.state.isActionSelected["EXPLODE_3D_MODEL"] = false;
         break;
       case 'TRANSPARENT_3D_VALUE':
         RXCore.transparency3D(this.transparent3dValue / 100.0);
+        this.state.isActionSelected["TRANSPARENT_3D_MODEL"] = true;
         break;
       case 'CLIPPING_3D_MODEL':
         RXCore.clipping3D(this.state.isActionSelected[action], -1, 0);
         break;
       case 'CLIPPINGX_3D_VALUE':
         RXCore.clipping3D(true, 0, 100 - this.clippingXValue);
+
+        this.state.isActionSelected["CLIPPING_3D_MODEL"] = true;
         break;
       case 'CLIPPINGY_3D_VALUE':
           RXCore.clipping3D(true, 1, 100 - this.clippingYValue);
+          this.state.isActionSelected["CLIPPING_3D_MODEL"] = true;
           break;
       case 'CLIPPINGZ_3D_VALUE':
           RXCore.clipping3D(true, 2, 100 - this.clippingZValue);
+          this.state.isActionSelected["CLIPPING_3D_MODEL"] = true;
           break;
       case 'BIRDSEYE':
         this.setBirdseyeCanvas();

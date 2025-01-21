@@ -17,6 +17,7 @@ var UIConfig = (function() {
                 "createPDFAnnotproxy" : false,
                 "canLogin" : false,
                 "showmarkupZoom" : false,
+                "showAnnotationsOnLoad" : true,
                 "logoUrl": "/assets/images/logo.svg"
             
         },

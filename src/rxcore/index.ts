@@ -595,6 +595,11 @@ export class RXCore {
         RxCore.markupSymbol(onoff);
     }
 
+    public static markupImageStamp(onoff: boolean): void {
+        RxCore.markupImageStamp(onoff);
+    }
+
+
     public static markupinteractiveStamp(onoff: boolean): void {
         RxCore.markupinteractiveStamp(onoff);
     }
@@ -628,6 +633,11 @@ export class RXCore {
     public static markupMeasurePath(onoff: boolean): void {
         RxCore.markupMeasurePath(onoff);
     }
+
+    public static markupDisplayOnload(onoff: boolean | undefined): void {
+        RxCore.markupDisplayOnload(onoff);
+    }
+
 
     public static getReadOnly(): boolean {
         return RxCore.getReadOnly();
@@ -883,6 +893,12 @@ export class RXCore {
     public static onGuiMarkup(callback: Function): void {
         RxCore.GUI_Markup.connect(callback);
     }
+
+    public static onGuiMarkupLoadComplete(callback: (markups : any, fileindex : any, activefile : any)=> void): void {
+        RxCore.GUI_MarkupLoadComplete.connect(callback);
+    }
+
+    
 
     public static onGuiMarkupIndex(callback: Function): void {
         RxCore.GUI_MarkupIndex.connect(callback);

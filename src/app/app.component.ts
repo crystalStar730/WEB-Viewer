@@ -22,7 +22,7 @@ export class AppComponent implements AfterViewInit {
   guiConfig$ = this.rxCoreService.guiConfig$;
   guiConfig: IGuiConfig | undefined;
   title: string = 'rasterex-viewer';
-  uiversion : string = '12.1.0.3'
+  uiversion : string = '12.1.0.4'
   numOpenFiles$ = this.rxCoreService.numOpenedFiles$;
   annotation: any;
   rectangle: any;
@@ -30,6 +30,7 @@ export class AppComponent implements AfterViewInit {
   followLink: boolean = false;
   convertPDFAnnots : boolean | undefined = false;
   createPDFAnnotproxy : boolean | undefined = false;
+  showAnnotationsOnLoad : boolean | undefined = false;
   eventUploadFile: boolean = false;
   lists: any[] = [];
   state: any;
@@ -56,6 +57,8 @@ export class AppComponent implements AfterViewInit {
       this.guiConfig = config;
       this.convertPDFAnnots = this.guiConfig.convertPDFAnnots;
       this.createPDFAnnotproxy = this.guiConfig.createPDFAnnotproxy;
+      this.showAnnotationsOnLoad = this.guiConfig.showAnnotationsOnLoad;
+      RXCore.markupDisplayOnload(this.showAnnotationsOnLoad);
 
     });
 
@@ -97,7 +100,6 @@ export class AppComponent implements AfterViewInit {
     
     
     RXCore.setJSONConfiguration(JSNObj);
-
     RXCore.limitZoomOut(false);
     RXCore.usePanToMarkup(true);
     RXCore.disablewelcome(true);
@@ -146,9 +148,10 @@ export class AppComponent implements AfterViewInit {
         return;
       }*/
 
-      
+            
 
     });
+
 
     RXCore.onGuiFoxitReady((initialDoc: any) => {
 
@@ -292,6 +295,8 @@ export class AppComponent implements AfterViewInit {
         this.lists?.forEach(list => {
           setTimeout(() => {
             list.rectangle = { x: list.x + list.w - 20, y: list.y - 20 };
+
+
           }, 100);
         });
       }

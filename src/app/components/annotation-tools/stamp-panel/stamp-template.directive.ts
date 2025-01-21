@@ -18,7 +18,8 @@ export class StampTemplateDirective {
     const blobUrl = this.svgToBlobUrl(this.svgString);
     this.stampTemplate.src = blobUrl;
 
-    RXCore.markupSymbol(true);
+    //RXCore.markupSymbol(true);
+    RXCore.markupImageStamp(true);
     event.dataTransfer.effectAllowed = "move";
 
     
@@ -57,7 +58,7 @@ export class StampTemplateDirective {
 
   @HostListener('dragend', ['$event'])
   onDragEnd(event: DragEvent): void {
-    RXCore.markupSymbol(false);
+    RXCore.markupImageStamp(false);
   }
 
 }

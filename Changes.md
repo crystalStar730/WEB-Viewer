@@ -1,3 +1,27 @@
+January 21, 2025
+
+### 1. Added new GUIConfig setting showAnnotationsOnLoad, when false no annotations are displayed until the display is turned on using the comment list switches or selecting either the annotation or measure menu.
+### 2. Fixed 3D sliders for cross section, transparency and explode.
+### 3. Fixed a problem with unstable annoation display state that turned off all annotation when clicking in the drawing.
+### 4. UI version is now 12.1.0.4.
+### 5. RxCore version is now 35.5.
+### 6. Image stamps are now type 11 subtype 12.
+
+
+Modfied files
+src\app\app.component.ts
+src\app\components\annotation-tools\annotation-shape-icon\annotation-shape-icon.component.html
+src\app\components\annotation-tools\note-panel\note-panel.component.html
+src\app\components\annotation-tools\note-panel\note-panel.component.ts
+src\app\components\annotation-tools\stamp-panel\stamp-template.directive.ts
+src\app\components\bottom-toolbar\bottom-toolbar.component.ts
+src\assets\config\UIConfig.js
+src\assets\scripts\rxcorefunctions.js
+src\rxcore\constants\index.ts
+src\rxcore\models\IGuiConfig.ts
+src\rxcore\index.ts
+
+
 January 15, 2025
 
 ### 1. Comment list and top menu switch now has connected logic to show/hide annotations and measurement respectively.
