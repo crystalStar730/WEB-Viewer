@@ -15,7 +15,7 @@ var UIConfig = (function() {
                 "canConsolidate": true,
                 "convertPDFAnnots" : false,
                 "createPDFAnnotproxy" : false,
-                "canCollaborate": true,
+                "canCollaborate": false,
                 "canLogin" : false,
                 "showmarkupZoom" : false,
                 "showAnnotationsOnLoad" : true,
