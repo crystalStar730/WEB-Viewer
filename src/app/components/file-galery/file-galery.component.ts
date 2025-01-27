@@ -1,7 +1,9 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { RxCoreService } from '../../services/rxcore.service';
 import { RXCore } from 'src/rxcore';
 import { FileGaleryService } from './file-galery.service';
 import { random } from 'lodash-es';
+import { IGuiConfig } from 'src/rxcore/models/IGuiConfig';
 
 @Component({
   selector: 'rx-file-galery',
@@ -67,6 +69,10 @@ export class FileGaleryComponent implements OnInit {
     }
   ];
 
+  guiConfig$ = this.rxCoreService.guiConfig$;
+  guiConfig: IGuiConfig | undefined;
+  canCollaborate : boolean | undefined = false;
+
   
   selected = this.groups[0];
   leftTabActiveIndex: number = 0;
@@ -77,7 +83,13 @@ export class FileGaleryComponent implements OnInit {
   isUploadFile: boolean = false;
   fileType: string;
 
-  constructor(private readonly fileGaleryService: FileGaleryService) { }
+  constructor(
+    private readonly fileGaleryService: FileGaleryService,
+    private readonly rxCoreService: RxCoreService
+  ) { }
+
+
+  //constructor(private readonly fileGaleryService: FileGaleryService) { }
 
   ngOnInit() {
     this.fileGaleryService.getStatusActiveDocument().subscribe(status => {
@@ -87,6 +99,22 @@ export class FileGaleryComponent implements OnInit {
         this.leftTabActiveIndex = 0;
       }
     });
+
+    this.guiConfig$.subscribe(config => {
+      this.guiConfig = config;
+      this.canCollaborate = this.guiConfig.canCollaborate;
+    });
+
+    // If we can find the roomName in the URL, we will create a collabService
+    // There maybe a better way to open a file, we may refactor this later
+    const parameters = new URLSearchParams(window.location.search);
+    const roomName = parameters.get('roomName');
+    if (this.canCollaborate && roomName) {
+      // don't know why we need to wait for a while, there is console error if we call directly
+      setTimeout(() => {
+        this.handleFileSelect(this.groups[0].items[0]);
+      }, 1000);
+    }
 
     
 

@@ -9,6 +9,9 @@ import { RecentFilesService } from './components/recent-files/recent-files.servi
 import { UserService } from './components/user/user.service';
 import { Title } from '@angular/platform-browser';
 import { IGuiConfig } from 'src/rxcore/models/IGuiConfig';
+import { CollabService } from './services/collab.service';
+
+
 
 
 @Component({
@@ -31,6 +34,7 @@ export class AppComponent implements AfterViewInit {
   convertPDFAnnots : boolean | undefined = false;
   createPDFAnnotproxy : boolean | undefined = false;
   showAnnotationsOnLoad : boolean | undefined = false;
+  canCollaborate : boolean | undefined = false;
   eventUploadFile: boolean = false;
   lists: any[] = [];
   state: any;
@@ -48,6 +52,7 @@ export class AppComponent implements AfterViewInit {
     private readonly fileGaleryService: FileGaleryService,
     private readonly notificationService: NotificationService,
     private readonly userService: UserService,
+    private readonly collabService: CollabService,  
     private titleService:Title) { }
 
   ngOnInit() {
@@ -58,6 +63,7 @@ export class AppComponent implements AfterViewInit {
       this.convertPDFAnnots = this.guiConfig.convertPDFAnnots;
       this.createPDFAnnotproxy = this.guiConfig.createPDFAnnotproxy;
       this.showAnnotationsOnLoad = this.guiConfig.showAnnotationsOnLoad;
+      this.canCollaborate = this.guiConfig.canCollaborate;
       RXCore.markupDisplayOnload(this.showAnnotationsOnLoad);
 
     });
@@ -69,6 +75,19 @@ export class AppComponent implements AfterViewInit {
         this.eventUploadFile = false;
       }
     });
+
+    // if we can find the roomName in the URL, we will create a collabService
+    const parameters = new URLSearchParams(window.location.search);
+    const roomName = parameters.get('roomName');
+    if (this.canCollaborate && roomName) {
+      const user = this.userService.getCurrentUser();
+      const username = user?.username || '';
+      this.collabService.connect(roomName, username);
+      // We need to call openModal() here, so it can call handleFileSelect() in file-galery
+      // TODO: there should be a better logic to open a file!
+      this.fileGaleryService.openModal();
+    }
+    
     
   }
   
@@ -84,14 +103,14 @@ export class AppComponent implements AfterViewInit {
 
     RXCore.convertPDFAnnots(this.convertPDFAnnots);
     RXCore.usePDFAnnotProxy(this.createPDFAnnotproxy);
-    
+
+    const user = this.userService.getCurrentUser();
 
     let JSNObj = [
       {
           Command: "GetConfig",
-          UserName: "Demo",
-          DisplayName : "Demo User"
-          
+          UserName: user?.username || "Demo",
+          DisplayName : user?.displayName || "Demo User"
       }
     ];
 
@@ -214,6 +233,23 @@ export class AppComponent implements AfterViewInit {
             
       this.rxCoreService.guiFileLoadComplete.next();
 
+      this.userService.currentUser$.subscribe((user) => {
+        const username = user?.username || '';
+        if (this.canCollaborate) {
+          this.collabService.setUsername(username);
+        }
+
+        let JSNObj = [
+          {
+              Command: "GetConfig",
+              UserName: user?.username || "Demo",
+              DisplayName : user?.displayName || "Demo User"
+          }
+        ];
+        RXCore.setJSONConfiguration(JSNObj);
+      });
+
+
       // TODO: The settings are effective after the file is loaded completely.
       this.userService.canUpdateAnnotation$.subscribe((canUpdate) => {
         // By setting the markup lock, operations such as dragging the markup with the mouse are prohibited.
@@ -237,6 +273,45 @@ export class AppComponent implements AfterViewInit {
       console.log('RxCore GUI_Markup:', annotation, operation);
       if (annotation !== -1 || this.rxCoreService.lastGuiMarkup.markup !== -1) {
         this.rxCoreService.setGuiMarkup(annotation, operation);
+
+        // If collab feature is enabled, send the markup message to the server
+        // Handle created/deleted here
+
+        if (annotation !== -1 && this.canCollaborate && (operation.created || operation.deleted)) {
+
+          let cs = this.collabService;
+          annotation.getJSONUniqueID(operation).then(function(jsondata){
+
+            //const data = JSON.parse(jsondata);
+            //data.operation = operation;
+            cs.sendMarkupMessage(jsondata, operation);
+
+          });
+
+
+          
+        }
+
+        /*if (annotation !== -1 || this.rxCoreService.lastGuiMarkup.markup !== -1) {
+      if (annotation !== -1) {
+        var ws = this.websocketService;
+
+        annotation.getJSONUniqueID(operation).then(function(jsondata){
+
+          const data = JSON.parse(jsondata);
+
+          data.operation = operation;
+
+          console.log(data.operation);
+
+          ws.broadcastGuiMarkup({ annotation: JSON.stringify(data) });
+
+        });
+
+      }
+      
+    }*/
+
       }
 
     });
@@ -362,6 +437,46 @@ export class AppComponent implements AfterViewInit {
 
     RXCore.onGuiMarkupChanged((annotation, operation) => {
       this.rxCoreService.guiOnMarkupChanged.next({annotation, operation});
+
+      if (annotation !== -1 && this.canCollaborate) {
+
+
+        let cs = this.collabService;
+        annotation.getJSONUniqueID(operation).then(function(jsondata){
+
+          //const data = JSON.parse(jsondata);
+          //data.operation = operation;
+          cs.sendMarkupMessage(jsondata, { modified: true});
+          //this.collabService.sendMarkupMessage(annotation.getJSON(), { modified: true});
+
+        });
+
+
+        
+      }
+
+      /*if (annotation !== -1 || this.rxCoreService.lastGuiMarkup.markup !== -1) {
+      if (annotation !== -1) {
+        var ws = this.websocketService;
+
+        annotation.getJSONUniqueID(operation).then(function(jsondata){
+
+          const data = JSON.parse(jsondata);
+
+          data.operation = operation;
+
+          console.log(data.operation);
+
+          ws.broadcastGuiMarkup({ annotation: JSON.stringify(data) });
+
+        });
+
+      }
+      
+    }*/
+
+
+
     });
 
     RXCore.onGuiPanUpdated((sx, sy, pagerect) => { 
@@ -399,6 +514,8 @@ export class AppComponent implements AfterViewInit {
   
 
   }
+
+
 
   openInitFile(initialDoc){
 
