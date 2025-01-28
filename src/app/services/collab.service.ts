@@ -22,7 +22,7 @@ export interface CollabMessage {
   providedIn: 'root'
 })
 export class CollabService {
-  private apiUrl = 'http://viewserver.rasterex.com:8080/';
+  private apiUrl =  RXCore.Config.apiBaseURL;
   //private apiUrl = 'http://localhost:8080/';
   private ROOM_MESSAGE = "roomMessage";
 

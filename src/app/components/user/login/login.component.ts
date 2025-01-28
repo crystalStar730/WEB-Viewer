@@ -22,6 +22,10 @@ export class LoginComponent implements OnInit {
   loginUsername = '';
   loginPassword = '';
 
+  useBuildinUser: boolean;
+  selectedBuildinUsername: string = '';
+
+
   constructor (
     private readonly rxCoreService: RxCoreService,
     private readonly userService: UserService,
@@ -34,6 +38,12 @@ export class LoginComponent implements OnInit {
 
   openLoginDialog() {
     this.loginPanelOpened = true;
+    // Use buildin user by default, and set 'bob' the selected option, and, fill in password
+    this.useBuildinUser = true;
+    this.selectedBuildinUsername = 'bob';
+    this.loginUsername = this.selectedBuildinUsername;
+    this.loginPassword = '123456';
+    
   }
 
   closeLoginDialog() {
@@ -97,4 +107,17 @@ export class LoginComponent implements OnInit {
         this.userInfoPanelOpened = false;
       });
   }
+
+  onBuildinUsernameChange() {
+    if (this.selectedBuildinUsername === '') {
+      this.useBuildinUser = false;
+      this.loginUsername = '';
+    } else {
+      this.useBuildinUser = true;
+      this.loginUsername = this.selectedBuildinUsername;
+      this.loginPassword = '123456';
+    }
+  }
+
+
 }

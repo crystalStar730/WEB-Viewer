@@ -1,3 +1,11 @@
+January 28, 2025
+### 1. Back-end URL now stored in rxconfig.js.
+### 2. Added support for new Rx2B format.
+### 3. RxCore verison is now 35.6. (Require updated server side components).
+### 4. Minor fixes for custom stamps.
+### 5. Added drop down for built in demo users in login dialog.
+
+
 January 26, 2025
 
 ### 1. Added document collaboration page, which contains two viewers that opens the same document.

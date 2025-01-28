@@ -10,14 +10,20 @@ export class StampTemplateDirective {
   @HostListener('dragstart', ['$event'])
   onDragStart(event: DragEvent): void {
     if (!event.dataTransfer) return;
+    
+    const newStampTemplate = { ...this.stampTemplate };
 
     if (this.stampTemplate.type === 'image/svg+xml') {
       const svgString = this.replaceDateTimeInSvg(this.convertBlobUrlToSvgString(this.stampTemplate.src));
 
       //console.log(event.dataTransfer.effectAllowed);
       const blobUrl = this.svgToBlobUrl(svgString);
-      this.stampTemplate.src = blobUrl;
-      this.stampTemplate.svgContent = svgString;
+
+      newStampTemplate.src = blobUrl;
+      newStampTemplate.svgContent = svgString;
+
+      //this.stampTemplate.src = blobUrl;
+      //this.stampTemplate.svgContent = svgString;
     }
 
     RXCore.markupImageStamp(true);
@@ -25,7 +31,8 @@ export class StampTemplateDirective {
 
     
 
-    event.dataTransfer.setData('Text', JSON.stringify(this.stampTemplate));
+    //event.dataTransfer.setData('Text', JSON.stringify(this.stampTemplate));
+    event.dataTransfer.setData('Text', JSON.stringify(newStampTemplate));
   }
 
   private svgToBlobUrl(svgContent: string): string {
@@ -51,9 +58,22 @@ export class StampTemplateDirective {
     const currentDate = new Date().toLocaleDateString();
     const currentTime = new Date().toLocaleTimeString();
 
-    const updatedSvgContent = svgContent.replace(/(\d{1,2}\/\d{1,2}\/\d{4} \d{1,2}:\d{2}:\d{2} (AM|PM))/, `${currentDate} ${currentTime}`);
+    //const updatedSvgContent = svgContent.replace(/(\d{1,2}\/\d{1,2}\/\d{4} \d{1,2}:\d{2}:\d{2} (AM|PM))/, `${currentDate} ${currentTime}`);
 
-    return updatedSvgContent;
+    //return updatedSvgContent;
+
+
+    if (svgContent.match(/(\d{4}\/\d{1,2}\/\d{1,2})/)) {
+      svgContent = svgContent.replace(/(\d{4}\/\d{1,2}\/\d{1,2})/, `${currentDate}`);
+    } else {
+      svgContent = svgContent.replace(/(\d{1,2}\/\d{1,2}\/\d{4})/, `${currentDate}`);
+    }
+
+    const updatedTimeContent = svgContent.replace(/(\d{1,2}:\d{2}:\d{2}( )?(AM|PM)?)/, `${currentTime}`);
+
+    return updatedTimeContent;
+
+
   }
 
 
