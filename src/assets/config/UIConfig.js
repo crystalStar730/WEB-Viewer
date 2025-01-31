@@ -16,9 +16,9 @@ var UIConfig = (function() {
                 "convertPDFAnnots" : false,
                 "createPDFAnnotproxy" : false,
                 "canCollaborate": false,
-                "canLogin" : true,
+                "canLogin" : false,
                 "showmarkupZoom" : false,
-                "showAnnotationsOnLoad" : true,
+                "showAnnotationsOnLoad" : false,
                 "localStoreStamp" : true,
                 "logoUrl": "/assets/images/logo.svg"
             

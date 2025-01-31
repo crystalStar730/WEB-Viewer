@@ -5,6 +5,9 @@ import hexRgb from 'hex-rgb';
 @Injectable()
 export class ColorHelper {
     public rgbToHex(color: string): string {
+        if(color == undefined){
+            color = "#FF0000";
+        }
         if (color?.startsWith('#')) return color;
         return `#${rgbHex(color).toUpperCase()}`
     }

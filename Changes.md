@@ -1,3 +1,18 @@
+January 31, 2025
+
+### 1. Minor fixes for annotation move and scale.
+### 2. Fixed login/logout logic to corretly restore default user.
+### 3. Fixed collaboration handling of text box annoations.
+### 4. Updated package.json with added socket.io support.
+### 5. RxCore version is now 35.61.
+
+Modified files
+src\assets\scripts\rxcorefunctions.js
+src\app\app.component.ts
+src\app\services\collab.service.ts
+src\app\helpers\color.helper.ts
+
+
 January 28, 2025
 ### 1. Back-end URL now stored in rxconfig.js.
 ### 2. Added support for new Rx2B format.

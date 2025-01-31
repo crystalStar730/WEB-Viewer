@@ -389,6 +389,27 @@ export class AppComponent implements AfterViewInit {
 
     RXCore.onGuiTextInput((rectangle: any, operation: any) => {
       this.rxCoreService.setGuiTextInput(rectangle, operation);
+
+      if(operation.start){
+        if (operation.markup && this.canCollaborate) {
+
+                    //&& (operation.created || operation.deleted)
+                    let cs = this.collabService;
+                    operation.markup.getJSONUniqueID({ created: true}).then(function(jsondata){
+          
+                      //const data = JSON.parse(jsondata);
+                      //data.operation = operation;
+                      cs.sendMarkupMessage(jsondata, { created: true});
+          
+                    });
+          
+        }
+
+
+      }
+
+
+
     });
 
     RXCore.onGuiVectorLayers((layers) => {
@@ -440,16 +461,48 @@ export class AppComponent implements AfterViewInit {
 
       if (annotation !== -1 && this.canCollaborate) {
 
-
         let cs = this.collabService;
-        annotation.getJSONUniqueID(operation).then(function(jsondata){
+
+        if(annotation.type == 8 && annotation.subtype == 2){
+
+          if(annotation.parent){
+            
+            annotation.parent.getJSONUniqueID({ modified: true}).then(function(jsondata){
+    
+              //const data = JSON.parse(jsondata);
+              //data.operation = { modified: true};
+              //jsondata = JSON.stringify(data);
+              cs.sendMarkupMessage(jsondata, { modified: true});
+              //this.collabService.sendMarkupMessage(annotation.getJSON(), { modified: true});
+    
+            });
+  
+          }
+  
+          
+        }else{
+          
+          annotation.getJSONUniqueID({ modified: true}).then(function(jsondata){
+
+            //const data = JSON.parse(jsondata);
+            //data.operation = { modified: true};
+            //jsondata = JSON.stringify(data);
+            cs.sendMarkupMessage(jsondata, { modified: true});
+            //this.collabService.sendMarkupMessage(annotation.getJSON(), { modified: true});
+
+          });
+        }
+
+        /*let cs = this.collabService;
+        annotation.getJSONUniqueID({ modified: true}).then(function(jsondata){
 
           //const data = JSON.parse(jsondata);
-          //data.operation = operation;
+          //data.operation = { modified: true};
+          //jsondata = JSON.stringify(data);
           cs.sendMarkupMessage(jsondata, { modified: true});
           //this.collabService.sendMarkupMessage(annotation.getJSON(), { modified: true});
 
-        });
+        });*/
 
 
         

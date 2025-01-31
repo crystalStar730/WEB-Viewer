@@ -90,8 +90,8 @@ export class CollabService {
         const annoJson = JSON.parse(annotation);
         if (!annoJson.operation) {
           // Why operation can be null?
-          annoJson.operation = operation;
-          annotation = JSON.stringify(annoJson);
+          //annoJson.operation = operation;
+          //annotation = JSON.stringify(annoJson);
         }
         // It's possible that another user doesn't initialize RXCore yet, so we need to check
         if (RXCore.setUniqueMarkupfromJSON) {
