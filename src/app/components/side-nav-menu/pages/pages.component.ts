@@ -249,20 +249,35 @@ export class PagesComponent implements OnInit {
   onBlurInputCheckString() {
     this.checkString = this.formatRanges(this.checkString);
     this.checkList = this.convertToBooleanArray(this.checkString);
-    this.multiSelect = true;
+    //this.multiSelect = true;
   }
   
   onChangeCheckString(value) {
     this.checkString = this.convertBooleanArrayToString(this.checkList)
   }
   
-  onClickChangeMultiSelectMode() {
+  /*onClickChangeMultiSelectMode() {
     this.multiSelect = !this.multiSelect;
     if(!this.multiSelect) {
       this.checkString = (this.selectedPageIndex + 1).toString();
       this.checkList = this.convertToBooleanArray(this.checkString)
     }
+  }*/
+
+  onClickChangeMultiSelectMode() {
+    this.multiSelect = !this.multiSelect;
+    if(!this.multiSelect) {
+      this.checkList = this.convertToBooleanArray(this.checkString);
+    } else {
+      document.getElementById(`page-${this.checkList.findIndex(item => item)}`)?.scrollIntoView({
+        behavior: "instant",
+        block: "start",
+        inline: "start"
+      });
+      this.selectedPageIndex = this.checkList.findIndex(item => item);
+    }
   }
+
   
   onDrop(event: CdkDragDrop<any[]>) {
     const pageRange: number[][] = [];
@@ -312,6 +327,7 @@ export class PagesComponent implements OnInit {
       block: "start",
       inline: "start"
     });
+    RXCore.gotoPage(this.page - 1);
   }
 
   onPageSelect(pageIndex: number): void {

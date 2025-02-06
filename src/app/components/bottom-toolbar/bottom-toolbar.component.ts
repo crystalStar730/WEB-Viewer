@@ -152,6 +152,12 @@ export class BottomToolbarComponent implements OnInit, AfterViewInit {
         this.state.isActionSelected["ZOOM_WINDOW"] = false;
         RXCore.magnifyGlass(this.state.isActionSelected[action]);
         break;
+      case 'VECTORINFO':
+          this.state.isActionSelected["ZOOM_WINDOW"] = false;
+          RXCore.blockhoverevent(true);
+          RXCore.getVectorEntity(this.state.isActionSelected[action]);
+          break;
+
       case 'ZOOM_IN':
         RXCore.zoomIn();
         break;

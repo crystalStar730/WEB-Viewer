@@ -143,6 +143,34 @@ export class AppComponent implements AfterViewInit {
 
     RXCore.initialize({ offsetWidth: 0, offsetHeight: 0});
 
+    RXCore.onGui2DEntityInfoScreen((vectorinfo : any, screenmouse :any, pathindex : any) => {
+      
+      if(pathindex.index){
+
+
+        if(vectorinfo[1].type != undefined){
+          var type = vectorinfo[1].type;
+
+          console.log("handle" ,vectorinfo[1].handleLow);
+          
+  
+
+        }else if(vectorinfo[0].type != undefined){
+          type = vectorinfo[0].type;
+
+          console.log("handle" ,vectorinfo[0].handleLow);
+
+
+        }
+        console.log("block", vectorinfo[0]);
+
+      
+      }else{
+        console.log("nothing found");
+      }
+      
+
+    });
 
     RXCore.onGuiReady((initialDoc: any) => {
 

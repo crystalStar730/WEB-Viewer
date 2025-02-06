@@ -1,3 +1,24 @@
+February 6, 2025
+
+### 1. Fixed page range selection instability.
+### 2. Fixed thumbnail refresh issue.
+### 2. Page search in thumbnails panel now also update the page in main view.
+
+Modified files
+src\assets\scripts\iframefoxit.js
+src\app\components\side-nav-menu\pages\pages.component.ts
+
+
+
+February 3, 2025
+
+### 1. Fixed a bug that date in stamp doesn't update properly.
+### 2. When creating a stamp with username, dynamically replace with display username if a user logged in.
+
+Modified files
+src\app\components\annotation-tools\stamp-panel\stamp-template.directive.ts
+
+
 January 31, 2025
 
 ### 1. Minor fixes for annotation move and scale.

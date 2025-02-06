@@ -20,6 +20,13 @@ export class RXCore {
         RxCore.birdseyetool();
     }
 
+    public static blockhoverevent(onoff : boolean): void {
+        RxCore.blockhoverevent(onoff);
+    }
+
+
+    
+
     public static changeTextColor(color: string): void {
         RxCore.changeTextColor(color);
     }
@@ -151,6 +158,13 @@ export class RXCore {
     public static magnifyGlass(onoff: boolean): void {
         RxCore.magnifyGlass(onoff);
     }
+
+    public static getVectorEntity(onoff: boolean): void {
+        RxCore.getVectorEntity(onoff);
+    }
+
+
+    
 
     public static hideMarkUp(): void {
         RxCore.hideMarkUp();
@@ -867,8 +881,13 @@ export class RXCore {
         RxCore.GUI_RotateDocument.connect(callback)
     }
 
+    public static onGui2DEntityInfoScreen(callback: Function) {
+        RxCore.GUI_2DEntityInfoScreen.connect(callback);
+    }
 
-      
+    public static onGui2DEntityInfo(callback: Function) {
+        RxCore.GUI_2DEntityInfo.connect(callback);
+    }
 
     public static onGuiState(callback: Function) {
         RxCore.GUI_State.connect(callback);

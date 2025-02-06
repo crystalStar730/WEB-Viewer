@@ -823,14 +823,37 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
 
     this.getThumbnail = function (pagenum) {
         if (foxview.pdfViewer) {
-            foxview.pdfViewer.getCurrentPDFDoc().getPageByIndex(pagenum).then(function (page) {
+
+            const checkPDFDoc = () => {
+
+                const pdfDoc = foxview.pdfViewer.getCurrentPDFDoc();
+                if(!pdfDoc){
+                    setTimeout(checkPDFDoc, 500); // Try again in 500ms
+                    return;
+                }
+    
+                pdfDoc.getPageByIndex(pagenum).then(function (page) {
+                    var pgindex = page.info.index;
+                    page.getThumb(0, 1.5).then(function (thumbnail) {
+                        pgindex = page.info.index;
+                        RxCore.setThumbnailFoxit(thumbnail, pagenum);
+                        foxview.pagestates[pagenum].thumbadded = false;
+                    });
+                });
+
+            };
+
+            checkPDFDoc();
+
+
+            /*foxview.pdfViewer.getCurrentPDFDoc().getPageByIndex(pagenum).then(function (page) {
                 var pgindex = page.info.index;
                 page.getThumb(0, 1.5).then(function (thumbnail) {
                     pgindex = page.info.index;
                     RxCore.setThumbnailFoxit(thumbnail, pagenum);
                     foxview.pagestates[pagenum].thumbadded = false;
                 });
-            });
+            });*/
         }
     };
 

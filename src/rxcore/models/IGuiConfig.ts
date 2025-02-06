@@ -57,6 +57,7 @@ export interface IGuiConfig {
     disableClipping3DModelButton?: boolean;
     disableCreateViewButton?: boolean;
     disableMagnifyingGlassButton?: boolean;
+    disable2DVectorInfoButton? : boolean;
     disableZoomInButton?: boolean;
     disableZoomOutButton?: boolean;
     disableFitToWindowButton?: boolean;
