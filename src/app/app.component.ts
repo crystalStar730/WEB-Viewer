@@ -148,26 +148,33 @@ export class AppComponent implements AfterViewInit {
       if(pathindex.index){
 
 
-        if(vectorinfo[1].type != undefined){
-          var type = vectorinfo[1].type;
+        //partlistAll = {Index : partindex, Attributes : getAttributes(foundblock), Blockname : foundblock, Entity : entity} 
+        //entity = {type : vectorobj.entityType.type, handle : vectorobj.entityType.handleLow, typename : getvectorType(vectorobj.entityType.type)};
 
-          console.log("handle" ,vectorinfo[1].handleLow);
-          
+        if(vectorinfo.Entity){
+          console.log("handle" ,vectorinfo.Entity.handle);
+          console.log("type", vectorinfo.Entity.typename);
+          console.log("type", vectorinfo.Entity.type);
   
-
-        }else if(vectorinfo[0].type != undefined){
-          type = vectorinfo[0].type;
-
-          console.log("handle" ,vectorinfo[0].handleLow);
-
-
         }
-        console.log("block", vectorinfo[0]);
 
-      
+        if(vectorinfo.Entity){
+          console.log("block", vectorinfo.Blockname);
+          console.log("layer", vectorinfo.Layername);
+          
+        }
+
+        
+
+
+
+        
       }else{
         console.log("nothing found");
       }
+
+      
+      
       
 
     });

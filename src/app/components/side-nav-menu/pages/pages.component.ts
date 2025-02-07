@@ -402,11 +402,28 @@ export class PagesComponent implements OnInit {
 
   onAction(action: Action) {
     const pageRange: number[][] = [];
+    let startrange: number; 
+    let endrange: number;
+    let diffrange: number;
+    let fullrange: number[];
+
+
+
     if(this.multiSelect) {
       pageRange.push(...this.convertArray(this.checkList))
     } else {
       pageRange.push([this.rightClickedPageIndex])
     }
+
+    startrange = pageRange[0][0];
+    endrange = pageRange[0][1];
+
+    fullrange = [];
+
+    for (var pri = startrange; pri <= endrange; pri++){
+      fullrange.push(pri);
+    }
+
 
     switch(action) {
       case 'move-top':
@@ -428,10 +445,14 @@ export class PagesComponent implements OnInit {
         RXCore.movePageTo(pageRange, index < this.numpages - 1 ? index + 2 : this.numpages - 1)
         break;
       case 'rotate-r':
-        RXCore.rotatePage(pageRange, true)
+
+
+        RXCore.rotatePage(fullrange, true);
         break;
       case 'rotate-l':
-        RXCore.rotatePage(pageRange, false)
+
+
+        RXCore.rotatePage(fullrange, false);
         break;
       case 'page-size':
         this.sideNavMenuService.toggleSizeModal(true);

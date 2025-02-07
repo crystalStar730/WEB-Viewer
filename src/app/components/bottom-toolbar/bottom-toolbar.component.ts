@@ -60,7 +60,8 @@ export class BottomToolbarComponent implements OnInit, AfterViewInit {
       key == "MONOCHROME" || 
       key == "MAGNIFY" || 
       key == "SEARCH_TEXT" || 
-      key == "SELECT_TEXT"
+      key == "SELECT_TEXT" ||
+      key == "VECTORINFO"
       )
 
       if(!skipstate){

@@ -351,7 +351,7 @@ export class RXCore {
 
     //rotateClockwise
 
-    public static rotatePage(pageRange: number[][], clockwise: boolean) {
+    public static rotatePage(pageRange: number[], clockwise: boolean) {
         //RxCore.rotatePage(pageRange, clockwise)
         RxCore.rotateClockwise(pageRange, clockwise)
     }

@@ -1,3 +1,11 @@
+February 7, 2025
+
+### 1. Fixed page range rotation problem.
+
+Modified files
+src\app\components\side-nav-menu\pages\pages.component.ts
+
+
 February 6, 2025
 
 ### 1. Fixed page range selection instability.
