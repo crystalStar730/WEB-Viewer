@@ -9,6 +9,7 @@ import { NotificationService } from './notification.service';
 export class NotificationComponent implements OnInit {
   type: string = '';
   message: string = '';
+  duration:number = 3000;
   isNotification: boolean = false;
 
   typeInfo = {
@@ -35,12 +36,16 @@ export class NotificationComponent implements OnInit {
   ngOnInit() {
     this.notificationService.notification$.subscribe(data => {
       if (data.type) {
-        this.type = data.type
+        this.isNotification = false;
+        this.type = data.type;
         this.message = data.message;
         this.isNotification = true;
+        if(data.duration){
+          this.duration = data.duration;
+        }
         setTimeout(() => {
           this.closeNotification();
-        }, 3000);
+        }, this.duration);
       }
     });
   }

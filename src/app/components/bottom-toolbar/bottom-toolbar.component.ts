@@ -155,7 +155,7 @@ export class BottomToolbarComponent implements OnInit, AfterViewInit {
         break;
       case 'VECTORINFO':
           this.state.isActionSelected["ZOOM_WINDOW"] = false;
-          RXCore.blockhoverevent(true);
+          RXCore.blockhoverevent(this.state.isActionSelected[action]);
           RXCore.getVectorEntity(this.state.isActionSelected[action]);
           break;
 

@@ -14,6 +14,7 @@ import { CollabService } from './services/collab.service';
 
 
 
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -25,6 +26,7 @@ export class AppComponent implements AfterViewInit {
   guiConfig$ = this.rxCoreService.guiConfig$;
   guiConfig: IGuiConfig | undefined;
   title: string = 'rasterex-viewer';
+
   uiversion : string = '12.1.0.4'
   numOpenFiles$ = this.rxCoreService.numOpenedFiles$;
   annotation: any;
@@ -143,39 +145,36 @@ export class AppComponent implements AfterViewInit {
 
     RXCore.initialize({ offsetWidth: 0, offsetHeight: 0});
 
-    RXCore.onGui2DEntityInfoScreen((vectorinfo : any, screenmouse :any, pathindex : any) => {
-      
+
+    RXCore.onGui2DBlock((blockobj : any) => {
+      console.log(blockobj);
+    });
+
+
+    
+    RXCore.onGui2DEntityInfo((vectorinfo : any, screenmouse :any, pathindex : any) => {
+
       if(pathindex.index){
 
 
-        //partlistAll = {Index : partindex, Attributes : getAttributes(foundblock), Blockname : foundblock, Entity : entity} 
-        //entity = {type : vectorobj.entityType.type, handle : vectorobj.entityType.handleLow, typename : getvectorType(vectorobj.entityType.type)};
-
-        if(vectorinfo.Entity){
-          console.log("handle" ,vectorinfo.Entity.handle);
-          console.log("type", vectorinfo.Entity.typename);
-          console.log("type", vectorinfo.Entity.type);
-  
-        }
-
-        if(vectorinfo.Entity){
-          console.log("block", vectorinfo.Blockname);
-          console.log("layer", vectorinfo.Layername);
-          
-        }
+        let messagetext : string = 'Handle : ' + vectorinfo.Entity.handle + '\n' +
+        'Type : ' +  vectorinfo.Entity.typename + '\n' +
+        'Block : ' + vectorinfo.Blockname + '\n' +
+        'Layer : ' + vectorinfo.Layername; 
 
         
-
+        this.notificationService.notification({message: messagetext, type: 'info', duration : 10000});
 
 
         
       }else{
-        console.log("nothing found");
+        //console.log("nothing found");
       }
 
-      
-      
-      
+    });
+
+    RXCore.onGui2DEntityInfoScreen((vectorinfo : any, screenmouse :any, pathindex : any) => {
+      // to use with vector entity selection tool mouse over.
 
     });
 

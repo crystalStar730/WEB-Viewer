@@ -132,6 +132,20 @@ export class RXCore {
         RxCore.zoomFit();
     }
 
+    public static zoomToBlock(blockid : number): void {
+        RxCore.zoomToBlock(blockid);
+    }
+
+    public static zoomToBlockInsert(blockid : number): void {
+        RxCore.zoomToBlockInsert(blockid);
+    }
+
+    
+    //zoomToBlock : RxCore_ZoomToBlock,
+        
+    //zoomToBlockInsert : RxCore_ZoomToBlockInsert,
+
+
     public static rotate(cycle: boolean, szrotatetool: string): void {
         RxCore.rotate(cycle, szrotatetool);
     }
@@ -163,9 +177,11 @@ export class RXCore {
         RxCore.getVectorEntity(onoff);
     }
 
+    public static getBlockInsert(onoff: boolean): void {
+        RxCore.getBlockInsert(onoff);
+    }
 
     
-
     public static hideMarkUp(): void {
         RxCore.hideMarkUp();
     }
@@ -698,9 +714,20 @@ export class RXCore {
         RxCore.singlePageScrollPan(onoff);
     }
 
+    public static getBlockAttributes(blockid) : any{
+        return RxCore.getBlockAttributes(blockid);
+    }
+
     public static getdocInfo(): any {
         return RxCore.getdocInfo();
     }
+
+    public static getDocScales(): any {
+        return RxCore.getDocScales();
+    }
+
+
+    
 
     public static foxitForceRedraw(): void {
         RxCore.foxitForceRedraw();
@@ -888,6 +915,12 @@ export class RXCore {
     public static onGui2DEntityInfo(callback: Function) {
         RxCore.GUI_2DEntityInfo.connect(callback);
     }
+
+    public static onGui2DBlock(callback: Function) {
+        RxCore.GUI_2DBlock.connect(callback);
+    }
+
+    
 
     public static onGuiState(callback: Function) {
         RxCore.GUI_State.connect(callback);

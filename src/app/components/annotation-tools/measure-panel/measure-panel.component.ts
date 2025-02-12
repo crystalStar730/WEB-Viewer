@@ -70,7 +70,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
   selectedMetricUnitForDisplay: any;
   isLoadedScales: boolean;
   currentPageMetricUnitCalibrate: string;
-  docObj: any;
+  //docObj: any;
 
   private _setDefaults(): void {
     this.created = false;
@@ -93,7 +93,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     this.customPageScaleValue = 1;
     this.customDisplayScaleValue = 1;
     this.isLoadedScales = false;
-    this.docObj = RXCore.printDoc();
+    //this.docObj = RXCore.printDoc();
 
     let allMetricUnits = {...this.metricUnits['0'], ...this.metricUnits[1]};
     Object.entries(allMetricUnits).forEach(([key, value]) => {
@@ -239,12 +239,17 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
   }
 
   loadAndSetPageScale () : void{
-    this.docObj = RXCore.printDoc();
-    if(this.docObj && this.docObj.scalesOptions) {
+    //this.docObj = RXCore.printDoc();
+
+    if(RXCore.getDocScales()){
       this.scalesOptions = [];
       this.loadScaleList();
       this.setCurrentPageScale();
+
     }
+
+    /*if(this.docObj && this.docObj.scalesOptions) {
+    }*/
   }
 
   setCurrentPageScale (): void{
@@ -662,7 +667,10 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
   }
 
   loadScaleList() {        
-    const scales: any = this.docObj.scalesOptions;
+    //const scales: any = this.docObj.scalesOptions;
+
+    const scales: any = RXCore.getDocScales();
+
     if(scales && scales.length) {
       this.scalesOptions = [];
       for (let i = 0; i < scales.length; i++) {        
