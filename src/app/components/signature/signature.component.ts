@@ -67,8 +67,8 @@ export class SignatureComponent implements OnInit {
       this._setDefaults();
 
       if (mode == "signature" && this.visible) {
-        RXCore.getTextRects('Please Sign Here', true);
-        this.signatureService.getSignatures();
+        //RXCore.getTextRects('Please Sign Here', true);
+        //this.signatureService.getSignatures();
         RXCore.singlePageScrollPan(true);
       } else {
         this.onConfirmDismiss(false);

@@ -33,7 +33,7 @@ export class SideNavMenuComponent implements OnInit {
 
     this.guiMode$.subscribe((mode: GuiMode) => {
       if (mode == GuiMode.Signature) {
-        //this.toggle(5);
+        this.toggle(5);
       } else {
         this.toggleablePanelOpened = false;
 

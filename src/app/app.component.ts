@@ -156,12 +156,30 @@ export class AppComponent implements AfterViewInit {
 
       if(pathindex.index){
 
+        //partlistAll = {Index : partindex, Block : foundblock, Layername : foundlayer, Entity : entity} 
+
 
         let messagetext : string = 'Handle : ' + vectorinfo.Entity.handle + '\n' +
         'Type : ' +  vectorinfo.Entity.typename + '\n' +
-        'Block : ' + vectorinfo.Blockname + '\n' +
+        'Block : ' + vectorinfo.Block.name + '\n' +
         'Layer : ' + vectorinfo.Layername; 
 
+
+        if(vectorinfo.Block.listed){
+          messagetext = 'Handle : ' + vectorinfo.Entity.handle + '\n' +
+          'Type : ' +  vectorinfo.Entity.typename + '\n' +
+          'Block : ' + vectorinfo.Block.name + '\n' +
+          'Layer : ' + vectorinfo.Layername; 
+  
+        }else{
+          messagetext = 'Handle : ' + vectorinfo.Entity.handle + '\n' +
+          'Type : ' +  vectorinfo.Entity.typename + '\n' +
+          'Layer : ' + vectorinfo.Layername;
+  
+        }
+        
+
+        //listed
         
         this.notificationService.notification({message: messagetext, type: 'info', duration : 10000});
 

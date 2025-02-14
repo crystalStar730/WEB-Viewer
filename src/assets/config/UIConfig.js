@@ -11,7 +11,7 @@ var UIConfig = (function() {
                 "canExport": true,
                 "canAnnotate": true,
                 "canCompare": true,
-                "canSignature": true,
+                "canSignature": false,
                 "canConsolidate": true,
                 "convertPDFAnnots" : false,
                 "createPDFAnnotproxy" : false,
@@ -20,7 +20,7 @@ var UIConfig = (function() {
                 "showmarkupZoom" : false,
                 "showAnnotationsOnLoad" : false,
                 "localStoreStamp" : true,
-                "disable2DVectorInfoButton" : true,
+                "disable2DVectorInfoButton" : false,
                 "logoUrl": "/assets/images/logo.svg"
             
         },

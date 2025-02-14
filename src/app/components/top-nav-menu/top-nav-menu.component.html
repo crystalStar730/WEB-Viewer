@@ -1,11 +1,18 @@
 <nav class="top-nav-menu">
     <img *ngIf="(guiConfig$ | async).logoUrl" class="top-nav-item logo" alt="Rasterex Logo" [src]="(guiConfig$ | async).logoUrl" />
+
+    <div *ngIf="(guiConfig$ | async).canLogin" class="top-nav-item user-info">
+        <rx-login></rx-login>
+    </div>
+
+
     <div class="top-nav-item button sidebar" #sidebar *ngIf="fileLength > 0">
         <div class="dropdown" [class.opened]="sidebarOpened" (click)="handleOpenSidebarMenu()">
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 16 16">
                 <path fill="currentColor" d="M6.75 1.5a.75.75 0 0 0 0 1.5h4.75A1.5 1.5 0 0 1 13 4.5v7a1.5 1.5 0 0 1-1.5 1.5H6.75a.75.75 0 0 0 0 1.5h4.75a3 3 0 0 0 3-3v-7a3 3 0 0 0-3-3zm3.03 5.97l-2.5-2.5a.75.75 0 0 0-1.06 1.06l1.22 1.22H1.75a.75.75 0 0 0 0 1.5h5.69L6.22 9.97a.75.75 0 1 0 1.06 1.06l2.5-2.5a.75.75 0 0 0 0-1.06"/>
             </svg>
         </div>
+
         <div [class.opened]="sidebarOpened" class="options-container">
             <div class="options-wrapper" style="right: unset; left:-32px;">
                 <ul class="options" role="listbox" aria-expanded="false">
@@ -157,13 +164,11 @@
             </div>
         </div>
     </div>
+
     <div class="top-nav-item pages">
         <rx-opened-files-tabs></rx-opened-files-tabs>
     </div>
 
-    <div *ngIf="(guiConfig$ | async).canLogin" class="top-nav-item user-info">
-        <rx-login></rx-login>
-    </div>
 
     <div class="top-nav-item current-scale">
         <span>{{currentScaleValue}}</span>

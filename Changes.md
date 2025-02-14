@@ -1,3 +1,25 @@
+
+February 14, 2025
+
+### 1. Fixed issues for machines using non 1:1 screen resolution
+   ### - Drop of image or stamp on pdf page page extent calculation issue.
+   ### - Scaling of annotation on pdf page page extent calculation issue.
+### 2. Fixed a problem with annotations being selected when swithcing user allowed annotation to be moved by non owning user.
+### 3. Selection of annotation with negative widht or height now works.
+### 4. RxCore.GUI_2DEntityInfoScreen and RxCore.GUI_2DEntityInfo callbacks now return whole block object instead of only the name.
+### 5. Moved login to new position after logo.
+### 6. Re-introduced signature panel should be hidden for now using "canSignature": false, in UIConfig.js.
+
+
+Modified files
+src\assets\scripts\rxcorefunctions.js
+src\app\components\user\login\login.component.scss
+src\app\app.component.ts
+src\app\components\top-nav-menu\top-nav-menu.component.ts
+src\app\components\signature\signature.component.ts
+src\app\components\side-nav-menu\side-nav-menu.component.ts
+
+
 February 12, 2025
 
 ### 1. Implement block info and search panel
