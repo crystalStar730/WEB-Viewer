@@ -23,6 +23,8 @@ export class SideNavMenuComponent implements OnInit {
   numpages: number;
   canChangeSign: boolean = false;
 
+  
+
   ngOnInit(): void {
     this.guiState$.subscribe(state => {
       this.numpages = state.numpages;
@@ -45,9 +47,17 @@ export class SideNavMenuComponent implements OnInit {
     })
   }
 
+  togglePanel(onoff: boolean){
+
+    this.toggleablePanelOpened = onoff;
+    RXCore.getBlockInsert(onoff);
+
+  }
+
   toggle(index) {
     const openIndex = [0, 3, 4, 5, 6].includes(index);
     this.toggleablePanelOpened = openIndex ? this.activeIndex !== index || !this.toggleablePanelOpened : false;
     this.activeIndex = !this.toggleablePanelOpened && openIndex ? -1 : index;
+    
   }
 }

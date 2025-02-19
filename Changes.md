@@ -1,4 +1,18 @@
 
+February 19, 2025
+
+### 1. Refine block panel, block info and search panel
+
+Modified files
+src\assets\scripts\rxcorefunctions.js
+src\rxcore\index.ts
+src\app\components\side-nav-menu\blocks\blocks.component.ts
+src\app\components\side-nav-menu\blocks\blocks.component.html
+src\app\components\side-nav-menu\blocks\blocks.component.scss
+src\app\components\side-nav-menu\side-nav-menu.component.html
+src\app\components\side-nav-menu\side-nav-menu.component.ts
+
+
 February 14, 2025
 
 ### 1. Fixed issues for machines using non 1:1 screen resolution
