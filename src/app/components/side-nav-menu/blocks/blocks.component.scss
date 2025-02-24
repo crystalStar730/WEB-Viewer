@@ -1,7 +1,7 @@
 @import "../../../../assets/scss/config.scss";
 
-.vector-layers-container {
-    .layers-visibility-section {
+.vector-blocks-container {
+    .blocks-visibility-section {
         display: flex;
         align-items: center;
         height: 56px;
@@ -36,7 +36,7 @@
 
     // }
     .list-wrapper {
-        overflow: auto;
+        // overflow: auto;
         height: calc(100vh - 194px);
 
         .list {
@@ -184,7 +184,7 @@
 
                 .search-result {
                     display: inline-block;
-                    font-size: small;
+                    font-size: x-small;
                     min-width: 150px;
                     text-align: right;
                 }

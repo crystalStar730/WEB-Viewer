@@ -730,8 +730,6 @@ export class RXCore {
     }
 
 
-    
-
     public static foxitForceRedraw(): void {
         RxCore.foxitForceRedraw();
     }
@@ -923,6 +921,11 @@ export class RXCore {
         RxCore.GUI_2DBlock.connect(callback);
     }
 
+    public static onGui2DBlockHover(callback: Function) {
+        RxCore.GUI_2DBlockHover.connect(callback);
+    }
+
+    
     
 
     public static onGuiState(callback: Function) {

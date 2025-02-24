@@ -30,10 +30,10 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
   scalesOptions: any = [];
   selectedScale: any;
   showScaleDropdownOnStartDrawing: boolean = false;
-  docObj: any;
+  //docObj: any;
 
   private _setDefaults(): void { 
-    this.docObj = RXCore.printDoc();   
+    //this.docObj = RXCore.printDoc();   
     this.updateScaleList();
     if(this.scalesOptions.length)
       this.selectedScale = this.scalesOptions[0];
@@ -92,7 +92,7 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
     });
 
     this.rxCoreService.guiPage$.subscribe((state) => {   
-      this.docObj = RXCore.printDoc();
+      //this.docObj = RXCore.printDoc();
       this.scalesOptions = [];
       this.selectedScale = null;
       this.updateScaleList();
@@ -100,7 +100,7 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
     }); 
 
     this.rxCoreService.guiScaleListLoadComplete$.subscribe(() => {
-      this.docObj = RXCore.printDoc();
+      //this.docObj = RXCore.printDoc();
       this.scalesOptions = [];
       this.selectedScale = null;
       this.updateScaleList();
@@ -274,8 +274,11 @@ export class MeasureDetailPanelComponent implements OnInit, OnDestroy {
   }*/
 
   updateScaleList() {
-    if(this.docObj && this.docObj.scalesOptions && this.docObj.scalesOptions.length)
-      this.scalesOptions = this.docObj.scalesOptions;   
+    if(RXCore.getDocScales() != undefined && RXCore.getDocScales().length ){
+      this.scalesOptions = RXCore.getDocScales();
+    }
+    //if(this.docObj && this.docObj.scalesOptions && this.docObj.scalesOptions.length)
+    //this.scalesOptions = this.docObj.scalesOptions;   
   }
 
   selectCurrentScale(markup?) {

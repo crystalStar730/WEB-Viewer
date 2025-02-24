@@ -1,3 +1,18 @@
+February 24, 2025 
+
+### 1. Updated block list with new thin scrollbar.
+
+RxCore version is now 35.74.
+Web viewer version is now 12.1.0.5.
+
+Modified files
+src\assets\scripts\rxcorefunctions.js
+src\rxcore\index.ts
+src\app\components\side-nav-menu\blocks\blocks.component.ts
+src\app\components\side-nav-menu\blocks\blocks.component.html
+src\app\components\side-nav-menu\blocks\blocks.component.scss
+
+
 
 February 19, 2025
 

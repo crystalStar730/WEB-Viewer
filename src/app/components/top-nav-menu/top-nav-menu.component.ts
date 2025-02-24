@@ -312,9 +312,16 @@ export class TopNavMenuComponent implements OnInit {
               disableSymbol: true,
 
             });
-            const docObj = RXCore.printDoc();
-            if(docObj && docObj.scalesOptions && docObj.scalesOptions.length === 0) 
+            //const docObj = RXCore.printDoc();
+
+            if(RXCore.getDocScales() != undefined && RXCore.getDocScales().length === 0 ){
+              //this.scalesOptions = RXCore.getDocScales();
               this.annotationToolsService.setMeasurePanelState({ visible: true }); 
+            }
+        
+
+            /*if(docObj && docObj.scalesOptions && docObj.scalesOptions.length === 0) 
+              this.annotationToolsService.setMeasurePanelState({ visible: true }); */
             
   
           } else if(option.value === 'annotate'){
