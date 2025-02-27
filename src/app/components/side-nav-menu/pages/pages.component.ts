@@ -408,21 +408,27 @@ export class PagesComponent implements OnInit {
     let fullrange: number[];
 
 
+    fullrange = [];
 
     if(this.multiSelect) {
       pageRange.push(...this.convertArray(this.checkList))
+
+      startrange = pageRange[0][0];
+      endrange = pageRange[0][1];
+
+      if(endrange){
+        for (var pri = startrange; pri <= endrange; pri++){
+          fullrange.push(pri);
+        }
+    
+      }
+
     } else {
       pageRange.push([this.rightClickedPageIndex])
+      fullrange.push(this.rightClickedPageIndex);
     }
 
-    startrange = pageRange[0][0];
-    endrange = pageRange[0][1];
 
-    fullrange = [];
-
-    for (var pri = startrange; pri <= endrange; pri++){
-      fullrange.push(pri);
-    }
 
 
     switch(action) {

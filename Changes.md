@@ -1,3 +1,14 @@
+February 27, 2025 
+
+### 1. Added new image sub types returned by markup.getMarkupType(), RxCore.getMarkupTypes() and RxCore.getMarkupType(type, subtype)
+
+RxCore version is now 35.75.
+
+Modified files
+src\assets\scripts\rxcorefunctions.js
+src\app\components\side-nav-menu\pages\pages.component.ts
+
+
 February 24, 2025 
 
 ### 1. Updated block list with new thin scrollbar.
