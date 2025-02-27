@@ -754,6 +754,9 @@ export class RXCore {
         return RxCore.getmarkupbyNumber(no);
     }
 
+    public static getMarkupTypes(): Array<any> {
+        return RxCore.getMarkupTypes();
+    }
 
     public static restoreDefault(): void{
         RxCore.restoreDefault();

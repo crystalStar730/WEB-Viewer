@@ -31,6 +31,7 @@ export class AppComponent implements AfterViewInit {
   numOpenFiles$ = this.rxCoreService.numOpenedFiles$;
   annotation: any;
   rectangle: any;
+  //markuptypes: any[] = [];
   isVisible: boolean = true;
   followLink: boolean = false;
   convertPDFAnnots : boolean | undefined = false;
@@ -141,6 +142,9 @@ export class AppComponent implements AfterViewInit {
 
     RXCore.useNoScale(false);
     RXCore.useFixedScale(false);
+
+    //this.markuptypes = RXCore.getMarkupTypes();
+
 
 
     RXCore.initialize({ offsetWidth: 0, offsetHeight: 0});
@@ -619,6 +623,7 @@ export class AppComponent implements AfterViewInit {
   
 
   }
+
 
 
 
