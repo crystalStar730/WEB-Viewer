@@ -1,3 +1,17 @@
+March 4, 2025
+
+### 1. Added block select and marking for rotated page.
+### 2. Changed to new development server on https://test.rasterex.com
+
+RxCore version is now 35.76.
+
+Modified files
+src\assets\scripts\rxconfig.js
+src\assets\scripts\rxcorefunctions.js
+src\rxcore\index.ts
+src\app\components\side-nav-menu\blocks\blocks.component.ts
+
+
 February 27, 2025 
 
 ### 1. Added new image sub types returned by markup.getMarkupType(), RxCore.getMarkupTypes() and RxCore.getMarkupType(type, subtype)

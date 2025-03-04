@@ -131,10 +131,12 @@ export class BlocksComponent implements OnInit, OnDestroy {
         // @ts-ignore
         this.lastSelectBlock.selected = false;
         this.lastSelectBlock = undefined;
+        RXCore.markUpRedraw();
         return;
       }
-      if (isTriggeredFromCanvas) {
+      if (isTriggeredFromCanvas && this.lastSubBlockndex != undefined) {
         // @ts-ignore
+        
         this.vectorBlocks[this.lastSubBlockndex][0].fold = 0;
       }
       // @ts-ignore
@@ -164,7 +166,10 @@ export class BlocksComponent implements OnInit, OnDestroy {
           }
         }, 0);
       } else {
-       RXCore.markVectorBlock(block.index);
+       //RXCore.markVectorBlock(block.index);
+       RXCore.selectVectorBlock(block.index);
+       RXCore.markUpRedraw();
+       
       }
     }
   }
@@ -197,6 +202,7 @@ export class BlocksComponent implements OnInit, OnDestroy {
     }
     //block.state = !block?.state;
     RXCore.changeVectorBlock(block?.index);
+    
   }
 
   private getBlockAttributes(block: IVectorBlock): Array<IBlockAttribute> {

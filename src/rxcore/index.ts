@@ -198,6 +198,11 @@ export class RXCore {
         RxCore.select3D(onoff);
     }
 
+    public static selectVectorBlock(blockid: number): void {
+        RxCore.selectVectorBlock(blockid);
+    }
+    
+
     public static select3DMarkup(onoff: boolean): void {
         RxCore.select3DMarkup(onoff);
     }
