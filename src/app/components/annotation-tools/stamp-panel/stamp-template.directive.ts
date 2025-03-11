@@ -10,6 +10,9 @@ export class StampTemplateDirective {
 
   constructor(private userService: UserService) {}
 
+
+  
+
   @HostListener('dragstart', ['$event'])
   onDragStart(event: DragEvent): void {
     if (!event.dataTransfer) return;

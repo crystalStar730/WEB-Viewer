@@ -48,7 +48,7 @@ export class UserService {
   private apiUrl =  RXCore.Config.apiBaseURL;
   //private apiUrl = 'http://localhost:8080/';
 
-  private accessToken = '';
+  public accessToken = '';
 
   private _currentUser = new BehaviorSubject<User | null>(null);
   public currentUser$ = this._currentUser.asObservable();

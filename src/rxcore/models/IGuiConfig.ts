@@ -73,6 +73,9 @@ export interface IGuiConfig {
     disableMonochromeButton?: boolean;
     enableGrayscaleButton?: boolean;
     localStoreStamp?: boolean;
+    localStoreAnnotation?: boolean;
+    watermarkdemo?:boolean;
+    
     /*  */
     logoUrl?: string;
 }

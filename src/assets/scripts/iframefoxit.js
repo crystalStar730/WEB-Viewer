@@ -896,9 +896,6 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
                }else{
                 RxCore.uploadCustomPDF({filename : uploadname, binfile : blob});
                } 
-               
-
-
                 
             });
         }
@@ -3584,6 +3581,79 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
             });
         };
     };
+
+    // Create watermark options object with default values
+    this.createWatermarkOptions = function(text, settings = {}) {
+        const defaultSettings = {
+            position: "Center",
+            offsetX: 0,
+            offsetY: 0,
+            scale: 1,
+            rotation: 45,
+            opacity: 100,
+            font: 2,
+            fontSize: 20,
+            color: 0x000000,
+            fontStyle: "normal"
+        };
+
+        const watermarkSettings = {
+            position: settings.position || defaultSettings.position,
+            offsetX: settings.offsetX || defaultSettings.offsetX,
+            offsetY: settings.offsetY || defaultSettings.offsetY,
+            scale: settings.scale || defaultSettings.scale,
+            rotation: settings.rotation || defaultSettings.rotation,
+            opacity: settings.opacity || defaultSettings.opacity
+        };
+
+        const watermarkTextProperties = {
+            font: settings.font || defaultSettings.font,
+            fontSize: settings.fontSize || defaultSettings.fontSize,
+            color: settings.color || defaultSettings.color,
+            fontStyle: settings.fontStyle || defaultSettings.fontStyle
+        };
+
+        return {
+            type: "text",
+            text: text,
+            pageStart: 0,
+            pageEnd: foxview.pdfViewer.getCurrentPDFDoc().getPageCount() - 1,
+            watermarkSettings: watermarkSettings,
+            watermarkTextProperties: watermarkTextProperties
+        };
+    };
+
+    this.addWatermarkToAllPages = function(text, settings = {}) {
+        const watermarkOptions = this.createWatermarkOptions(text, settings);
+        
+        foxview.pdfViewer.getCurrentPDFDoc().addWatermark(watermarkOptions);
+    };
+
+    this.removeWatermarkFromAllPages = function() {
+        foxview.pdfViewer.getCurrentPDFDoc().removeAllWatermarks();
+    };    
+
+    this.addWatermarkToPage = function(npagenum, text, settings = {}) {
+        
+        const watermarkOptions = this.createWatermarkOptions(text, settings);
+
+        foxview.pdfViewer.getCurrentPDFDoc().getPageByIndex(npagenum).then(function (page) {
+
+            page.addWatermark(watermarkOptions);
+                
+        });
+
+    };
+
+    this.removeWatermarkFromPage = function(npagenum) {
+        
+        foxview.pdfViewer.getCurrentPDFDoc().getPageByIndex(npagenum).then(function (page) {
+            page.removeAllWatermarks();
+        });
+        
+        
+    };
+
 
     init();
 };

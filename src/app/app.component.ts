@@ -10,6 +10,7 @@ import { UserService } from './components/user/user.service';
 import { Title } from '@angular/platform-browser';
 import { IGuiConfig } from 'src/rxcore/models/IGuiConfig';
 import { CollabService } from './services/collab.service';
+import { AnnotationStorageService } from './services/annotation-storage.service';
 
 
 
@@ -56,6 +57,7 @@ export class AppComponent implements AfterViewInit {
     private readonly notificationService: NotificationService,
     private readonly userService: UserService,
     private readonly collabService: CollabService,  
+    private readonly annotationStorageService: AnnotationStorageService,
     private titleService:Title) { }
 
   ngOnInit() {
@@ -316,7 +318,27 @@ export class AppComponent implements AfterViewInit {
         //RXCore.hideMarkUp();
       });
       
-     
+      console.log('RxCore onGuiFileLoadComplete:');
+      const path = RXCore.getOriginalPath();
+      if (this.guiConfig?.localStoreAnnotation === false && path) {
+        this.annotationStorageService.getAnnotations(1, path).then((annotations)=>{
+          annotations.forEach((annotation)=>{
+            RXCore.setMarkupfromJSON(annotation.data);
+            const lastMarkup = RXCore.getLastMarkup();
+            if (lastMarkup) {
+              const markup = lastMarkup as any;
+              markup.dbUniqueID = annotation.id;
+
+              if (markup.bhasArrow && markup.markupArrowConnected) {
+                markup.markupArrowConnected.dbUniqueID = annotation.id;
+              } else if (markup.bisTextArrow && markup.textBoxConnected) {
+                markup.textBoxConnected.dbUniqueID = annotation.id;
+              }
+            }
+          })   
+        });
+      }
+
       
 
     });
@@ -329,6 +351,26 @@ export class AppComponent implements AfterViewInit {
       console.log('RxCore GUI_Markup:', annotation, operation);
       if (annotation !== -1 || this.rxCoreService.lastGuiMarkup.markup !== -1) {
         this.rxCoreService.setGuiMarkup(annotation, operation);
+
+                // Handle addition, deletion, and modification
+                const path = RXCore.getOriginalPath();
+                if (this.guiConfig?.localStoreAnnotation === false && annotation !== -1 && path) {
+                  const user = this.userService.getCurrentUser();
+                  if (operation.created && annotation.dbUniqueID == null) {
+                    // Text with an arrow. Handles it in the onGuiTextInput callback.
+                    if (!((annotation.type == MARKUP_TYPES.TEXT.type && annotation.bhasArrow) || (annotation.type == MARKUP_TYPES.CALLOUT.type && annotation.bisTextArrow))) {
+                      this.annotationStorageService.createAnnotation(1, path, annotation.getJSON(),user?.id).then((result)=>{
+                        // Retain the returned unique ID.
+                        annotation.dbUniqueID = result.id;
+                      });
+                    }
+                  } else if (operation.modified && annotation.dbUniqueID != null) {
+                    this.annotationStorageService.updateAnnotation(annotation.dbUniqueID, annotation.getJSON());
+                  } else if (operation.deleted && annotation.dbUniqueID != null) {
+                    this.annotationStorageService.deleteAnnotation(annotation.dbUniqueID);
+                  }
+                }
+        
 
         // If collab feature is enabled, send the markup message to the server
         // Handle created/deleted here
@@ -447,6 +489,23 @@ export class AppComponent implements AfterViewInit {
       this.rxCoreService.setGuiTextInput(rectangle, operation);
 
       if(operation.start){
+
+        const path = RXCore.getOriginalPath();
+        if (this.guiConfig?.localStoreAnnotation === false && operation.markup && path) {
+          const user = this.userService.getCurrentUser();
+          const annotation = operation.markup;
+          this.annotationStorageService.createAnnotation(1, path, annotation.getJSON(),user?.id).then((result)=>{
+            // Retain the returned unique ID.
+            annotation.dbUniqueID = result.id;
+            if (annotation.bhasArrow && annotation.markupArrowConnected) {
+              annotation.markupArrowConnected.dbUniqueID = annotation.dbUniqueID;
+            } else if (annotation.bisTextArrow && annotation.textBoxConnected) {
+              annotation.textBoxConnected.dbUniqueID = annotation.dbUniqueID;
+            }
+          });
+        }
+
+
         if (operation.markup && this.canCollaborate) {
 
                     //&& (operation.created || operation.deleted)
@@ -514,6 +573,18 @@ export class AppComponent implements AfterViewInit {
 
     RXCore.onGuiMarkupChanged((annotation, operation) => {
       this.rxCoreService.guiOnMarkupChanged.next({annotation, operation});
+
+            // Handle text modification
+            const path = RXCore.getOriginalPath();
+            if (this.guiConfig?.localStoreAnnotation === false && annotation !== -1 && path) {
+              const user = this.userService.getCurrentUser();
+              if (operation === 0 && annotation.dbUniqueID != null) {
+                console.log('RxCore onGuiMarkupChanged:', annotation, operation);
+                this.annotationStorageService.updateAnnotation(annotation.dbUniqueID, annotation.getJSON());
+              }
+      
+            }
+      
 
       if (annotation !== -1 && this.canCollaborate) {
 

@@ -1,3 +1,33 @@
+March 10, 2025
+
+### 1. Added watermark functionality (addWatermarkToPage, addWatermarkToAllPages and removeWatermarkFromAllPages)
+
+RxCore version is now 35.78
+
+Modified files 
+src\assets\scripts\rxcorefunctions.js 
+src\assets\scripts\iframefoxit.js 
+src\app\components\top-nav-menu\top-nav-menu.component.html 
+src\app\components\top-nav-menu\top-nav-menu.component.ts 
+src\app\components\top-nav-menu\top-nav-menu.component.scss 
+src\rxcore\index.ts
+
+
+March 9, 2025
+
+### 1. Add annotation storage service.
+### 2. Store annotations to bakcend db.
+
+RxCore version is now 35.77.
+
+Modified files
+src\assets\scripts\rxcorefunctions.js
+src\app\app.component.ts
+src\app\components\user\login\login.component.ts
+src\app\components\user\user.service.ts
+src\app\services\annotation-storage.service.ts
+
+
 March 4, 2025
 
 ### 1. Added block select and marking for rotated page.

@@ -7,6 +7,8 @@ import { RXCore } from 'src/rxcore';
 export class StampTemplateDirective {
   @Input() stampTemplate: any;
 
+  
+
   @HostListener('dragstart', ['$event'])
   onDragStart(event: DragEvent): void {
     if (!event.dataTransfer) return;

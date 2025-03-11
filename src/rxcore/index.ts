@@ -84,6 +84,15 @@ export class RXCore {
         RxCore.openFile(fileUrl);
     }
 
+    public static getDocFileName(): string {
+        return RxCore.getDocFileName();
+    }
+
+    public static getOriginalPath(): string {
+        return RxCore.getOriginalPath();
+    }
+
+
     public static closeDocument(): void {
         RxCore.closeDocument();
     }
@@ -247,6 +256,10 @@ export class RXCore {
 
     public static getSelectedMarkup(): IMarkup {
         return RxCore.getSelectedMarkup();
+    }
+
+    public static getLastMarkup(): IMarkup {
+        return RxCore.getLastMarkup();
     }
 
     public static getLineColor(): string {
@@ -1230,6 +1243,14 @@ export class RXCore {
 
     public static setUniqueMarkupfromJSON(markupJSON: any, DocRef : any): void {
         RxCore.setUniqueMarkupfromJSON(markupJSON, DocRef);
+    }
+
+    public static addWatermarkToAllPages(text: string, settings: any): void {
+        RxCore.addWatermarkToAllPages(text, settings);
+    }
+
+    public static removeWatermarkFromAllPages(): void {
+        RxCore.removeWatermarkFromAllPages();
     }
 
 

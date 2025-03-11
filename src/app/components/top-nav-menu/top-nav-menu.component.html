@@ -169,6 +169,10 @@
         <rx-opened-files-tabs></rx-opened-files-tabs>
     </div>
 
+    <div *ngIf="(guiConfig$ | async).watermarkdemo" class="top-nav-item watermark">
+        <button (click)="onWatermarkClick()">Add Watermark</button>
+        <button (click)="onRemoveWatermarkClick()">Remove Watermark</button>
+    </div>
 
     <div class="top-nav-item current-scale">
         <span>{{currentScaleValue}}</span>

@@ -529,6 +529,23 @@ export class TopNavMenuComponent implements OnInit {
     this.sideNavMenuService.toggleSidebar(index);
     this.sidebarOpened = false;
   }
+
+  onWatermarkClick(): void {
+    RXCore.addWatermarkToAllPages('Rasterex', {
+      position: 'Center',
+      offsetX: 0,
+      offsetY: 0,
+      scale: 1,
+      opacity: 50,
+      font: 4,
+      rotation: 45
+    });
+  }
+
+  onRemoveWatermarkClick(): void {
+    RXCore.removeWatermarkFromAllPages();
+  }
+
   
   ngOnDestroy(): void {
     this.guiOnNoteSelected.unsubscribe();
