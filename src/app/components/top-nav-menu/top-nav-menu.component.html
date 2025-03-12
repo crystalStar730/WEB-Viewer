@@ -199,6 +199,14 @@
         </svg>
         <!-- <span class="tooltip-text tooltip-bottom">Comments</span> -->
     </div>
+    <div *ngIf="(guiConfig$ | async).canCollaborate && fileLength > 0" [ngClass]="{'selected': collabPanelOpened}" class="tooltip collab-icon" (click)="onCollabPanelSelect()">
+        <svg width="22" height="22" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg" style="padding: 2px;">
+            <path d="M524.8 566.4c80-48 134.4-134.4 134.4-233.6 0-147.2-121.6-268.8-268.8-268.8s-268.8 121.6-268.8 268.8c0 99.2 54.4 185.6 134.4 233.6-150.4 54.4-256 195.2-256 361.6 0 19.2 12.8 32 32 32s32-12.8 32-32c0-176 147.2-320 326.4-320s326.4 144 326.4 320c0 19.2 12.8 32 32 32s32-12.8 32-32c0-166.4-108.8-307.2-256-361.6zM185.6 332.8c0-112 92.8-204.8 204.8-204.8s204.8 92.8 204.8 204.8-92.8 204.8-204.8 204.8c-112 0-204.8-89.6-204.8-204.8z" fill="#444444" p-id="4013"></path>
+            <path d="M790.4 544c67.2-41.6 112-118.4 112-204.8 0-134.4-108.8-243.2-243.2-243.2-19.2 0-32 12.8-32 32s12.8 32 32 32c99.2 0 179.2 80 179.2 179.2s-80 179.2-179.2 179.2c-19.2 0-32 12.8-32 32s12.8 32 32 32c163.2 0 297.6 144 297.6 323.2 0 19.2 12.8 32 32 32s32-12.8 32-32c3.2-166.4-92.8-307.2-230.4-361.6z" fill="#444444" p-id="4014"></path>
+        </svg>
+    </div>
+    <rx-room-panel [visible]="collabPanelOpened" (visibleChange)="collabPanelOpened = $event"></rx-room-panel>
+
     <!-- <div class="top-nav-item more" #more>
         <div class="dropdown" [class.opened]="moreOpened" (click)="moreOpened = !moreOpened">
             <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">

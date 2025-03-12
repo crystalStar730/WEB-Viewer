@@ -120,6 +120,15 @@ export class UserService {
       return this._currentUser.value;
     }
   
+    isAdmin() {
+      const user = this.getCurrentUser();
+      if (!user) {
+        return false;
+      }
+  
+      return user.username === 'admin';
+    }
+  
 
   /**
    * Gets permissions from back-end.

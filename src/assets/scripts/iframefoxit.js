@@ -3597,6 +3597,10 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
             fontStyle: "normal"
         };
 
+        if(settings.rotation == 0){
+            settings.rotation = 360;
+        }
+
         const watermarkSettings = {
             position: settings.position || defaultSettings.position,
             offsetX: settings.offsetX || defaultSettings.offsetX,
