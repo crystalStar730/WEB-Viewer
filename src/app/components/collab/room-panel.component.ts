@@ -47,7 +47,9 @@ export class RoomPanelComponent implements OnInit {
     });
 
     this.rxCoreService.guiState$.subscribe(state => {
-      //this.updateRoomByCurrentFile();
+      //not sure if this should be re-instated.
+
+      this.updateRoomByCurrentFile();
     });
 
     this.userService.currentUser$.subscribe((user) => {

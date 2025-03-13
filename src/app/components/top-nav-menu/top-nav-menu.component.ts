@@ -421,6 +421,7 @@ export class TopNavMenuComponent implements OnInit {
     if (this.state?.activefile) {
       this.burgerOpened = false;
       //RXCore.exportPDF();
+      RXCore.setDefultExportparams();
       RXCore.uploadPDF();
       //var szURL = "http://myserver.somedomain.com/mypdfhandlingapp?documentid";
       //RXCore.uploadPDFCustom(szURL);
@@ -433,7 +434,7 @@ export class TopNavMenuComponent implements OnInit {
   onPDFDownloadClick():void{
     if (this.state?.activefile) {
       this.burgerOpened = false;
-
+      
       RXCore.downloadPDF();
 
       //RXCore.exportPDF();

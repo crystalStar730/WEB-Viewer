@@ -1,3 +1,23 @@
+March 12, 2025
+
+### 1. Optimized code and merged the common logic for backend storage and synchronization of Annotations.
+### 2. Fixed the problems of failed storage and synchronization of Stamp and Symbol.
+### 3. Fixed the aspect ratio and deletion issues of Symbol.
+### 4. Fixed a bug that room participants don't refresh when switch doc.
+
+RxCore version is now 35.79
+
+Modified files
+src\rxcore\index.ts
+src\app\app.component.ts
+src\assets\scripts\rxcorefunctions.js 
+src\app\components\collab\room-panel.component.ts
+src\app\components\annotation-tools\symbols-library\symbols-library.component.ts
+src\app\components\top-nav-menu\top-nav-menu.component.ts
+src\app\components\user\user.service.ts
+src\assets\scripts\rxcorefunctions.js
+
+
 March 11, 2025
 
 ### 1. Implemented Real-time Collaboration. Enable login user to join a room for each doc.

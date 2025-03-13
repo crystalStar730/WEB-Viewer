@@ -403,6 +403,11 @@ export class RXCore {
         RxCore.usePDFAnnotProxy(onOff);
     }
 
+    public static usedbmarkup(onOff: boolean | undefined): void {
+        RxCore.usedbmarkup(onOff);
+    }
+
+    
 
     public static pastePage(pasteId: number): void {
         RxCore.pastePage(pasteId)
@@ -792,6 +797,12 @@ export class RXCore {
     public static exportPDF(paperSize: string = "A4"): void {
         RxCore.exportFile(false, "PDF", "0", paperSize, "1");
     }
+
+    public static setDefultExportparams(paperSize: string = "A4"): void {
+        RxCore.setDefultExportparams(false, "PDF", "0", paperSize, "1");
+    }
+
+    
 
     public static downloadPDF(): void {
         RxCore.downloadPDF();

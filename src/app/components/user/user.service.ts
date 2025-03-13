@@ -120,6 +120,11 @@ export class UserService {
       return this._currentUser.value;
     }
   
+  /**
+   * Checks if the current user is admin.
+   * There is no system role defined today, so we simply check if the username is 'admin'.
+   */
+
     isAdmin() {
       const user = this.getCurrentUser();
       if (!user) {
