@@ -546,10 +546,22 @@ export class TopNavMenuComponent implements OnInit {
       font: 4,
       rotation: 45
     });
+
+    setTimeout(() => {
+      RXCore.refreshThumbnails();
+    }, 1000);
+
+
   }
 
   onRemoveWatermarkClick(): void {
     RXCore.removeWatermarkFromAllPages();
+
+    setTimeout(() => {
+      RXCore.refreshThumbnails();
+    }, 1000);
+
+
   }
 
   

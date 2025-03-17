@@ -8,6 +8,7 @@ import { TopNavMenuService } from '../top-nav-menu.service';
 import { AnnotationToolsService } from '../../annotation-tools/annotation-tools.service';
 import { SideNavMenuService } from '../../side-nav-menu/side-nav-menu.service';
 import { GuiMode } from 'src/rxcore/enums/GuiMode';
+import { IGuiConfig } from 'src/rxcore/models/IGuiConfig';
 import { MeasurePanelService } from '../../annotation-tools/measure-panel/measure-panel.service';
 
 declare var bringIframeToFront;
@@ -20,6 +21,10 @@ declare var hideAllIframes;
 })
 export class OpenedFilesTabsComponent implements OnInit {
   guiState$ = this.rxCoreService.guiState$;
+  
+  guiConfig$ = this.rxCoreService.guiConfig$;
+  guiConfig: IGuiConfig | undefined;
+
   openedFiles: any = [];
   activeFile: any = null;
   droppableIndex: number | undefined = undefined;
@@ -56,6 +61,10 @@ export class OpenedFilesTabsComponent implements OnInit {
     const doc = RXCore.printDoc();
 
     if(doc.bMarkupchanged) {
+
+      //*ngIf="(guiState$ | async).is3D;"
+      //*ngIf="!(guiConfig$ | async).disableMarkupCalloutButton 
+
       this.closeDocumentModal = true;
     }
 
@@ -154,6 +163,12 @@ export class OpenedFilesTabsComponent implements OnInit {
       this.handleSelectTab(list[list.length - 1]);
       this.bottomToolbarService.addToStates(this.activeFile.index);
     });
+
+    this.guiConfig$.subscribe(config => {
+      this.guiConfig = config;
+
+    });
+
 
     this.topNavMenuService.selectTab$.subscribe(file => {
       this.handleSelectTab(file);
