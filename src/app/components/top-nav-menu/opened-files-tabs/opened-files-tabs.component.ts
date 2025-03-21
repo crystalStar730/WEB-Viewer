@@ -25,6 +25,7 @@ export class OpenedFilesTabsComponent implements OnInit {
   guiConfig$ = this.rxCoreService.guiConfig$;
   guiConfig: IGuiConfig | undefined;
 
+  markupSaveConfirm : boolean | undefined = true;
   openedFiles: any = [];
   activeFile: any = null;
   droppableIndex: number | undefined = undefined;
@@ -57,15 +58,20 @@ export class OpenedFilesTabsComponent implements OnInit {
   }
 
   private _closeTabWithSaveConfirmModal(file): void {
+    
+    console.log("closing tab handling");
+    
     if (!file) return;
-    const doc = RXCore.printDoc();
+    //const doc = RXCore.printDoc();
 
-    if(doc.bMarkupchanged) {
+    if(RXCore.markupChanged) {
 
       //*ngIf="(guiState$ | async).is3D;"
       //*ngIf="!(guiConfig$ | async).disableMarkupCalloutButton 
 
       this.closeDocumentModal = true;
+      
+      
     }
 
     if(!this.closeDocumentModal) {
@@ -167,6 +173,11 @@ export class OpenedFilesTabsComponent implements OnInit {
     this.guiConfig$.subscribe(config => {
       this.guiConfig = config;
 
+      this.markupSaveConfirm = this.guiConfig.localStoreAnnotation;
+
+      //localStoreAnnotation
+      //this.showAnnotationsOnLoad = this.guiConfig.showAnnotationsOnLoad;
+
     });
 
 
@@ -184,11 +195,22 @@ export class OpenedFilesTabsComponent implements OnInit {
     event.preventDefault();
     event.stopPropagation();
 
+    console.log("closing tab");
+
     if (file.comparison && RXCore.markupChanged) {
       this.compareService.onUnsavedChanges.next();
     } else {
+
+      if (this.markupSaveConfirm){
+        this.closeDocumentModal = true;
+        this._closeTabWithSaveConfirmModal(file);
+      }else{
+        this._closeTab(file);
+      }
+
+
       // this._closeTab(file);
-      this._closeTabWithSaveConfirmModal(file);
+      
     }
   }
 

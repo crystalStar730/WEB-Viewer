@@ -3591,6 +3591,7 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
             scale: 1,
             rotation: 45,
             opacity: 100,
+            useRelativeScale : true,
             font: 2,
             fontSize: 20,
             color: 0x000000,
@@ -3617,9 +3618,15 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
             fontStyle: settings.fontStyle || defaultSettings.fontStyle
         };
 
+        var useRelativeScale = defaultSettings.useRelativeScale;
+        if(settings.useRelativeScale != undefined){
+            useRelativeScale = settings.useRelativeScale;
+        }
+        
         return {
             type: "text",
             text: text,
+            useRelativeScale : useRelativeScale,
             pageStart: 0,
             pageEnd: foxview.pdfViewer.getCurrentPDFDoc().getPageCount() - 1,
             watermarkSettings: watermarkSettings,

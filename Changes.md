@@ -1,3 +1,20 @@
+March 21, 2025
+
+### 1. Fixes for collaboration close tab
+### 2. Fixes for Symbol component
+### 3. Fixes for Watermark
+
+
+src\app\app.component.ts
+src\assets\scripts\rxcorefunctions.js
+src\assets\scripts\iframefoxit.js
+src\app\components\user\login\login.component.ts
+src\app\components\top-nav-menu\opened-files-tabs\opened-files-tabs.component.ts
+src\app\components\annotation-tools\symbols-library\symbols-library.component.ts
+src\app\components\annotation-tools\stamp-panel\stamp-panel.component.ts
+src\app\components\collab\room-panel.component.ts
+
+
 March 17, 2025
 
 ### 1. Fixed the bug that svg stamp become blur when zoom in.

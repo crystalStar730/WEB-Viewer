@@ -68,10 +68,17 @@ export class LoginComponent implements OnInit {
         this.email = user.email;
         this.loginPanelOpened = false;
         this.closeLoginDialog();
-        RXCore.setUser(user.username, user.displayName || user.username);
+
+        try {
+          RXCore.setUser(user.username, user.displayName || user.username);
+        } catch (err) {
+          console.log(err);
+        }
 
         console.log('Login success:', user);
         // TODO: hard code projId to 1
+
+
         this.userService.getPermissions(1, user.id).then(res => {
           this.userService.setUserPermissions(res);
           if (Array.isArray(res)) {
@@ -83,7 +90,7 @@ export class LoginComponent implements OnInit {
           this.userService.setAnnotations(res);
         });*/
       }).catch((e) => {
-        console.error('Login failed:', e.error);
+        console.error('Login failed:', e.error || e.message);
         alert(e.error.message);
       }).finally(() => {
         this.isLoggingIn = false;

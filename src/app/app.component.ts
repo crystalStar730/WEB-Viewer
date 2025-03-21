@@ -547,7 +547,7 @@ export class AppComponent implements AfterViewInit {
           });
         }
 
-        if (operation.markup && roomName && this.canCollaborate) {
+        /*if (operation.markup && roomName && this.canCollaborate) {
 
             //&& (operation.created || operation.deleted)
             let cs = this.collabService;
@@ -559,7 +559,7 @@ export class AppComponent implements AfterViewInit {
   
             });
           
-        }
+        }*/
 
       }
 
