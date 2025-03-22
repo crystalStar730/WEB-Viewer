@@ -1,3 +1,13 @@
+March 22, 2025
+
+### 1. Some symbols and stamps dialog corrections.
+
+src\app\components\annotation-tools\symbols-library\symbols-library.component.html
+src\app\components\annotation-tools\symbols-library\symbols-library.component.scss
+src\app\components\annotation-tools\symbols-library\symbols-library.component.ts
+src\app\components\annotation-tools\stamp-panel\stamp-panel.component.html
+
+
 March 21, 2025
 
 ### 1. Fixes for collaboration close tab

@@ -491,6 +491,9 @@ export class NotePanelComponent implements OnInit {
       
       this.visible = state?.visible;
       if(this.visible){
+
+        //let xlayout = this.panelwidth  / window.devicePixelRatio;
+
         RXCore.setLayout(this.panelwidth, 0, false);
         RXCore.doResize(false,this.panelwidth, 0);/*added for comment list panel */
       }else{

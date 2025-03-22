@@ -3650,6 +3650,12 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
 
         foxview.pdfViewer.getCurrentPDFDoc().getPageByIndex(npagenum).then(function (page) {
 
+            page.getAllBoxes().then(function (cropBox){
+
+                console.log(cropBox);
+
+            })
+
             page.addWatermark(watermarkOptions);
                 
         });
