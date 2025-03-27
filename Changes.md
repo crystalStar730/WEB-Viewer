@@ -1,3 +1,16 @@
+March 27, 2025
+
+### 1. Some modifications to vector and blocks feature
+
+RxCore version is now 35.81
+
+src\assets\scripts\rxcorefunctions.js
+src\app\app.component.ts
+src\rxcore\index.ts
+src\app\components\side-nav-menu\blocks\blocks.component.html
+src\app\components\side-nav-menu\blocks\blocks.component.ts
+
+
 March 22, 2025
 
 ### 1. Some symbols and stamps dialog corrections.

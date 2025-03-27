@@ -2657,6 +2657,7 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
                 }
 
                 foxview.setmarkupPosition(foxview.curpage);
+                //foxview.forceRedraw();
 
                 //console.log('zoomsuccess');
             });
@@ -3595,11 +3596,18 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
             font: 2,
             fontSize: 20,
             color: 0x000000,
-            fontStyle: "normal"
+            fontStyle: "normal",
+            flags : undefined
         };
 
         if(settings.rotation == 0){
             settings.rotation = 360;
+        }
+
+        let watermarkflags = defaultSettings.flags;
+
+        if(settings.flags != undefined){
+            watermarkflags = settings.flags;
         }
 
         const watermarkSettings = {
@@ -3608,8 +3616,11 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
             offsetY: settings.offsetY || defaultSettings.offsetY,
             scale: settings.scale || defaultSettings.scale,
             rotation: settings.rotation || defaultSettings.rotation,
-            opacity: settings.opacity || defaultSettings.opacity
+            opacity: settings.opacity || defaultSettings.opacity,
+            flags : watermarkflags
         };
+
+        
 
         const watermarkTextProperties = {
             font: settings.font || defaultSettings.font,
@@ -3618,7 +3629,7 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
             fontStyle: settings.fontStyle || defaultSettings.fontStyle
         };
 
-        var useRelativeScale = defaultSettings.useRelativeScale;
+        let useRelativeScale = defaultSettings.useRelativeScale;
         if(settings.useRelativeScale != undefined){
             useRelativeScale = settings.useRelativeScale;
         }

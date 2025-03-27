@@ -544,7 +544,8 @@ export class TopNavMenuComponent implements OnInit {
       scale: 1,
       opacity: 50,
       font: 4,
-      rotation: 45
+      rotation: 45,
+      flags : 2
     });
 
     setTimeout(() => {
