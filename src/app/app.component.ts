@@ -205,6 +205,12 @@ export class AppComponent implements AfterViewInit {
           'Type: <span style="color: grey;">' +  vectorinfo.Entity.typename + '</span></br>' +
           'Layer: <span style="color: grey;">' + vectorinfo.Layername + '</span>';
         }
+        //entity = {type : vectorobj.entityType.type, handle : vectorobj.entityType.handleLow, typename : getvectorType(vectorobj.entityType.type), startp : startpoint, endp : endpoint, length : length};
+        if(vectorinfo.Entity.length != undefined){
+          messagetext = messagetext + '</span></br>' +
+          'Length: <span style="color: grey;">' + vectorinfo.Entity.length.toFixed(2) + '</span>';
+          
+        }
 
         tootipEle.style.display = "block";
         tootipEle.style.position = "absolute";

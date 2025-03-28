@@ -1,3 +1,13 @@
+March 28, 2025
+
+### 1. Added Length to callback for vector entity on hover.
+
+RxCore version is now 35.82
+
+src\assets\scripts\rxcorefunctions.js
+src\app\app.component.ts
+
+
 March 27, 2025
 
 ### 1. Some modifications to vector and blocks feature
