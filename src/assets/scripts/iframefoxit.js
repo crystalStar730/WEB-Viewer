@@ -2086,7 +2086,15 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
 
         var pagepos = foxview.getPagePos(num);
         RxCore.foxitcalibratepagemarkup(pagepos, num);
+        
 
+
+    };
+
+    this.postzoomRefresh = function () {
+
+        foxview.forceRedraw();
+        
 
     };
     
@@ -2652,11 +2660,14 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
 
                     var pagepos = foxview.getPagePos(foxview.curpage);
 
-                    foxview.scrollupdate(scrollpos.pagerect, scrollpos.cw, scrollpos.ch, scrollpos.pagenum, true);
+                    //foxview.scrollupdate(scrollpos.pagerect, scrollpos.cw, scrollpos.ch, scrollpos.pagenum, true);
                     
                 }
 
                 foxview.setmarkupPosition(foxview.curpage);
+
+                
+                //foxview.postzoomRefresh();
                 //foxview.forceRedraw();
 
                 //console.log('zoomsuccess');

@@ -1,3 +1,20 @@
+April 8, 2025
+
+### 1. Refined entity and block tooltip styles.
+### 2. Various fixes for PDF rendering and handling.
+
+RxCore version is now 35.85
+
+Updated files
+src\styles.scss
+src\assets\scripts\rxcorefunctions.js
+src\assets\scripts\iframefoxit.js
+src\assets\html\foxpage.html
+src\app\app.component.ts
+src\app\components\side-nav-menu\blocks\blocks.component.ts
+src\app\components\side-nav-menu\blocks\blocks.component.scss
+
+
 March 28, 2025
 
 ### 1. Added Length to callback for vector entity on hover.
