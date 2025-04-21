@@ -687,6 +687,12 @@ export class RXCore {
         RxCore.markupMeasurePath(onoff);
     }
 
+    public static markupAngle(onoff: boolean, clockwise:boolean): void {
+        RxCore.markupAngle(onoff, clockwise);
+    }
+
+    
+
     public static markupDisplayOnload(onoff: boolean | undefined): void {
         RxCore.markupDisplayOnload(onoff);
     }

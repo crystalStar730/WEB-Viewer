@@ -1,3 +1,33 @@
+April 21, 2025
+
+### 1. Refined entity and block tooltip styles.
+### 2. Added angle measurement.
+
+RxCore version is now 35.87.
+
+Updated and new files
+
+src\app\app.component.html
+src\app\app.component.ts
+src\app\app.module.ts
+src\app\components\annotation-tools.component.html
+src\app\components\annotation-tools.component.ts
+src\app\components\bottom-toolbar\bottom-toolbar.component.html
+src\app\components\bottom-toolbar\bottom-toolbar.component.ts
+src\app\components\common\panel\panel.component.scss
+src\app\components\side-nav-menu\blocks\blocks.component.ts
+
+src\app\components\tooltip\tooltip.component.ts
+src\app\components\tooltip\tooltip.component.html
+src\app\components\tooltip\tooltip.component.scss
+src\app\components\tooltip\tooltip.service.ts
+
+src\assets\images\vector-information.svg
+src\assets\scripts\rxcorefunctions.js
+src\rxcore\index.ts
+src\rxcore\constants\index.ts
+
+
 April 8, 2025
 
 ### 1. Refined entity and block tooltip styles.

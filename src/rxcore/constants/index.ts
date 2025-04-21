@@ -91,6 +91,15 @@ export const MARKUP_TYPES = {
             type: 3,
             subType: 6,
         },
+        ANGLECLOCKWISE: {
+            type: 1,
+            subType: 4,
+        },
+        ANGLECCLOCKWISE: {
+            type: 1,
+            subType: 5,
+        },
+        
     },
     SIGNATURE: {
         type: 11,

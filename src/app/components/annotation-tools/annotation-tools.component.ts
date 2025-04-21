@@ -48,6 +48,8 @@ export class AnnotationToolsComponent implements OnInit {
     "MEASURE_LENGTH": false,
     "MEASURE_AREA": false,
     "MEASURE_PATH": false,
+    "MEASURE_ANGLE_CLOCKWISE": false,
+    "MEASURE_ANGLE_CCLOCKWISE": false,
     "SNAP": false,
     "MARKUP_LOCK" : false,
     "NO_SCALE": false
@@ -78,7 +80,9 @@ export class AnnotationToolsComponent implements OnInit {
   get isMeasureSelected(): boolean {
     return this.isActionSelected["MEASURE_LENGTH"]
       || this.isActionSelected["MEASURE_AREA"]
-      || this.isActionSelected["MEASURE_PATH"];
+      || this.isActionSelected["MEASURE_PATH"]
+      || this.isActionSelected["MEASURE_ANGLE_CLOCKWISE"]
+      || this.isActionSelected["MEASURE_ANGLE_CCLOCKWISE"];
   };
 
   canAddAnnotation = this.userService.canAddAnnotation$;
@@ -348,7 +352,21 @@ export class AnnotationToolsComponent implements OnInit {
         this.service.setMeasurePanelDetailState({ visible: this.isActionSelected[actionName], type:  MARKUP_TYPES.MEASURE.PATH.type, created: true });
         //this.service.setPropertiesPanelState({ visible: this.isActionSelected[actionName], markup:  MARKUP_TYPES.MEASURE.PATH, readonly: false });
         RXCore.markupMeasurePath(this.isActionSelected[actionName]);
+        
         break;
+
+      case 'MEASURE_ANGLE_CLOCKWISE':
+        this.service.setMeasurePanelDetailState({ visible: this.isActionSelected[actionName], type:  MARKUP_TYPES.MEASURE.ANGLECLOCKWISE.type, created: true });
+        //this.service.setPropertiesPanelState({ visible: this.isActionSelected[actionName], markup:  MARKUP_TYPES.MEASURE.PATH, readonly: false });
+        RXCore.markupAngle(this.isActionSelected[actionName], false);
+        break;
+
+      case 'MEASURE_ANGLE_CCLOCKWISE':
+        this.service.setMeasurePanelDetailState({ visible: this.isActionSelected[actionName], type:  MARKUP_TYPES.MEASURE.ANGLECCLOCKWISE.type, created: true });
+        //this.service.setPropertiesPanelState({ visible: this.isActionSelected[actionName], markup:  MARKUP_TYPES.MEASURE.PATH, readonly: false });
+        RXCore.markupAngle(this.isActionSelected[actionName], true);
+        break;
+              
       case 'MEASURE_RECTANGULAR_AREA':
           this.service.setMeasurePanelDetailState({ visible: this.isActionSelected[actionName], type: MARKUP_TYPES.SHAPE.RECTANGLE.type, created: true });
           RXCore.markupAreaRect(this.isActionSelected[actionName]);
