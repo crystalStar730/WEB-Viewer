@@ -230,7 +230,23 @@ export class AppComponent implements AfterViewInit {
      return arr;
    }
 
-    
+    RXCore.onGui2DEntityInfo((vectorinfo : any, screenmouse :any, pathindex : any) => {
+
+      if(vectorinfo.Block.listed){
+
+
+        this.infoPanelVisible = true;
+        this.infoData = getBlockAttributes(vectorinfo.Block);
+
+      }else{
+
+        this.infoPanelVisible = false;
+
+      }
+
+
+
+    });
 
     RXCore.onGui2DEntityInfoScreen((vectorinfo : any, screenmouse :any, pathindex : any) => {
       // to use with vector entity selection tool mouse over.
@@ -252,8 +268,8 @@ export class AppComponent implements AfterViewInit {
 
           'Layer: ' + vectorinfo.Layername;
 
-          this.infoPanelVisible = true;
-          this.infoData = getBlockAttributes(vectorinfo.Block);
+          //this.infoPanelVisible = true;
+          //this.infoData = getBlockAttributes(vectorinfo.Block);
 
         }else{
           messagetext = 'Type: ' +  vectorinfo.Entity.typename + '<br>' +
