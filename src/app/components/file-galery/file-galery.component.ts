@@ -19,13 +19,21 @@ export class FileGaleryComponent implements OnInit {
 
   cacheUrl = RXCore.Config.xmlurlrel + '/cache/';
 
-  groups = [
+  
+
+  groups : any = RXCore.ViewUIConfig.demofiles;
+
+  /*groups = [
     {
       "name": "CAD Drawings",
       "items":
       [
         {"id": "CAD_AUTOCAD", "name": "AutoCAD Drawing", "file": "demo1.dwg", "type": "2D", "size": 106, "thumbnail" : this.cacheUrl + "demo1-1aaac-468d814f/1_1T.PNG"},
         {"id": "CAD_MIROSTATION", "name": "Microstation Drawing", "file": "demo5.dgn", "type": "2D", "size": 5706},
+
+        {"id": "CAD_INVENTOR", "name": "Inventor drawing", "file": "brewing-main.idw", "type": "2D", "size": 5706}
+
+        
         //{"id": "CAD_SOLIDWORKS", "name": "SolidWorks Drawing", "file": "Sprinkler.SLDDRW", "type": "2D", "size": 3127},
         //{"id": "CAD_COMPARE", "name": "Compare", "action": "compare", "file": ["RXHDEMO5.dwg","Rxhdemo6.dwg"], "type": "2D"}
       ]
@@ -36,7 +44,15 @@ export class FileGaleryComponent implements OnInit {
       [
         {"id": "C3D_IFCMODEL", "name": "IFC model", "file": "AC11-FZK-Haus-IFC.ifc", "type": "3D", "size": 4048},
         {"id": "C3D_KARLSRUHE", "name": "Karlsruhe institue", "file": "AC11-Institute-Var-2-IFC.ifc", "type": "3D", "size": 2769},
-        {"id": "C3D_HITO", "name": "HITO School building", "file": "Plan_20070203_2x3.ifc", "type": "3D", "size": 72915}
+        {"id": "C3D_HITO", "name": "HITO School building", "file": "Plan_20070203_2x3.ifc", "type": "3D", "size": 72915},
+
+        {"id": "C3D_TIE", "name": "7181 TIE Interceptor.stp", "file": "7181 TIE Interceptor.stp", "type": "3D", "size": 72915},
+
+        {"id": "C3D_APPLE", "name": "Apple.igs", "file": "Apple.igs", "type": "3D", "size": 72915},
+        {"id": "C3D_VALVE", "name": "Valve.ipt", "file": "Valve.ipt", "type": "3D", "size": 72915}
+
+
+
       ]
     },
     {
@@ -67,9 +83,22 @@ export class FileGaleryComponent implements OnInit {
         {"id": "demo9", "name": "Sign demo", "file": "demo9.pdf", "type": "PDF", "size": 68}
       ]
     }
-  ];
+  ];*/
 
   guiConfig$ = this.rxCoreService.guiConfig$;
+
+  /*this.rxCoreService.guidemofiles$.subscribe(demofiles => {
+
+
+    this.groups = demofiles;
+
+
+
+  });*/
+
+
+
+
   guiConfig: IGuiConfig | undefined;
   canCollaborate : boolean | undefined = false;
 
@@ -103,7 +132,18 @@ export class FileGaleryComponent implements OnInit {
     this.guiConfig$.subscribe(config => {
       this.guiConfig = config;
       this.canCollaborate = this.guiConfig.canCollaborate;
+
+
+      //this.groups = RXCore.ViewUIConfig.demofiles;
+
+      //this.groups = RXCore.DemoFiles;
+
+      //groups = config.
+
+
+
     });
+
 
     // If we can find the roomName in the URL, we will create a collabService
     // There maybe a better way to open a file, we may refactor this later

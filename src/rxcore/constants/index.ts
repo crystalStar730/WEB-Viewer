@@ -19,6 +19,10 @@ export const MARKUP_TYPES = {
             type: 3,
             subType: 1,
         },
+        MARKER:{
+            type: 3,
+            subType: 3,
+        },
         ELLIPSE: {
             type: 4,
         },

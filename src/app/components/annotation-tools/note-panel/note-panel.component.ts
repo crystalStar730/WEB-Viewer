@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { AnnotationToolsService } from '../annotation-tools.service';
 import { RXCore } from 'src/rxcore';
 import { IMarkup } from 'src/rxcore/models/IMarkup';
@@ -32,11 +32,13 @@ export class NotePanelComponent implements OnInit {
 
   guiConfig$ = this.rxCoreService.guiConfig$;
   guiRotatePage$ = this.rxCoreService.guiRotatePage$;
+  guiZoomUpdated$ = this.rxCoreService.guiZoomUpdated$;
+  scrolled : boolean = false;
 
 
   guiConfig: IGuiConfig | undefined;
 
-
+  markuptypes: any[] = [];
 
   /*added for comment list panel */
   note: any[] = [];
@@ -99,8 +101,19 @@ export class NotePanelComponent implements OnInit {
   showAll: boolean | undefined = true;
   showAnnotationsOnLoad : boolean | undefined = false;
 
+  markupTypes : Array<any> = [];
+  
+  //getMarkupTypes
+
 
   authorFilter: Set<string> = new Set<string>();
+
+  rxTypeFilter : Array<any> = [];
+
+  rxTypeFilterLoaded : Array<any> = [];
+
+  //const result = words.filter((word) => word.length > 6);
+
 
   typeFilter = {
     showText: true,
@@ -122,12 +135,14 @@ export class NotePanelComponent implements OnInit {
     showMeasureArea: true,
     showMeasurePath: true,
     showMeasureRectangle: true,
+    showMeasureAngle : true,
     showLink: true,
     showStamp: true,
   };
 
   constructor(
     private readonly rxCoreService: RxCoreService,
+    private el: ElementRef,
     private readonly annotationToolsService: AnnotationToolsService) {
       dayjs.extend(relativeTime);
       dayjs.extend(updateLocale);
@@ -187,6 +202,221 @@ export class NotePanelComponent implements OnInit {
     document.querySelectorAll(".leader-line-end,.leader-line").forEach(el => el.remove());
   }
 
+  private _setmarkupTypeDisplayFilter(type, onoff) : void{
+
+    for(let mi=0; mi < this.rxTypeFilter.length;mi++){
+
+      if(this.rxTypeFilter[mi].typename === type.typename){
+        this.rxTypeFilter[mi].show = onoff;
+      }
+
+    }
+
+
+
+  }
+  
+  private _setmarkupTypeDisplay(markup, onoff) : void{
+
+    let markuptype = RXCore.getMarkupType(markup.type, markup.subtype);
+
+    let typename = markuptype.type;
+
+    if(Array.isArray(markuptype.type)){
+      typename = markuptype.type[1];
+
+    }
+
+
+    for(let mi=0; mi < this.rxTypeFilter.length;mi++){
+
+      if(this.rxTypeFilter[mi].typename === typename){
+        this.rxTypeFilter[mi].show = onoff;
+      }
+
+    }
+    
+    this.rxTypeFilterLoaded = this.rxTypeFilter.filter((rxtype) => rxtype.loaded);
+
+  }
+    
+  
+  private _getmarkupTypeDisplay(markup): boolean | undefined{
+
+    let showtype : boolean = false;
+    let returntype : boolean = false;
+
+
+    let markuptype = RXCore.getMarkupType(markup.type, markup.subtype);
+
+    let typename = markuptype.type;
+
+    //labelType.label = "Freehand pen";
+    //labelType.type = 'PEN';
+
+    if(Array.isArray(markuptype.type)){
+      
+      typename = markuptype.type[1];
+
+    }
+    
+
+    for(let mi=0; mi < this.rxTypeFilter.length;mi++){
+
+      if(this.rxTypeFilter[mi].typename === typename){
+        showtype = this.rxTypeFilter[mi].show;
+        returntype = true;
+        //this.rxTypeFilter.push({typename : this.markupTypes[mi].typename, show : true});
+
+      }
+
+      
+
+    }
+
+
+    if(returntype){
+      return showtype;
+    }else{
+      return this.showAnnotations;
+    }
+    
+
+
+  }
+
+
+  private _updateRxFilter(){
+
+    this.rxTypeFilter = [];
+
+      this.markupTypes = RXCore.getMarkupTypes();
+
+      for(let mi=0; mi < this.markupTypes.length;mi++){
+
+        this.rxTypeFilter.push({
+          typename : this.markupTypes[mi].typename, 
+          label: this.markupTypes[mi].label, 
+          type : this.markupTypes[mi].type, 
+          subtype : this.markupTypes[mi].subtype, 
+          loaded : false,
+          show : true
+        });
+
+      }
+
+      //rxTypeFilter : Array<any> = [];
+
+      this.rxTypeFilterLoaded = this.rxTypeFilter.filter((rxtype) => rxtype.loaded);
+
+  }
+
+  private _setloadedtypeFilterOff(){
+
+    for(let mi=0; mi < this.rxTypeFilter.length;mi++){
+
+      this.rxTypeFilter[mi].loaded = false;
+
+
+    }
+
+
+  }
+
+  private _setloadedtypeFilter(annot){
+
+    let markuptype = RXCore.getMarkupType(annot.type, annot.subtype);
+
+    let typename = markuptype.type;
+
+    //labelType.label = "Freehand pen";
+    //labelType.type = 'PEN';
+
+    if(Array.isArray(markuptype.type)){
+      
+      typename = markuptype.type[1];
+
+    }
+
+    for(let mi=0; mi < this.rxTypeFilter.length;mi++){
+
+
+      if(this.rxTypeFilter[mi].typename === typename){
+        //this.rxTypeFilter[mi].show = onoff;
+        this.rxTypeFilter[mi].loaded = true;
+        this.rxTypeFilter[mi].show = annot.display;
+      }
+
+
+
+      //this.rxTypeFilter[mi].loaded = false;
+
+      /*if(this.rxTypeFilter[mi].type == annot.type && this.rxTypeFilter[mi].subtype == annot.subtype){
+
+      }*/
+
+      
+
+    }
+
+    
+
+
+  }
+
+  private scrollToAnnotItem(annotitem: any, showleader : boolean) {
+
+    if(!this.visible){
+      return;
+    }
+    // The scroolbar is in side-nav-menu, the div with class ".toggleable-panel-body",
+    // we'll find it by parentElement
+    let listContainer = this.el.nativeElement.querySelector(".list");
+
+    this.scrolled = false;
+
+    //[id]="'note-panel-' + item.markupnumber"
+
+    //listContainer = listContainer?.parentElement?.parentElement;
+    listContainer = listContainer?.parentElement;
+
+    if (!listContainer) {
+      console.warn("Failed to find scrool-able element!");
+      return;
+    }
+    let itemselector = "#note-panel-" + annotitem.markupnumber;
+    //const blockDom = listContainer.querySelector(`div[data-index='${annotitem.markupnumber}']`);
+    const annotDom = listContainer.querySelector(itemselector);
+
+    listContainer.addEventListener("scrollend", (event) => {
+
+      this.scrolled = true;
+      
+      if(showleader){
+        this.SetActiveCommentSelect(annotitem);
+        showleader = false;
+      }
+      
+
+    });
+
+    /*listContainer.onscroll = (event) => {
+      //output.textContent = "Element scroll event fired!";
+      this.scrolled = true;
+
+    };*/
+
+
+    if (annotDom) {
+      const topOffset = (annotDom as HTMLElement).offsetTop - listContainer.offsetTop;
+      listContainer.scrollTo({
+        left: 0,
+        top: topOffset,
+        behavior: "smooth"
+      })
+    }
+  }
+
   private _processList(list: Array<IMarkup> = [], annotList: Array<IMarkup> = []): void {
     /*modified for comment list panel */
 
@@ -203,7 +433,11 @@ export class NotePanelComponent implements OnInit {
           return this.showMeasurements;*/
 
 
-          if(i.type === MARKUP_TYPES.TEXT.type) {
+          return this._getmarkupTypeDisplay(i);
+          
+          //RXCore.getMarkupType()
+
+          /*if(i.type === MARKUP_TYPES.TEXT.type) {
             return this.typeFilter.showText;
           }
 
@@ -283,10 +517,8 @@ export class NotePanelComponent implements OnInit {
             return this.typeFilter.showStamp;
           }
 
-          
 
-
-        return this.showAnnotations;
+        return this.showAnnotations;*/
     })
     .filter((i: any) => {
     /*modified for comment list panel */
@@ -473,6 +705,7 @@ export class NotePanelComponent implements OnInit {
                   let page = i.pagenumber + 1;
                   this.pageNumbers = [];
                   this.pageNumbers.push({ value: -1, label: 'Select' });
+                  
                   for (let itm = 1; page >= itm; itm++) {
                     this.pageNumbers.push({ value: itm, label: itm });
                   }
@@ -506,7 +739,7 @@ export class NotePanelComponent implements OnInit {
 
         //let markupList = this.rxCoreService.getGuiMarkupList();
 
-/*         if(this.annotlist){
+        /*         if(this.annotlist){
           for(const markupItem of this.annotlist) {
             if(markupItem.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
               (markupItem.type === MARKUP_TYPES.MEASURE.AREA.type &&
@@ -520,28 +753,38 @@ export class NotePanelComponent implements OnInit {
           }
           this._processList(this.annotlist);
         }
- */
+       */
       }
 
 
       this._hideLeaderLine();
+
+      
+
     });
 
 
     this.annotationToolsService.selectedOption$.subscribe(option => {
-      switch(option.label) {
-        case "View":
-          this.onShowAll(false);
-          break;
-        case "Annotate":
-          this.onShowAnnotations(true);
-          this.onShowMeasurements(false);
-          break;
-        case "Measure":
-          this.onShowMeasurements(true);
-          this.onShowAnnotations(false);
-          break;  
+      
+      if(this.showAnnotationsOnLoad){
+        //disable main filters.
+      }else{
+        switch(option.label) {
+          case "View":
+            this.onShowAll(false);
+            break;
+          case "Annotate":
+            this.onShowAnnotations(true);
+            this.onShowMeasurements(false);
+            break;
+          case "Measure":
+            this.onShowMeasurements(true);
+            this.onShowAnnotations(false);
+            break;  
+        }
+  
       }
+      
     });
 
 
@@ -556,6 +799,12 @@ export class NotePanelComponent implements OnInit {
     this.guiConfig$.subscribe(config => {
       this.guiConfig = config;
 
+      
+
+    
+      //const result = words.filter((word) => word.length > 6);
+    
+
 
       this.showAnnotationsOnLoad = this.guiConfig.showAnnotationsOnLoad;
 
@@ -566,6 +815,14 @@ export class NotePanelComponent implements OnInit {
 
     });
 
+
+    this.guiZoomUpdated$.subscribe(({params, zoomtype}) => {
+      if(zoomtype == 0 || zoomtype == 1){
+        this._hideLeaderLine();
+      }
+
+    });
+      
     this.guiRotatePage$.subscribe(({degree, pageIndex}) => {
 
         //this.pageNumber = pageIndex;
@@ -600,11 +857,25 @@ export class NotePanelComponent implements OnInit {
       /*if (list.length > 0){
         
       }*/
+      this._updateRxFilter();
       this.annotlist = list;
 
       //this.onShowAll(this.showAll)
 
       this.authorFilter = new Set(this.getUniqueAuthorList());
+
+      this._setloadedtypeFilterOff();
+
+
+      for (let ai = 0;ai < this.annotlist.length; ai++){
+        this._setloadedtypeFilter(this.annotlist[ai]);
+      }
+
+
+      this.rxTypeFilterLoaded = this.rxTypeFilter.filter((rxtype) => rxtype.loaded);
+
+
+      //this.setloadedtypeFilter
       
 
       if (this.activeMarkupNumber > 0){
@@ -701,7 +972,12 @@ export class NotePanelComponent implements OnInit {
       this._hideLeaderLine();
 
       if(operation.modified || operation.created){
-        this.SetActiveCommentSelect(markup);
+        this.scrollToAnnotItem(markup, true);
+
+        if(!this.scrolled){
+          this.SetActiveCommentSelect(markup);
+        }
+        
       }
 
       if(operation.created){
@@ -736,6 +1012,7 @@ export class NotePanelComponent implements OnInit {
       this._hideLeaderLine();
     });
 
+    this.markuptypes = RXCore.getMarkupTypes();
 
   }
 
@@ -762,6 +1039,7 @@ export class NotePanelComponent implements OnInit {
   }
  */
 
+ 
   onSortFieldChanged(event): void {
     this.sortByField = event.value;
     this._processList(this.rxCoreService.getGuiMarkupList());
@@ -1470,10 +1748,23 @@ export class NotePanelComponent implements OnInit {
   private _updateMarkupDisplay(markupList: any[], filterFn: (markup: any) => boolean, onoff: boolean) {
 
 
+    //markup.type === type.type && markup.subtype === type.subtype
+
     if (!markupList) return;
     for (const markup of markupList) {
+
+      //console.log(markup.getMarkupType().label);
+
+
       if (filterFn(markup)) {
+
+        //console.log("measurecheck");
+        //console.log(markup.ismeasure);
+        //console.log(markup.type, markup.subtype);
+        
         markup.setdisplay(onoff);
+
+        this._setmarkupTypeDisplay(markup, onoff);
         
       }
     }
@@ -1507,7 +1798,9 @@ export class NotePanelComponent implements OnInit {
   onShowAnnotations(onoff: boolean) {
     const markupList = this.rxCoreService.getGuiMarkupList();
     this.showAnnotations = onoff;
-    this.typeFilter.showEllipse = onoff;
+
+    
+    /*this.typeFilter.showEllipse = onoff;
     this.typeFilter.showFreehand = onoff;
     this.typeFilter.showText = onoff;
     this.typeFilter.showPolyline = onoff;
@@ -1522,10 +1815,11 @@ export class NotePanelComponent implements OnInit {
     this.typeFilter.showFilledSingleEndArrow = onoff;
     this.typeFilter.showBothEndsArrow = onoff;
     this.typeFilter.showFilledBothEndsArrow = onoff;
+    this.typeFilter.showCloud = onoff;*/
 
+    this._updateMarkupDisplay(markupList, (markup) => !markup.ismeasure, onoff);
 
-
-    this._updateMarkupDisplay(
+    /*this._updateMarkupDisplay(
       markupList,
       (markup) => !(
         markup.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
@@ -1537,20 +1831,22 @@ export class NotePanelComponent implements OnInit {
         //markup.type === MARKUP_TYPES.SIGNATURE.type
       ),
       onoff
-    );
+    );*/
   }
 
   onShowMeasurements(onoff: boolean) {
     const markupList = this.rxCoreService.getGuiMarkupList();
     this.showMeasurements = onoff;
-    this.typeFilter.showMeasureLength = onoff;
-    this.typeFilter.showMeasureArea = onoff;
-    this.typeFilter.showMeasurePath = onoff;
-    this.typeFilter.showMeasureRectangle = onoff;
+    //this.typeFilter.showMeasureLength = onoff;
+    //this.typeFilter.showMeasureArea = onoff;
+    //this.typeFilter.showMeasurePath = onoff;
+    //this.typeFilter.showMeasureRectangle = onoff;
+    //this.typeFilter.showMeasureAngle = onoff;
 
-    this._updateMarkupDisplay(
-      markupList,
-      (markup) =>
+
+    this._updateMarkupDisplay(markupList, (markup) => markup.ismeasure, onoff);
+      
+      /*(markup) =>
         markup.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
         (markup.type === MARKUP_TYPES.MEASURE.AREA.type &&
           markup.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
@@ -1559,7 +1855,7 @@ export class NotePanelComponent implements OnInit {
         (markup.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
           markup.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType),
       onoff
-    );
+    );*/
   }
 
 
@@ -1582,6 +1878,61 @@ export class NotePanelComponent implements OnInit {
     this._processList(markupList);
   } */
 
+  showType(type: any){
+
+    let showtype : boolean = false;
+
+    //labelType.label = "Freehand pen";
+    //labelType.type = 'PEN';
+
+    
+    
+
+    for(let mi=0; mi < this.rxTypeFilter.length;mi++){
+
+      if(this.rxTypeFilter[mi].typename === type.typename){
+        showtype = this.rxTypeFilter[mi].show;
+
+      }
+
+    }
+
+    return showtype;
+
+    
+    
+  }
+
+  onShowType($event: any, type : any) {
+
+
+    /*let typename = type.typename;
+
+
+    if(Array.isArray(typename)){
+
+      typename = type.typename[1];
+
+    }*/
+    
+
+
+    this._handleShowMarkupType(type, $event, markup => markup.getMarkupType().label === type.label);
+
+
+    /*onShowFreehand($event: any) {
+      this._handleShowMarkup('showFreehand', $event,
+        markup => markup.type === MARKUP_TYPES.PAINT.FREEHAND.type && 
+                  markup.subtype === MARKUP_TYPES.PAINT.FREEHAND.subType);
+  
+    }*/
+
+
+
+
+  }    
+
+  
 
   onShowAll(onoff: boolean) {
     this.showAll = onoff;
@@ -1590,8 +1941,29 @@ export class NotePanelComponent implements OnInit {
 
   }
 
+  private _handleShowMarkupType(type :any, event: any, typeCheck: (markup: any) => boolean) {
+    
+    //this.typeFilter[filterProp] = event.target.checked;
+
+
+    this._setmarkupTypeDisplayFilter(type,event.target.checked);
+
+    this.rxTypeFilterLoaded = this.rxTypeFilter.filter((rxtype) => rxtype.loaded);
+
+
+    this._updateMarkupDisplay(
+      this.rxCoreService.getGuiMarkupList(),
+      typeCheck,
+      event.target.checked
+    );
+  }
+
+
   private _handleShowMarkup(filterProp: string, event: any, typeCheck: (markup: any) => boolean) {
+    
     this.typeFilter[filterProp] = event.target.checked;
+
+
     this._updateMarkupDisplay(
       this.rxCoreService.getGuiMarkupList(),
       typeCheck,
@@ -1734,14 +2106,18 @@ export class NotePanelComponent implements OnInit {
     return markupList.filter(typeCheck).length;
   }
 
+  private _calcCountType(typeCheck: (markup: any) => boolean): number {
+    const markupList = this.rxCoreService.getGuiMarkupList();
+    return markupList.filter(typeCheck).length;
+  }
   
 
   calcAnnotationCount() {
 
-    return this._calcCount(markup => 
-
-      !(
-        markup.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+    
+    return this._calcCount(markup => !(markup.ismeasure));
+      
+        /*markup.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
         (markup.type === MARKUP_TYPES.MEASURE.AREA.type &&
           markup.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
         (markup.type === MARKUP_TYPES.MEASURE.PATH.type &&
@@ -1750,24 +2126,31 @@ export class NotePanelComponent implements OnInit {
           markup.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType) ||
         markup.type === MARKUP_TYPES.SIGNATURE.type
       )
-    );
+    );*/
     
   }
 
   calcMeasurementsCount() {
 
-    return this._calcCount(markup => 
+    return this._calcCount(markup => (markup.ismeasure));
 
-      markup.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
+      /*markup.type === MARKUP_TYPES.MEASURE.LENGTH.type ||
       (markup.type === MARKUP_TYPES.MEASURE.AREA.type &&
         markup.subtype === MARKUP_TYPES.MEASURE.AREA.subType) ||
       (markup.type === MARKUP_TYPES.MEASURE.PATH.type &&
         markup.subtype === MARKUP_TYPES.MEASURE.PATH.subType) ||
       (markup.type === MARKUP_TYPES.MEASURE.RECTANGLE.type &&
         markup.subtype === MARKUP_TYPES.MEASURE.RECTANGLE.subType)
-    );
+    );*/
 
   }
+
+  calcTypeCount(type : any){
+
+    return this._calcCount(markup => markup.type === type.typename);
+
+  }
+
 
   calcTextCount() {
     return this._calcCount(markup => markup.type === MARKUP_TYPES.TEXT.type);
@@ -1864,11 +2247,34 @@ export class NotePanelComponent implements OnInit {
   }
 
   onAuthorFilterChange(author: string) {
+
+    let users :Array<any> = RXCore.getUsers();
+    let userindx = 0;
+
+    for(let ui = 0; ui < users.length; ui++){
+      if(users[ui].DisplayName === author){
+        userindx = ui;
+      } 
+
+    }
+
     if(this.authorFilter.has(author)) {
       this.authorFilter.delete(author);
+      
+      //turn off display for this user
+      RXCore.SetUserMarkupdisplay(userindx, false);
+
     } else {
       this.authorFilter.add(author);
+
+      RXCore.SetUserMarkupdisplay(userindx, true);
+      //turn on display for this user
+
     }
+
+
+
+
     this._processList(this.rxCoreService.getGuiMarkupList());
   }
 

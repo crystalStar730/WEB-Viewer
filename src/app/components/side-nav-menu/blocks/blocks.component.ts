@@ -91,7 +91,9 @@ export class BlocksComponent implements OnInit, OnDestroy {
     RXCore.onGui2DBlockHoverEvent((result, mouse) => {
       
 
-      if (!result) {
+      if (result) {
+
+        
 
         const insert = result.insert;
         const handle = insert.blockhandleHigh > 0 ? insert.blockhandleHigh.toString(16).toUpperCase() : '' + insert.blockhandleLow.toString(16).toUpperCase()

@@ -110,10 +110,14 @@ export class PropertiesPanelComponent implements OnInit {
         //this.title = "Polygon";
         //break;
 
-      case MARKUP_TYPES.PAINT.POLYLINE.type:
-        this.title = "Poly line";
+        
+      case MARKUP_TYPES.MEASURE.ANGLECCLOCKWISE.type:
+        this.title = "Measure Angle";
         break;
-
+      case MARKUP_TYPES.MEASURE.ANGLECLOCKWISE.type:
+          this.title = "Measure Angle";
+          break;
+  
 
       case MARKUP_TYPES.MEASURE.PATH.type:
         switch(this.markup.subtype) {
@@ -158,6 +162,8 @@ export class PropertiesPanelComponent implements OnInit {
     this.isFillOpacityVisible = true;
     this.isPropertyArrowsVisible = false;
 
+    console.log(this.markup);
+
     if (this.markup.type == MARKUP_TYPES.ARROW.type ) {
       //this.isFillOpacityVisible = false;
       this.isPropertyTextVisible = false;
@@ -175,10 +181,13 @@ export class PropertiesPanelComponent implements OnInit {
     } else if (
       (this.markup.type == MARKUP_TYPES.PAINT.POLYLINE.type && this.markup.subtype == MARKUP_TYPES.PAINT.POLYLINE.subType)
       || (this.markup.type == MARKUP_TYPES.MEASURE.PATH.type && this.markup.subtype == MARKUP_TYPES.MEASURE.PATH.subType)
-      || (this.markup.type == MARKUP_TYPES.MEASURE.LENGTH.type)) {
+      || (this.markup.type == MARKUP_TYPES.MEASURE.LENGTH.type)
+      || (this.markup.type == MARKUP_TYPES.MEASURE.ANGLECLOCKWISE.type && this.markup.subtype == MARKUP_TYPES.MEASURE.ANGLECLOCKWISE.subType)
+      || (this.markup.type == MARKUP_TYPES.MEASURE.ANGLECCLOCKWISE.type && this.markup.subtype == MARKUP_TYPES.MEASURE.ANGLECCLOCKWISE.subType)
+      ){
       this.propertyTabActiveIndex = 1;
       this.isPropertyTabsVisible = false;
-    }  else if (this.markup.type == MARKUP_TYPES.COUNT.type) {
+    } else if (this.markup.type == MARKUP_TYPES.COUNT.type) {
       this.propertyTabActiveIndex = 2;
       this.isPropertyTabsVisible = this.isFillOpacityVisible = false;
     } else if (this.markup.type == MARKUP_TYPES.STAMP.type) {
@@ -195,7 +204,7 @@ export class PropertiesPanelComponent implements OnInit {
       }
     }
 
-    console.log(this.isFillOpacityVisible);
+    
   }
 
   ngOnInit(): void {
@@ -235,7 +244,18 @@ export class PropertiesPanelComponent implements OnInit {
         font: markup.font.fontName,
         size: markup.font.height
       };
-      this.color = this.colorHelper.rgbToHex(markup.textcolor);
+      
+      try {
+        this.color = this.colorHelper.rgbToHex(markup.textcolor);
+      } catch (error) {
+        this.color = "#FF0000";
+      } 
+
+      
+
+
+
+
       this.strokeColor = this.colorHelper.rgbToHex(markup.strokecolor);
       this.strokeThickness = markup.linewidth;
       this.strokeLineStyle = markup.linestyle;

@@ -16,6 +16,9 @@ export class RXCore {
     public static Config: any = RxConfig;
     public static ViewUIConfig: any = UIConfig.ConfigJSON;
 
+    public static DemoFiles: any = UIConfig.ConfigJSON.demofiles;
+    //ConfigJSON
+
     public static birdseyetool(): void {
         RxCore.birdseyetool();
     }
@@ -705,6 +708,10 @@ export class RXCore {
         return RxCore.getReadOnly();
     }
 
+    public static getUsers(): Array<any> {
+        return RxCore.getUsers();
+    }
+
     public static getSignature(): string {
         return RxCore.GUI_Users.getSignature();
     }
@@ -712,6 +719,11 @@ export class RXCore {
     public static getCanChangeSign(): boolean {
         return RxCore.GUI_Users.getCanChangeSign();
     }
+
+    public static SetUserMarkupdisplay(num : number, state : boolean): void {
+        return RxCore.GUI_Users.SetUserMarkupdisplay(num, state);
+    }
+
 
     public static getTextRects(searchexpr: string, casesensitive: boolean): void {
         RxCore.getTextRects(searchexpr, casesensitive);
@@ -786,6 +798,15 @@ export class RXCore {
     public static getMarkupTypes(): Array<any> {
         return RxCore.getMarkupTypes();
     }
+
+    public static getMarkupType(type : number, subtype : number): {label : string, type : string } {
+
+        //labelType.label = "Freehand pen";
+        //labelType.type = 'PEN';
+
+        return RxCore.getMarkupType(type, subtype);
+    }
+
 
     public static restoreDefault(): void{
         RxCore.restoreDefault();
@@ -946,6 +967,12 @@ export class RXCore {
     public static onRotateDocument(callback: Function): void {
         RxCore.GUI_RotateDocument.connect(callback)
     }
+
+    public static onZoomUpdated(callback: Function): void {
+        RxCore.GUI_ZoomUpdated.connect(callback)
+    }
+
+    
 
     public static onGui2DEntityInfoScreen(callback: Function) {
         RxCore.GUI_2DEntityInfoScreen.connect(callback);

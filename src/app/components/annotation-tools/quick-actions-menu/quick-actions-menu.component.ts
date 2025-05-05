@@ -14,15 +14,18 @@ import { Subscription } from 'rxjs';
 })
 export class QuickActionsMenuComponent implements OnInit, OnDestroy {
   guiMode$ = this.rxCoreService.guiMode$;
+
   private guiMarkupSubscription: Subscription;
   private guiMarkupHoverSubscription: Subscription;
   private quickActionsMenuVisibleSubscription: Subscription;
   private guiOnResizeSubscription: Subscription;
+  private guiZoomUpdatedSubscription: Subscription;
 
   private x: number;
   private y: number;
 
   visible = false;
+  pageRotation : number = 0;
   annotation: any = -1;
   operation: any = undefined;
   rectangle: any;
@@ -31,6 +34,7 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
   menucenter : number = 0;
   buttongap : number = 10;
   buttonsize : number = 28;
+  menuheight : number = 48;
   numbuttons : number = 4;
   topgap : number = 16;
   addLink: boolean = false;
@@ -50,13 +54,26 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
 
   private _setPosition(): void {
     const markup = this.annotation;
+
+    if (markup == -1){
+      return;
+    }
+
     const yoffset = 20;
     const rotoffset = -30;
+    const offsetTop = 40;
+
 
     const wscaled = (markup.wscaled || markup.w) / window.devicePixelRatio;
     const hscaled = (markup.hscaled || markup.h) / window.devicePixelRatio;
     const xscaled = (markup.xscaled || markup.x) / window.devicePixelRatio;
     const yscaled = (markup.yscaled || markup.y) / window.devicePixelRatio;
+
+
+    
+    let absy = yscaled + ((hscaled - yscaled) * 0.5);
+    let absx = xscaled + ((wscaled - xscaled) * 0.5);
+
 
     let _dx = window == top ? - 82 : 0;
 
@@ -66,39 +83,220 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
     let dx = 0 + _dx;
     let dy = -10 + _dy;
 
+    //let xval = xscaled + dx + (wscaled / 2) + 20;
+    //let yval = yscaled + dy + (hscaled / 2) + 10;
+
+    let xval = xscaled;
+    let yval = yscaled;
+
+
+    let isLeft = xscaled < window.innerWidth * 0.5;
+    let isTop = yscaled < window.innerHeight * 0.5;
+
+
+    if(this.pageRotation != 0){
+
+      let lefttop = markup.getrotatedPoint(xscaled, yscaled);
+
+      isLeft = lefttop.x < window.innerWidth * 0.5;
+      isTop = lefttop.y < window.innerHeight * 0.5;
+
+
+    }
+
+
+    /*if(this.pageRotation != 0){
+      let rotpoint1 = markup.getrotatedPoint(xscaled, yscaled);
+      let rotpoint2 = markup.getrotatedPoint(absx, hscaled);
+      let rotpoint3 = markup.getrotatedPoint(absx, yscaled);
+      let rotpoint4 = markup.getrotatedPoint(xscaled, absy);
+      let rotpoint5 = markup.getrotatedPoint(absx, absy);
+
+      if (this.pageRotation == 90){
+        xval = rotpoint3.x;
+        yval = rotpoint3.y;
+      }
+
+      if (this.pageRotation == 180){
+        xval = rotpoint4.x;
+        yval = rotpoint4.y;
+      }
+
+      if (this.pageRotation == 270){
+        xval = rotpoint2.x;
+        yval = rotpoint2.y;
+      }
+
+      isLeft = rotpoint1.x < window.innerWidth * 0.5;
+      isTop = rotpoint1.y < window.innerHeight * 0.5;
+  
+
+    }*/
+
+    console.log(isLeft, isTop);
+
+
+
     switch (markup.type) {
       case MARKUP_TYPES.COUNT.type: {
-        let p = this.operation.created ? markup.countshapes[markup.countshapes.length - 1] : { x: this.x, y: this.y };
+
+        let rotpointorig = { x: this.x, y: this.y };
+
+        let p = this.operation.created ? markup.countshapes[markup.countshapes.length - 1] : rotpointorig;
         for (let point of markup.countshapes) {
-          if (Math.abs(point.x- this.x) + Math.abs(point.y - this.y) <= 20) {
+          if (Math.abs(point.x- rotpointorig.x) + Math.abs(point.y - rotpointorig.y) <= 20) {
             p = point;
           }
         }
+
+
+        if(this.pageRotation != 0){
+          rotpointorig = markup.getrotatedPoint(this.x, this.y);
+
+
+          let p = this.operation.created ? markup.countshapes[markup.countshapes.length - 1] : rotpointorig;
+          for (let opoint of markup.countshapes) {
+
+            let point = markup.getrotatedPoint(opoint.x,opoint.y);
+
+            if (Math.abs(point.x- rotpointorig.x) + Math.abs(point.y - rotpointorig.y) <= 20) {
+              p = point;
+            }
+          }
+  
+
+        }
+
+
+        xval = p.x / window.devicePixelRatio;
+        yval = p.y / window.devicePixelRatio;
+
+
         this.rectangle = {
-          x: (p.x / window.devicePixelRatio) - 5,
-          y: (p.y / window.devicePixelRatio) - 20,
+          x: xval - 5,
+          y: yval - 20,
           x_1: xscaled + wscaled - 20,
           y_1: yscaled - yoffset,
         };
         break;
       }
+      case MARKUP_TYPES.ERASE.type:
       case MARKUP_TYPES.SHAPE.POLYGON.type:
       case MARKUP_TYPES.PAINT.POLYLINE.type:
       case MARKUP_TYPES.MEASURE.PATH.type:
+      case MARKUP_TYPES.MEASURE.ANGLECLOCKWISE.type:
+      case MARKUP_TYPES.MEASURE.ANGLECCLOCKWISE.type:
       case MARKUP_TYPES.MEASURE.AREA.type: {
-        let p = markup.points[0];
+
+
+
+
+        /*let p = markup.points[0];
         for (let point of markup.points) {
           if (point.y < p.y) {
             p = point;
           }
-        }
+        }*/
 
         let topcenterx = xscaled + ((wscaled - xscaled) * 0.5);
         let topcentery = yscaled;
+
+        let topgapcalc = this.topgap;
+
+        if(isTop){
+          
+          topcentery = hscaled;
+          topgapcalc = -this.topgap - this.menuheight;
+
+        }else{
+          
+          topcentery = yscaled;
+          
+  
+
+        }
+
+
+
+        if(this.pageRotation != 0){
+          let rotpointpoly = markup.getrotatedPoint(topcenterx,topcentery);
+
+
+          if (this.pageRotation == 90){
+
+            if(isTop){
+              
+              rotpointpoly = markup.getrotatedPoint(wscaled, yscaled + (hscaled - yscaled) * 0.5);
+              
+   
+            }else{
+              rotpointpoly = markup.getrotatedPoint(xscaled, yscaled + (hscaled - yscaled) * 0.5);
+   
+            }
+
+          }
+
+          if (this.pageRotation == 180){
+
+            if(isTop){
+              
+              rotpointpoly = markup.getrotatedPoint(xscaled + ((wscaled - xscaled) * 0.5), yscaled);
+              //topcentery = yscaled;
+              
+   
+            }else{
+              
+              rotpointpoly = markup.getrotatedPoint(xscaled + ((wscaled - xscaled) * 0.5), hscaled);
+              
+   
+            }
+
+          }
+
+          if (this.pageRotation == 270){
+
+            if(isTop){
+              
+              rotpointpoly = markup.getrotatedPoint(xscaled, yscaled + (hscaled - yscaled) * 0.5);
+              //topcentery = yscaled;
+              
+   
+            }else{
+              
+              rotpointpoly = markup.getrotatedPoint(wscaled, yscaled + (hscaled - yscaled) * 0.5);
+              
+   
+            }
+
+          }
+
+
+
+          topcenterx = rotpointpoly.x;
+          topcentery = rotpointpoly.y;
+
+  
+
+        }
+
+        topcenterx = topcenterx / window.devicePixelRatio;
+        topcentery = topcentery / window.devicePixelRatio;
+
         
         this.numbuttons = (markup.subtype == MARKUP_TYPES.SHAPE.POLYGON.subType ? 4 : 3);
+
+        if (markup.type == MARKUP_TYPES.MEASURE.AREA.type){
+          this.numbuttons = 6;
+        }
+
+        if (markup.type == MARKUP_TYPES.ERASE.type){
+          this.numbuttons = 3;
+        }
+        
+
         this.menuwidth = (this.buttonsize * this.numbuttons) + (this.buttongap * (this.numbuttons + 1));
         this.menucenter = this.menuwidth * 0.5; 
+
 
         //buttongap : number = 10;
         //buttonsize : number = 28;
@@ -107,13 +305,13 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
           //x: (p.x / window.devicePixelRatio) - (markup.subtype == MARKUP_TYPES.SHAPE.POLYGON.subType ? 26 : 4),
           x : topcenterx - this.menucenter,
           //y: (p.y / window.devicePixelRatio) - 16,
-          y: topcentery - this.topgap,
+          y: topcentery - topgapcalc,
           x_1: xscaled + wscaled - 20,
           y_1: yscaled - yoffset,
         };
         break;
       }
-      case MARKUP_TYPES.NOTE.type:
+    /*case MARKUP_TYPES.NOTE.type:
 
       this.numbuttons = 3;
       this.menuwidth = (this.buttonsize * this.numbuttons) + (this.buttongap * (this.numbuttons + 1));
@@ -130,26 +328,109 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
           x_1: xscaled + wscaled - 20,
           y_1: yscaled - yoffset,
         };
-        break;
-      case MARKUP_TYPES.ERASE.type:
-        dx = ((wscaled - xscaled) / 2) - 5 + _dx;
+        break;*/
+    
+        /*dx = ((wscaled - xscaled) / 2) - 5 + _dx;
         this.rectangle = {
           x: xscaled + dx,
           y: yscaled + dy,
           x_1: xscaled + wscaled - 20,
           y_1: yscaled - yoffset,
         };
-        break;
+        break;*/
       case MARKUP_TYPES.ARROW.type:
+      case MARKUP_TYPES.MEASURE.LENGTH.type:
+
+
+      this.numbuttons = 4;
+      this.menuwidth = (this.buttonsize * this.numbuttons) + (this.buttongap * (this.numbuttons + 1));
+      this.menucenter = this.menuwidth * 0.5; 
+
+
+      let startx = xscaled;
+      let starty = yscaled;
+      
+      if(this.pageRotation != 0){
+        let rotpointarrow = markup.getrotatedPoint(xscaled,yscaled);
+
+
+        /*if (this.pageRotation == 90){
+
+          if(isTop){
+            
+            rotpointpoly = markup.getrotatedPoint(wscaled, yscaled + (hscaled - yscaled) * 0.5);
+            
+ 
+          }else{
+            rotpointpoly = markup.getrotatedPoint(xscaled, yscaled + (hscaled - yscaled) * 0.5);
+ 
+          }
+
+        }*/
+
+        /*if (this.pageRotation == 180){
+
+          if(isTop){
+            
+            rotpointpoly = markup.getrotatedPoint(xscaled + ((wscaled - xscaled) * 0.5), yscaled);
+            //topcentery = yscaled;
+            
+ 
+          }else{
+            
+            rotpointpoly = markup.getrotatedPoint(xscaled + ((wscaled - xscaled) * 0.5), hscaled);
+            
+ 
+          }
+
+        }*/
+
+        /*if (this.pageRotation == 270){
+
+          if(isTop){
+            
+            rotpointpoly = markup.getrotatedPoint(xscaled, yscaled + (hscaled - yscaled) * 0.5);
+            //topcentery = yscaled;
+            
+ 
+          }else{
+            
+            rotpointpoly = markup.getrotatedPoint(wscaled, yscaled + (hscaled - yscaled) * 0.5);
+            
+ 
+          }
+
+        }*/
+
+
+
+        startx = rotpointarrow.x;
+        starty = rotpointarrow.y;
+
+
+
+      }
+
+      startx = startx / window.devicePixelRatio;
+      starty = starty / window.devicePixelRatio;
+
+
         dx = -26 + _dx;
+
+
         this.rectangle = {
-          x: xscaled + dx,
-          y: yscaled + dy,
+          x: startx + dx,
+          y: starty + dy,
           x_1: xscaled + wscaled - 20,
           y_1: yscaled - yoffset,
         };
+
+
         break;
-      case MARKUP_TYPES.MEASURE.LENGTH.type:
+      /*case MARKUP_TYPES.MEASURE.LENGTH.type:
+
+
+
         this.rectangle = {
           x: xscaled - 5,
           y: yscaled - 5,
@@ -157,7 +438,7 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
           y_1: yscaled - yoffset,
         };
         break;
-        case MARKUP_TYPES.LINK:
+        /* case MARKUP_TYPES.LINK:
           this.numbuttons = 2;
           this.rectangle = {
             x: xscaled - 5,
@@ -165,33 +446,156 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
             x_1: xscaled + wscaled - 20,
             y_1: yscaled - yoffset,
           };
-          break;
+          break; */
 
       default:
 
       this.numbuttons = 4;
+
+      if(markup.type == 3 && markup.subtype == 6){
+        this.numbuttons = 7;
+      }
+
+      if(markup.type == 10){
+        this.numbuttons = 3;
+      }
+
+
       this.menuwidth = (this.buttonsize * this.numbuttons) + (this.buttongap * (this.numbuttons + 1));
       this.menucenter = this.menuwidth * 0.5;
 
+      dx = -this.menucenter;
+
+      if(isTop){
+        //this.rectangle.y = yscaled + hscaled + this.menuheight + offsetTop;
+
+        xval = xscaled + (wscaled * 0.5);
+        //yval = yscaled + hscaled;
+        
+        yval = Math.max(yscaled + hscaled, yscaled);
+        
+        dy = this.menuheight + offsetTop;
+      }else{
+        
+        xval = xscaled + (wscaled * 0.5);
+        //yval = yscaled;
+
+        yval = Math.min(yscaled + hscaled, yscaled);
+        
+
+        dy = -this.menuheight + offsetTop;
+
+      }
+
+
+
+      if(this.pageRotation != 0){
+
+        let maxy = Math.max(yscaled + hscaled, yscaled);
+        let miny = Math.min(yscaled + hscaled, yscaled);
+
+        let maxx = Math.max(xscaled + wscaled, xscaled);
+        let minx = Math.min(xscaled + wscaled, xscaled);
+
+        let boxheight = Math.abs(hscaled);
+        let boxwidth = Math.abs(wscaled);
+
+
+        let rotpoint1 = markup.getrotatedPoint(minx, miny);
+        let rotpoint2 = markup.getrotatedPoint(minx + (boxwidth * 0.5), maxy);
+        let rotpoint3 = markup.getrotatedPoint(minx + (boxwidth * 0.5), miny);
+        let rotpoint4 = markup.getrotatedPoint(minx, miny + (boxheight * 0.5));
+        let rotpoint5 = markup.getrotatedPoint(maxx, miny + (boxheight * 0.5));
+        let rotpoint6 = markup.getrotatedPoint(minx, miny + (boxheight * 0.5));
+        let rotpoint7 = markup.getrotatedPoint(maxx, maxy);
+        let rotpoint8 = markup.getrotatedPoint(maxx, miny);
+
+        if (this.pageRotation == 90){
+
+          if(isTop){
+            xval = rotpoint5.x;
+            yval = rotpoint5.y;
+          }else{
+            xval = rotpoint6.x;
+            yval = rotpoint6.y;
+
+          }
+
+          dx = -this.menucenter;
+        }
+
+        if (this.pageRotation == 180){
+
+          if(isTop){
+            xval = rotpoint3.x;
+            yval = rotpoint3.y;
+
+            dy = this.menuheight + offsetTop; //this.menuheight + offsetTop + offsetTop;
+
+          }else{
+            xval = rotpoint2.x;
+            yval = rotpoint2.y;
+            
+            
+            dy = 0; // -(this.menuheight - offsetTop);
+            
+          }
+
+          dx = -this.menucenter;
+
+
+
+          //xval = rotpoint4.x;
+          //yval = rotpoint4.y;
+        }
+
+        if (this.pageRotation == 270){
+          if(isTop){
+            xval = rotpoint6.x;
+            yval = rotpoint6.y;
+            
+
+          }else{
+
+            xval = rotpoint5.x;
+            yval = rotpoint5.y;
+
+
+          }
+
+          dx = -this.menucenter;
+        }
+   
+
+      }
+
 
         //dx = (wscaled / 2) - 24 + _dx;
-        dx = (wscaled / 2) - this.menucenter;
         
         this.rectangle = {
-          x: xscaled + dx,
-          y: (yscaled + dy) + rotoffset,
+          x: xval + dx,
+          y: (yval + dy) + rotoffset,
           x_1: xscaled + wscaled - 20,
           y_1: yscaled - yoffset,
         };
+
+        if(isTop){
+          this.rectangle.position = "bottom";
+        }else{
+          this.rectangle.position = "top";
+        }
+    
+
         break;
     }
 
-    if (this.rectangle.y < 0) {
+
+    /*if (this.rectangle.y < 0) {
       this.rectangle.y += hscaled + 72;
       this.rectangle.position = "bottom";
     } else {
       this.rectangle.position = "top";
-    }
+    }*/
 
     if (this.rectangle.x < 0) {
       this.rectangle.x = 0;
@@ -234,6 +638,16 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
       }
     });
 
+    this.guiZoomUpdatedSubscription = this.rxCoreService.guiZoomUpdated$.subscribe(({params, zoomtype}) => {
+      if(zoomtype == 0 || zoomtype == 1){
+        this.visible = false;
+      }
+
+    });
+
+
+
+
     this.guiMarkupHoverSubscription = this.rxCoreService.guiMarkupHover$.subscribe(({markup, x, y}) => {
       if (markup?.type == MARKUP_TYPES.COUNT.type) {
         this.x = x;
@@ -251,6 +665,14 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
       this.visible = false;
     });
 
+    this.rxCoreService.guiRotatePage$.subscribe(({degree, pageIndex}) => {
+
+      //this.pageNumber = pageIndex;
+      this.pageRotation = degree;
+
+    });
+
+
   }
 
   @HostListener('document:pointerup', ['$event'])
@@ -266,6 +688,8 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
     if (this.quickActionsMenuVisibleSubscription) this.quickActionsMenuVisibleSubscription.unsubscribe();
     if (this.guiOnResizeSubscription) this.guiOnResizeSubscription.unsubscribe();
     if (this.guiMarkupHoverSubscription) this.guiMarkupHoverSubscription.unsubscribe();
+    if (this.guiZoomUpdatedSubscription) this.guiZoomUpdatedSubscription.unsubscribe();
+
   }
 
   onEditClick(): void {
@@ -297,6 +721,8 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
         }
         break;
       case MARKUP_TYPES.MEASURE.PATH.type:
+      case MARKUP_TYPES.MEASURE.ANGLECLOCKWISE.type:
+      case MARKUP_TYPES.MEASURE.ANGLECCLOCKWISE.type:
       case MARKUP_TYPES.PAINT.POLYLINE.type:
         if (this.annotation.subtype == MARKUP_TYPES.MEASURE.PATH.subType) {
           this.annotationToolsService.setPropertiesPanelState({ visible : true });
@@ -308,7 +734,16 @@ export class QuickActionsMenuComponent implements OnInit, OnDestroy {
           this.annotationToolsService.setPropertiesPanelState({ visible: true, readonly: false });
         }
 
+        if (this.annotation.subtype == MARKUP_TYPES.MEASURE.ANGLECLOCKWISE.subType) {
+          this.annotationToolsService.setPropertiesPanelState({ visible : true });
+        }
+        if (this.annotation.subtype == MARKUP_TYPES.MEASURE.ANGLECCLOCKWISE.subType) {
+          this.annotationToolsService.setPropertiesPanelState({ visible : true });
+        }
+
+
         break;
+      
       default:
         this.annotationToolsService.setPropertiesPanelState({ visible: true, readonly: false });
         break;

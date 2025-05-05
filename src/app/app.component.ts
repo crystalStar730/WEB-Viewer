@@ -53,6 +53,8 @@ export class AppComponent implements AfterViewInit {
   // a random roomName.
   roomName: string = '';
 
+  infoData: Array<any> = [];
+  infoPanelVisible: boolean = false;
 
 
   constructor(
@@ -208,6 +210,26 @@ export class AppComponent implements AfterViewInit {
       }
     })
 
+    function getBlockAttributes(block: any): Array<any> {
+      const arr: Array<any> = [];
+ 
+     const attributes = RXCore.getBlockAttributes(block.index);
+     for (let i = 0; i < attributes.length; i++) {
+       const attribute = attributes[i];
+       arr.push({name: attribute.name, value: attribute.value});
+     }
+     // @ts-ignore
+     /* const insert = block.insert;
+     if (insert) {
+       arr.push({ name: "Handle", value: insert.blockhandleHigh > 0 ? insert.blockhandleHigh.toString(16).toUpperCase() : '' + insert.blockhandleLow.toString(16).toUpperCase() });
+       arr.push({ name: "Insert", value: `(${insert.insertX}, ${insert.insertY}, ${insert.insertZ})` });
+       arr.push({ name: "Scale", value: `(${insert.insertscaleX}, ${insert.insertscaleY}, ${insert.insertscaleZ})` });
+       arr.push({ name: "Rotation", value: insert.insertRot });
+     } */
+ 
+     return arr;
+   }
+
     
 
     RXCore.onGui2DEntityInfoScreen((vectorinfo : any, screenmouse :any, pathindex : any) => {
@@ -229,10 +251,16 @@ export class AppComponent implements AfterViewInit {
           'Block: ' + vectorinfo.Block.name + '<br>' +
 
           'Layer: ' + vectorinfo.Layername;
+
+          this.infoPanelVisible = true;
+          this.infoData = getBlockAttributes(vectorinfo.Block);
+
         }else{
           messagetext = 'Type: ' +  vectorinfo.Entity.typename + '<br>' +
 
           'Layer: ' + vectorinfo.Layername;
+
+          this.infoPanelVisible = false;
 
         }
         //entity = {type : vectorobj.entityType.type, handle : vectorobj.entityType.handleLow, typename : getvectorType(vectorobj.entityType.type), startp : startpoint, endp : endpoint, length : length};
@@ -244,12 +272,12 @@ export class AppComponent implements AfterViewInit {
 
         }
         //entity = {type : vectorobj.entityType.type, handle : vectorobj.entityType.handleLow, typename : getvectorType(vectorobj.entityType.type), startp : startpoint, endp : endpoint, length : length};
-        if(vectorinfo.Entity.length != undefined && !isNaN(vectorinfo.Entity.length)){
+        /*if(vectorinfo.Entity.length != undefined && !isNaN(vectorinfo.Entity.length)){
 
           messagetext = messagetext + '\n Length: ' + vectorinfo.Entity.length.toFixed(2);
                     
           
-        }
+        }*/
 
         const isLeft = screenmouse.x < window.innerWidth / 2;
         const isTop = screenmouse.y < window.innerHeight / 2;
@@ -555,6 +583,10 @@ export class AppComponent implements AfterViewInit {
 
     });
 
+    RXCore.onZoomUpdated((zoomparams:any, type : number) => {
+      this.rxCoreService.setGuiZoomUpdated(zoomparams, type);
+    });
+
 
     
 
@@ -811,7 +843,7 @@ export class AppComponent implements AfterViewInit {
   }
 
   onMouseDown(event): void {
-    const isPasteMarkUp = this.pasteStyle['display'] === 'flex';
+    /* const isPasteMarkUp = this.pasteStyle['display'] === 'flex';
 
     if (event.button === 2 || event.type === 'touchstart') {
       this.timeoutId = setTimeout(() => {
@@ -819,11 +851,11 @@ export class AppComponent implements AfterViewInit {
       }, 2000);
     } else if ((event.button === 0 && isPasteMarkUp) || (event.type === 'touchstart' && isPasteMarkUp)) {
       this.pasteStyle = { display: 'none' };
-    }
+    } */
   }
 
   onMouseUp(event): void {
-    if (event.button === 2 || event.type === 'touchend') clearTimeout(this.timeoutId);
+    // if (event.button === 2 || event.type === 'touchend') clearTimeout(this.timeoutId);
   }
 
   onKeydown(event):void{
@@ -848,8 +880,9 @@ export class AppComponent implements AfterViewInit {
 
 
   pasteMarkUp(): void {
-    RXCore.pasteMarkUp();
+/*     RXCore.pasteMarkUp();
     this.pasteStyle = { display: 'none' };
-  }
+ */  
+}
 
 }

@@ -134,7 +134,17 @@ export class ContextEditorComponent implements OnInit {
       this._setVisibility();
 
       this.text = markup.text;
-      this.color = this.colorHelper.rgbToHex(markup.textcolor);
+
+
+      try {
+        this.color = this.colorHelper.rgbToHex(markup.textcolor);
+      } catch (error) {
+        this.color = "#FF0000";
+      } 
+        
+      
+
+      
       this.font = {
           style: {
             bold: markup.font.bold,
@@ -199,6 +209,8 @@ export class ContextEditorComponent implements OnInit {
       this.visible = false;
       
     });
+
+
 
     this.rxCoreService.guiTextInput$.subscribe(({rectangle, operation}) => {
       if (operation === -1) return;

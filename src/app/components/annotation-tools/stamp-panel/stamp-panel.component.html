@@ -41,10 +41,10 @@
       <!-- UploadImage Section -->
       <section *ngIf="activeIndexStamp === 3">
         <div class="add-custom-stamp">
-          <input type="file" #fileUpload (change)="handleImageUpload($event)" style="display: none;" multiple>
+          <input type="file" #fileUpload (change)="handleImageUpload($event)" accept=".jpg,.jpeg,.png" style="display: none;" multiple>
           <button type="button" id="upload_button" class="btn btn-primary" (click)="fileUpload.click()">Upload Image Stamp</button>
         </div>
-        <div class="input-group" style="width: auto;margin: 0 7px;">
+        <!-- <div class="input-group" style="width: auto;margin: 0 7px;">
           <input
               type="text"
               placeholder="Remote image url"
@@ -56,7 +56,7 @@
               (click)="handleUploadImageUrl()">
               Upload
           </button>
-      </div>
+        </div> -->
         <div class="templates-list" style="height: 390px;">
           <div *ngFor="let template of uploadImageStamps; let i = index" style="display: flex; align-items: center;" class="image-container">
             <img

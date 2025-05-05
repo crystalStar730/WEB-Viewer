@@ -32,7 +32,7 @@ export class RxCoreService {
       logoUrl: "/assets/images/logo.svg"
     };
 
-
+    
     //import { RXCore } from 'src/rxcore';
 
     //this._defaultGuiConfig = UIConfigData.UIConfig; 
@@ -43,9 +43,16 @@ export class RxCoreService {
 
     this.setUIStyles(RXCore.ViewUIConfig.UIStyles);
 
+    this.setguidemofiles(RXCore.ViewUIConfig.demofiles);
+
+    
+
   }
 
+
+
   private _defaultGuiConfig: IGuiConfig;
+  
   private _guiConfig: BehaviorSubject<IGuiConfig> = new BehaviorSubject<IGuiConfig>({});
   public guiConfig$: Observable<IGuiConfig> = this._guiConfig.asObservable();
   public setGuiConfig(config: IGuiConfig, replaceDefault: boolean = false): void {
@@ -67,6 +74,7 @@ export class RxCoreService {
 
   }
 
+
   public guiFoxitReady: Subject<void> = new Subject<void>();
   public guiFoxitReady$: Observable<void> = this.guiFoxitReady.asObservable();
 
@@ -84,6 +92,22 @@ export class RxCoreService {
   public setGuiState(state: any): void {
     this._guiState.next(state);
   }
+
+
+  private _guidemofiles: Subject<{demofiles: any}> = new Subject<{demofiles: any}>();
+  guidemofiles$: Observable<{demofiles: any}> = this._guidemofiles.asObservable();
+  public setguidemofiles(demofiles: any): void {
+    this._guidemofiles.next({demofiles});
+  }
+
+  /*  private _guiRotateDocument: Subject<{degree: number}> = new Subject<{degree: number}>();
+  guiRotateDocument$: Observable<{degree : number}> = this._guiRotateDocument.asObservable();
+  public setGuiRotateDocument(degree :number): void {
+    this._guiRotateDocument.next({degree});
+  }
+
+  }*/
+
 
   public guiPage: Subject<any> = new Subject<any>();
   public guiPage$: Observable<any> = this.guiPage.asObservable();
@@ -135,7 +159,12 @@ export class RxCoreService {
     this._guiRotateDocument.next({degree});
   }
 
-
+  //zoom update
+  private _guiZoomUpdated: Subject<{params: any, zoomtype: number}> = new Subject<{params: any, zoomtype: number}>();
+  guiZoomUpdated$: Observable<{params: any, zoomtype: number}> = this._guiZoomUpdated.asObservable();
+  public setGuiZoomUpdated(params: any, zoomtype: number): void {
+    this._guiZoomUpdated.next({params, zoomtype});
+  }
 
 
   private _guiMarkupHover: Subject<{markup: IMarkup, x: number, y: number}> = new Subject<any>();

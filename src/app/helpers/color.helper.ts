@@ -9,6 +9,9 @@ export class ColorHelper {
             color = "#FF0000";
         }
         if (color?.startsWith('#')) return color;
+
+        
+
         return `#${rgbHex(color).toUpperCase()}`
     }
 

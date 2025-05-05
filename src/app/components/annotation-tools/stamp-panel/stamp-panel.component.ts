@@ -158,7 +158,14 @@ export class StampPanelComponent implements OnInit {
 
 
       if (markup === -1 || operation.created || operation.deleted) return;
-      this.color = this.colorHelper.rgbToHex(markup.textcolor);
+
+      try {
+        this.color = this.colorHelper.rgbToHex(markup.textcolor);
+      } catch (error) {
+        this.color = "#FF0000";
+      } 
+
+      
       this.font = {
           style: {
             bold: markup.font.bold,
@@ -331,8 +338,8 @@ export class StampPanelComponent implements OnInit {
           canvas.height = height;
   
           const ctx = canvas.getContext('2d')!;
-          ctx.fillStyle = 'white';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          //ctx.fillStyle = 'white';
+          //ctx.fillRect(0, 0, canvas.width, canvas.height);
           ctx.drawImage(img, 0, 0, width, height);
           const base64 = canvas.toDataURL();
           const base64Index = base64.indexOf('base64,') + 'base64,'.length;
@@ -503,7 +510,8 @@ handleImageUpload(event: any) {
         // // Dynamically determine the prefix and remove it
         // const base64Index = imageDataWithPrefix.indexOf('base64,') + 'base64,'.length;
         // const imageData = imageDataWithPrefix.substring(base64Index);
-        const {imageData, width, height} = await this.convertUrlToBase64Data(imageDataWithPrefix, 210);
+        //const {imageData, width, height} = await this.convertUrlToBase64Data(imageDataWithPrefix, 210);
+        const {imageData, width, height} = await this.convertUrlToBase64Data(imageDataWithPrefix);
 
         const imageName = file.name + '_' + new Date().getTime();
         //const imageType = file.type;

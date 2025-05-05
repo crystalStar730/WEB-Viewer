@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import { ColorHelper } from 'src/app/helpers/color.helper';
 import { MARKUP_TYPES, METRIC } from 'src/rxcore/constants';
 import { RxCoreService } from 'src/app/services/rxcore.service';
+
 import { ToastrService } from 'ngx-toastr';
 import { MeasurePanelService } from './measure-panel.service';
 
@@ -21,6 +22,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
 
   private stateSubscription: Subscription;
   private guiMarkupSubscription: Subscription;
+  private guifileloadSub : Subscription
 
   MARKUP_TYPES = MARKUP_TYPES;
 
@@ -59,6 +61,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
   selectedMetricOptionObj: any;
   activeScale: string;
   isActivefile: boolean;
+  setlabelonfileload : boolean = false;
 
 
   scaleOrCalibrate: number;
@@ -132,6 +135,39 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this._setDefaults();
+
+
+    this.guifileloadSub = this.rxCoreService.guiFileLoadComplete.subscribe((state) => {
+    
+
+      let scaleobject = {
+        dimPrecision : 2,
+        isSelected : true,
+        label :  "1000 Millimeter : 1 Meter",
+        metric : "0",
+        metricUnit  : "Meter",
+        value : "1000:1000",
+      }
+
+      //this.setlabelonfileload = true;
+
+      let obj = { 
+        value: scaleobject.value,
+        label: scaleobject.label,
+        metric: scaleobject.metric,
+        metricUnit: scaleobject.metricUnit,
+        dimPrecision: scaleobject.dimPrecision,
+        isSelected: scaleobject.isSelected
+      };
+      
+      //this.scalesOptions.push(obj);
+      //this.selectedScale = obj;    
+
+      //this.applyScale(scaleobject);
+      
+      
+    });
+
     
     this.stateSubscription = this.annotationToolsService.measurePanelState$.subscribe(state => {
       this.visible = state.visible;
@@ -484,6 +520,14 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
       this.isSelectedCalibrate = false;
       this.isCalibrateFinished = false;
     }
+
+    if(this.setlabelonfileload ){
+      this.setCurrentPageScale();
+      this.setlabelonfileload = false;
+
+    }
+
+    
 
     //this.showSuccess();
     //this.onCloseClick();

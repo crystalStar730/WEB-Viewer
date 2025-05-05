@@ -15,7 +15,7 @@
           (keyup)="onSearch($event)"
         />
       </div> -->
-      <div class="switch-container">
+      <div class="switch-container" *ngIf="!showAnnotationsOnLoad" >
         <!-- <h5>Show/Hide</h5> -->
         <div class="switch-all">
           <rx-switch [checked]="showAll" (change)="onShowAll($event)"></rx-switch>
@@ -54,13 +54,13 @@
         <div (onClose)="filterVisible = false">
           <div class="filters-container">
             <div class="filters-body">
-              <label>Created by</label>
+              <!-- <label>Created by</label>
               <rx-multi-select
                 [options]="createdByFilterOptions"
                 [allSelected]="true"
                 (selectedChange)="onCreatedByFilterChange($event)"
               >
-              </rx-multi-select>
+              </rx-multi-select> -->
               <label>Date of notes creation</label>
               <rx-date-picker
                 [startDate]="dateFilter.startDate"
@@ -79,7 +79,22 @@
               </rx-dropdown>
               <label *ngIf="calcAllCount() > 0">Type</label>
               <div class="filters-type">
-                <div class="type-item" *ngIf="calcTextCount() > 0">
+                
+                <!-- rxTypeFilter -->
+
+
+                
+
+                <div class="type-item" *ngFor="let markuptype of rxTypeFilterLoaded">
+                  
+                    <input type="checkbox" [checked]="showType(markuptype)" (change)="onShowType($event, markuptype)" />
+                    <span>{{markuptype.label}}</span>
+
+                </div>
+
+                <!-- *ngFor="let group of list | keyvalue : sortOrder; trackBy: trackByFn" -->
+                
+                <!-- <div class="type-item" *ngIf="calcTextCount() > 0">
                   <input type="checkbox" [checked]="typeFilter.showText" (change)="onShowText($event)" />
                   <span>Free Text</span>
                 </div>
@@ -182,7 +197,7 @@
                 <div class="type-item" *ngIf="calcLinkCount() > 0">
                   <input type="checkbox" [checked]="typeFilter.showLink" (change)="onShowLink($event)" />
                   <span>Link</span>
-                </div>
+                </div> -->
 
               </div>
 

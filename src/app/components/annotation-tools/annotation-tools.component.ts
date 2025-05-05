@@ -388,8 +388,6 @@ export class AnnotationToolsComponent implements OnInit {
         RXCore.markUpRedraw();
        break;
 
-        
-
     }
   }
 

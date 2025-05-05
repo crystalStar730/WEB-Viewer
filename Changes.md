@@ -1,3 +1,54 @@
+May 5, 2025
+
+### 1. Fixed vector and block selection related bugs.
+### 2. When "showAnnotationsOnLoad" is true, Measurement and Annotation main filters are disabled.
+### 3. When performing scroll zoom, comment list leade line and annotation context menu is hidden.
+### 4. Fixed filter by type in comment list.
+### 5. Annotation and measurement types should now be correctly filtered and counted in comment list.
+### 6. Introduced scroll to method for comment list for annotations not currently in view when the list is long.
+### 7. Removed filter by Author duplication for comment list and fixed the display of annotation when filtering by author.
+### 8. Fixed annotation cotext menu placement depending on placement on page.
+### 9. Fixed annotation cotext menu placement depending on page rotation.
+### 10. Corrected incorrect use of css in foxpage.html that resulted in page divider section not being displayed.
+### 11. Added context menu support for new measure type angle.
+### 12. Added comment list icon for new measure type angle.
+### 13. All shape annotation and measurement types should now be restricted to page using max,min rectangle calculation.
+### 14. Free pen should now be restricted to page.
+
+
+RxCore version is now 35.88.
+
+Updated and new files
+
+src\assets\scripts\rxcorefunctions.js
+
+src\app\app.component.html
+src\app\app.component.ts
+src\app\components\annotation-tools.component.ts
+src\app\components\annotation-tools\annotation-shape-icon\annotation-shape-icon.component.html
+src\app\components\annotation-tools\context-editor\context-editor.component.ts
+src\app\components\annotation-tools\measure-panel\measure-panel.component.ts
+src\app\components\annotation-tools\note-panel\note-panel.component.html
+src\app\components\annotation-tools\note-panel\note-panel.component.ts
+src\app\components\annotation-tools\properties-panel\properties-panel.component.ts
+src\app\components\annotation-tools\quick-actions-menu\quick-actions-menu.component.ts
+src\app\components\annotation-tools\stamp-panel\stamp-panel.component.html
+src\app\components\annotation-tools\stamp-panel\stamp-panel.component.ts
+src\app\components\bottom-toolbar\bottom-toolbar.component.ts
+src\app\components\bottom-toolbar\bottom-toolbar.service.ts
+src\app\components\side-nav-menu\blocks\blocks.component.ts
+src\app\components\tooltip\tooltip.component.scss
+src\app\components\tooltip\tooltip.component.ts
+src\app\helpers\color.helper.ts
+src\app\services\rxcore.service.ts
+src\assets\html\foxpage.html
+src\app\components\file-galery\file-galery.component.ts
+src\rxcore\index.ts
+src\rxcore\constants\index.ts
+
+
+
+
 April 21, 2025
 
 ### 1. Refined entity and block tooltip styles.
