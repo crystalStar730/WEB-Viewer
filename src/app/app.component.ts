@@ -156,7 +156,7 @@ export class AppComponent implements AfterViewInit {
     RXCore.setGlobalStyle(false);
 
     RXCore.useNoScale(false);
-    RXCore.useFixedScale(false);
+    //RXCore.useFixedScale(false);
 
     //this.markuptypes = RXCore.getMarkupTypes();
 
@@ -232,15 +232,19 @@ export class AppComponent implements AfterViewInit {
 
     RXCore.onGui2DEntityInfo((vectorinfo : any, screenmouse :any, pathindex : any) => {
 
-      if(vectorinfo.Block.listed){
+      if(vectorinfo.Block != undefined){
+
+        if(vectorinfo.Block.listed){
 
 
-        this.infoPanelVisible = true;
-        this.infoData = getBlockAttributes(vectorinfo.Block);
-
-      }else{
-
-        this.infoPanelVisible = false;
+          this.infoPanelVisible = true;
+          this.infoData = getBlockAttributes(vectorinfo.Block);
+  
+        }else{
+  
+          this.infoPanelVisible = false;
+  
+        }
 
       }
 
@@ -287,6 +291,35 @@ export class AppComponent implements AfterViewInit {
         
 
         }
+        if(vectorinfo.Entity.area != undefined && !isNaN(vectorinfo.Entity.area)){
+
+          messagetext = messagetext + '<br> Area: ' + vectorinfo.Entity.area.toFixed(2);
+
+        
+
+        }
+
+        if(vectorinfo.Entity.sweep != undefined && !isNaN(vectorinfo.Entity.sweep)){
+
+          //entity = {type : vectorobj.entityType.type, handle : vectorobj.entityType.handleLow, typename : getvectorType(vectorobj.entityType.type), length : length, sweep : sweep, radius : radius};
+          messagetext = messagetext + '<br> Sweep Angle: ' + vectorinfo.Entity.sweep.toFixed(2);
+
+        
+
+        }
+
+
+        if(vectorinfo.Entity.radius != undefined && !isNaN(vectorinfo.Entity.radius)){
+
+          //entity = {type : vectorobj.entityType.type, handle : vectorobj.entityType.handleLow, typename : getvectorType(vectorobj.entityType.type), length : length, sweep : sweep, radius : radius};
+          messagetext = messagetext + '<br> Radius: ' + vectorinfo.Entity.radius.toFixed(2);
+
+        
+
+        }
+
+
+
         //entity = {type : vectorobj.entityType.type, handle : vectorobj.entityType.handleLow, typename : getvectorType(vectorobj.entityType.type), startp : startpoint, endp : endpoint, length : length};
         /*if(vectorinfo.Entity.length != undefined && !isNaN(vectorinfo.Entity.length)){
 

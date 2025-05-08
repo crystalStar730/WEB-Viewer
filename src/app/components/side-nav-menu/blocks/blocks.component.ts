@@ -79,7 +79,8 @@ export class BlocksComponent implements OnInit, OnDestroy {
       this.searchPanelVisible = false;
     });
 
-    RXCore.getBlockInsert(true);
+    //RXCore.getBlockInsert(true);
+
     RXCore.onGui2DBlock((block: IVectorBlock) => {
       console.log('onGui2DBlock');
       this.onSelectBlock(block, true);
@@ -133,7 +134,7 @@ export class BlocksComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    RXCore.getBlockInsert(false);
+    //RXCore.getBlockInsert(false);
     this.tooltipService.closeTooltip();
     
   }
