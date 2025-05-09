@@ -230,12 +230,14 @@ export class AppComponent implements AfterViewInit {
         } 
 
         const attributes = RXCore.getBlockAttributes(result.index);
-        const tag = attributes.length == 0 ? ' (No Attribute)' : '';
+        //const tag = attributes.length == 0 ? ' (No Attribute)' : '';
+        const tag = attributes.length > 0 ? '<br>Attribute: Yes' : '';
 
 
         this.tooltipService.tooltip({
           title: 'Block Information',
           message: `Name: ${result.name}${tag}`,
+
           duration: 3000,
           position: [mouse.x / window.devicePixelRatio + offsetX, mouse.y / window.devicePixelRatio + offsetY],
         });
@@ -288,12 +290,14 @@ export class AppComponent implements AfterViewInit {
 
 
             const attributes = RXCore.getBlockAttributes(vectorinfo.Block.index);
-            const tag = attributes.length == 0 ? ' (No Attribute)' : '';
+            
+            const tag = attributes.length > 0 ? '<br>Attribute: Yes' : '';
+
+            //const tag = attributes.length == 0 ? ' (No Attribute)' : '';
   
             messagetext = 'Type: ' +  vectorinfo.Entity.typename + '<br>' +
 
             'Block: ' + vectorinfo.Block.name + tag + '<br>' +
-  
             'Layer: ' + vectorinfo.Layername;
   
           }else{
