@@ -9,6 +9,7 @@ import { RecentFilesService } from './components/recent-files/recent-files.servi
 import { UserService } from './components/user/user.service';
 import { Title } from '@angular/platform-browser';
 import { IGuiConfig } from 'src/rxcore/models/IGuiConfig';
+import { IVectorBlock } from 'src/rxcore/models/IVectorBlock';
 import { CollabService } from './services/collab.service';
 import { AnnotationStorageService } from './services/annotation-storage.service';
 import { TooltipService } from './components/tooltip/tooltip.service';
@@ -105,6 +106,12 @@ export class AppComponent implements AfterViewInit {
       this.fileGaleryService.openModal();
     }
     
+    this.rxCoreService.guiSelectedVectorBlock$.subscribe((block)=>{
+      setTimeout(() => {
+        this.showBlockInfo(block);
+      });
+    });
+
     
   }
   
@@ -169,9 +176,34 @@ export class AppComponent implements AfterViewInit {
 
     RXCore.initialize({ offsetWidth: 0, offsetHeight: 0});
 
+    RXCore.onGui2DBlock((block: IVectorBlock) => {
 
-    RXCore.onGui2DBlock((blockobj : any) => {
-      console.log(blockobj);
+      console.log('onGui2DBlock');
+      RXCore.unselectAllBlocks();
+      let lastBlock = this.rxCoreService.getSelectedVectorBlock();
+      if (lastBlock) {
+          // if select the same block, then unselect it
+          if (block && block.index === lastBlock.index) {
+            // @ts-ignore
+            lastBlock.selected = false;
+            RXCore.markUpRedraw();
+            this.rxCoreService.setSelectedVectorBlock(undefined);
+            return;
+          }
+          // @ts-ignore
+          lastBlock.selected = false;
+      }
+
+      if (block) {
+        // @ts-ignore
+        block.selected = true;     
+        //RXCore.selectVectorBlock(block.index);
+      }
+      RXCore.markUpRedraw();
+      this.rxCoreService.setSelectedVectorBlock(block);
+
+
+      
     });
 
     RXCore.onGui2DBlockHoverEvent((result, mouse) => {
@@ -197,9 +229,13 @@ export class AppComponent implements AfterViewInit {
 
         } 
 
+        const attributes = RXCore.getBlockAttributes(result.index);
+        const tag = attributes.length == 0 ? ' (No Attribute)' : '';
+
+
         this.tooltipService.tooltip({
           title: 'Block Information',
-          message: `Name: ${result.name}`,
+          message: `Name: ${result.name}${tag}`,
           duration: 3000,
           position: [mouse.x / window.devicePixelRatio + offsetX, mouse.y / window.devicePixelRatio + offsetY],
         });
@@ -210,26 +246,7 @@ export class AppComponent implements AfterViewInit {
       }
     })
 
-    function getBlockAttributes(block: any): Array<any> {
-      const arr: Array<any> = [];
- 
-     const attributes = RXCore.getBlockAttributes(block.index);
-     for (let i = 0; i < attributes.length; i++) {
-       const attribute = attributes[i];
-       arr.push({name: attribute.name, value: attribute.value});
-     }
-     // @ts-ignore
-     /* const insert = block.insert;
-     if (insert) {
-       arr.push({ name: "Handle", value: insert.blockhandleHigh > 0 ? insert.blockhandleHigh.toString(16).toUpperCase() : '' + insert.blockhandleLow.toString(16).toUpperCase() });
-       arr.push({ name: "Insert", value: `(${insert.insertX}, ${insert.insertY}, ${insert.insertZ})` });
-       arr.push({ name: "Scale", value: `(${insert.insertscaleX}, ${insert.insertscaleY}, ${insert.insertscaleZ})` });
-       arr.push({ name: "Rotation", value: insert.insertRot });
-     } */
- 
-     return arr;
-   }
-
+    
     RXCore.onGui2DEntityInfo((vectorinfo : any, screenmouse :any, pathindex : any) => {
 
       if(vectorinfo.Block != undefined){
@@ -237,8 +254,9 @@ export class AppComponent implements AfterViewInit {
         if(vectorinfo.Block.listed){
 
 
-          this.infoPanelVisible = true;
-          this.infoData = getBlockAttributes(vectorinfo.Block);
+          //this.infoPanelVisible = true;
+          this.showBlockInfo(vectorinfo.Block);
+          //this.infoData = getBlockAttributes(vectorinfo.Block);
   
         }else{
   
@@ -264,23 +282,29 @@ export class AppComponent implements AfterViewInit {
         'Layer: ' + vectorinfo.Layername;
 
 
-        if(vectorinfo.Block.listed){
+        if(vectorinfo.Block != undefined){
+
+          if(vectorinfo.Block.listed){
 
 
-          messagetext = 'Type: ' +  vectorinfo.Entity.typename + '<br>' +
-          'Block: ' + vectorinfo.Block.name + '<br>' +
+            const attributes = RXCore.getBlockAttributes(vectorinfo.Block.index);
+            const tag = attributes.length == 0 ? ' (No Attribute)' : '';
+  
+            messagetext = 'Type: ' +  vectorinfo.Entity.typename + '<br>' +
 
-          'Layer: ' + vectorinfo.Layername;
-
-          //this.infoPanelVisible = true;
-          //this.infoData = getBlockAttributes(vectorinfo.Block);
-
-        }else{
-          messagetext = 'Type: ' +  vectorinfo.Entity.typename + '<br>' +
-
-          'Layer: ' + vectorinfo.Layername;
-
-          this.infoPanelVisible = false;
+            'Block: ' + vectorinfo.Block.name + tag + '<br>' +
+  
+            'Layer: ' + vectorinfo.Layername;
+  
+          }else{
+            messagetext = 'Type: ' +  vectorinfo.Entity.typename + '<br>' +
+  
+            'Layer: ' + vectorinfo.Layername;
+  
+            this.infoPanelVisible = false;
+  
+          }
+  
 
         }
         //entity = {type : vectorobj.entityType.type, handle : vectorobj.entityType.handleLow, typename : getvectorType(vectorobj.entityType.type), startp : startpoint, endp : endpoint, length : length};
@@ -856,6 +880,36 @@ export class AppComponent implements AfterViewInit {
 
   ngOnDestroy() {
     this.tooltipService.closeTooltip();
+    this.infoPanelVisible = false;
+  }
+
+  private getBlockAttributes(block: IVectorBlock): Array<any> {
+    const arr: Array<any> = [];
+
+    const attributes = RXCore.getBlockAttributes(block.index);
+    for (let i = 0; i < attributes.length; i++) {
+      const attribute = attributes[i];
+      arr.push({name: attribute.name, value: attribute.value});
+    }
+    // @ts-ignore
+    /* const insert = block.insert;
+    if (insert) {
+      arr.push({ name: "Handle", value: insert.blockhandleHigh > 0 ? insert.blockhandleHigh.toString(16).toUpperCase() : '' + insert.blockhandleLow.toString(16).toUpperCase() });
+      arr.push({ name: "Insert", value: `(${insert.insertX}, ${insert.insertY}, ${insert.insertZ})` });
+      arr.push({ name: "Scale", value: `(${insert.insertscaleX}, ${insert.insertscaleY}, ${insert.insertscaleZ})` });
+      arr.push({ name: "Rotation", value: insert.insertRot });
+    } */
+
+    return arr;
+  }
+
+  showBlockInfo(block: IVectorBlock | undefined) {
+    if (!block) {
+       this.infoPanelVisible = false;
+    } else {
+      this.infoPanelVisible = true;
+      this.infoData = this.getBlockAttributes(block);
+    }
   }
 
   getRoomName() {

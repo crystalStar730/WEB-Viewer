@@ -764,6 +764,14 @@ export class NotePanelComponent implements OnInit {
 
     });
 
+    this.rxCoreService.guiOnResize$.subscribe(() => {
+
+      RXCore.redrawCurrentPage();
+      
+
+    });
+
+
 
     this.annotationToolsService.selectedOption$.subscribe(option => {
       

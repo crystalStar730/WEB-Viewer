@@ -214,6 +214,9 @@ export class RXCore {
         RxCore.selectVectorBlock(blockid);
     }
     
+    public static unselectAllBlocks(): void {
+        RxCore.unselectAllBlocks();
+    }
 
     public static select3DMarkup(onoff: boolean): void {
         RxCore.select3DMarkup(onoff);
@@ -946,6 +949,15 @@ export class RXCore {
         RxCore.redrawPage(pagenum);
     }
 
+    public static redrawCurrentPage(): void {
+        
+        RxCore.redrawCurrentPage();
+
+    }
+
+
+    
+
     public static uploadSignature(PNGImage: any, username: string, binitial: boolean = false): void {
         RxCore.uploadSignature(PNGImage, username, binitial);
     }
@@ -1042,7 +1054,7 @@ export class RXCore {
 
     }
 
-
+    //redrawCurrentPage
 
     /*public static onGuiMarkupPaths(callback: (list: Array<any>) => void): void {
         RxCore.GUI_MarkupPaths.connect(callback);

@@ -212,9 +212,22 @@ export class RxCoreService {
   public setGuiVectorBlocks(list: Array<IVectorBlock>): void {
     this._guiVectorBlocks.next(list);
   }
+
+
+
   public getGuiVectorBlocks(): Array<IVectorBlock> {
     return this._guiVectorBlocks.getValue();
   }
+
+  private _guiSelectedVectorBlock: BehaviorSubject<IVectorBlock | undefined> = new BehaviorSubject<IVectorBlock | undefined>(undefined);
+  guiSelectedVectorBlock$: Observable<IVectorBlock | undefined> = this._guiSelectedVectorBlock.asObservable();
+  public setSelectedVectorBlock(value: IVectorBlock | undefined): void {
+    this._guiSelectedVectorBlock.next(value);
+  }
+  public getSelectedVectorBlock(): IVectorBlock | undefined {
+    return this._guiSelectedVectorBlock.getValue();
+  }
+
 
   private _gui3DParts: BehaviorSubject<Array<IBlock3D>> = new BehaviorSubject<Array<IBlock3D>>([]);
   gui3DParts$: Observable<Array<IBlock3D>> = this._gui3DParts.asObservable();

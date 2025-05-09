@@ -22,8 +22,8 @@ export class BlocksComponent implements OnInit, OnDestroy {
   lastSelectBlock?: IVectorBlock;
   lastSubBlockIndex?: number;
 
-  infoData: Array<IBlockAttribute> = [];
-  infoPanelVisible: boolean = false;
+  //infoData: Array<IBlockAttribute> = [];
+  //infoPanelVisible: boolean = false;
 
   searchPanelVisible = false;
   searchAttriName: string;
@@ -75,67 +75,57 @@ export class BlocksComponent implements OnInit, OnDestroy {
       });
 
       // close panels when switch docs
-      this.infoPanelVisible = false;
+      //this.infoPanelVisible = false;
       this.searchPanelVisible = false;
     });
 
-    //RXCore.getBlockInsert(true);
+    this.rxCoreService.guiSelectedVectorBlock$.subscribe((block)=>{
+      if (!block) {
+        return;
+      }
 
-    RXCore.onGui2DBlock((block: IVectorBlock) => {
-      console.log('onGui2DBlock');
-      this.onSelectBlock(block, true);
-    });
-
-
-    
-
-    RXCore.onGui2DBlockHoverEvent((result, mouse) => {
-      
-
-      if (result) {
-
-        
-
-        const insert = result.insert;
-        const handle = insert.blockhandleHigh > 0 ? insert.blockhandleHigh.toString(16).toUpperCase() : '' + insert.blockhandleLow.toString(16).toUpperCase()
-
-        const isLeft = mouse.x < window.innerWidth / 2;
-        const isTop = mouse.y < window.innerHeight / 2;
-        let offsetX = 0;
-        let offsetY = 0;
-        if (isLeft) {
-          offsetX = 20;
-        } else {
-          offsetX = -140;
-        }
-        if (isTop) {
-          offsetY = 20;
-        } else {
-          offsetX = -70;
-        }  
-
-
-        this.tooltipService.tooltip({
-          title: 'Block Information',
-          message: `Name: ${result.name}`,
-          duration: 3000,
-          position: [mouse.x / window.devicePixelRatio + offsetX, mouse.y / window.devicePixelRatio + offsetY],
-        });
-
-        
-      } else {
-
-        this.tooltipService.closeTooltip();
+      // Avoid calling when triggered from the UI.
+      if (this.lastSelectBlock && this.lastSelectBlock.index === block.index) {
+        return;
 
       }
 
-    })
+      if (this.lastSubBlockIndex != undefined) {
+        // @ts-ignore
+        this.vectorBlocks[this.lastSubBlockIndex][0].fold = 0;
+      }
+
+      this.vectorBlocks.forEach((subBlocks, i) => {
+        subBlocks.forEach(b => {
+          if (b === block) {
+            this.lastSubBlockIndex = i;
+            return;
+          }
+        })
+      });
+
+      if (this.lastSubBlockIndex && this.vectorBlocks[this.lastSubBlockIndex]) {
+        // @ts-ignore
+        this.vectorBlocks[this.lastSubBlockIndex][0].fold = 1;
+      }
+      setTimeout(() => {
+        if (block) {
+          this.scrollToBlockItem(block);
+        }
+      }, 0);
+  });
+    
+
+    
+    this.rxCoreService.setSelectedVectorBlock(undefined);
+        
 
   }
 
   ngOnDestroy() {
-    //RXCore.getBlockInsert(false);
-    this.tooltipService.closeTooltip();
+    
+    this.rxCoreService.setSelectedVectorBlock(undefined);
+    
     
   }
 
@@ -169,14 +159,18 @@ export class BlocksComponent implements OnInit, OnDestroy {
     event.stopPropagation(); // Prevent the click event from propagating to the parent
     // @ts-ignore
     subBlocks[0].fold = Number(!subBlocks[0].fold);
+    this.lastSelectBlock = undefined;
+    let lastBlock = this.rxCoreService.getSelectedVectorBlock();
       // @ts-ignore
-      if (this.lastSelectBlock && subBlocks[0].fold == 0) {
+
+      if (lastBlock && subBlocks[0].fold == 0) {
         for(const b of subBlocks) {
-          if (b === this.lastSelectBlock) {
+          if (b === lastBlock) {
             // @ts-ignore
-            this.lastSelectBlock.selected = false;
-            this.lastSelectBlock = undefined;
+            lastBlock.selected = false;
+  
             RXCore.markUpRedraw();
+            this.rxCoreService.setSelectedVectorBlock(undefined);
             break;
           }
         }
@@ -189,68 +183,37 @@ export class BlocksComponent implements OnInit, OnDestroy {
     RXCore.vectorBlocksAll(onoff);
   }
 
-  onSelectBlock(block: IVectorBlock, isTriggeredFromCanvas = false) {
-    if (this.lastSelectBlock) {
-      // if select the same block, then unselect it
-      if (block && block.index === this.lastSelectBlock.index) {
-        // @ts-ignore
-        this.lastSelectBlock.selected = false;
-        this.lastSelectBlock = undefined;
-        RXCore.markUpRedraw();
 
-        if (this.infoPanelVisible) {
-          this.onVectorBlockInfoClick(undefined, undefined);
+  onSelectBlock(block: IVectorBlock) {
+    RXCore.unselectAllBlocks();   
+    let lastBlock = this.rxCoreService.getSelectedVectorBlock();
+    if (lastBlock) {
+        // if select the same block, then unselect it
+        if (block && block.index === lastBlock.index) {
+          this.lastSelectBlock = undefined;
+          // @ts-ignore
+          lastBlock.selected = false;
+          RXCore.markUpRedraw();
+          this.rxCoreService.setSelectedVectorBlock(undefined);
+          return;
         }
-
-        return;
-      }
-
-      if (isTriggeredFromCanvas && this.lastSubBlockIndex != undefined) {
         // @ts-ignore
-        
-        this.vectorBlocks[this.lastSubBlockIndex][0].fold = 0;
-      }
+        lastBlock.selected = false;
 
-      // @ts-ignore
-      this.lastSelectBlock.selected = false;
-      this.lastSelectBlock = undefined;
     }
     if (block) {
+      this.lastSelectBlock = block;
       // @ts-ignore
       block.selected = true;
-      this.lastSelectBlock = block;
-      if (isTriggeredFromCanvas) {
-        this.vectorBlocks.forEach((subBlocks, i) => {
-          subBlocks.forEach(b => {
-            if (b === block) {
-              this.lastSubBlockIndex = i;
-              return;
-            }
-          })
-        });
-        if (this.lastSubBlockIndex && this.vectorBlocks[this.lastSubBlockIndex]) {
-          // @ts-ignore
-          this.vectorBlocks[this.lastSubBlockIndex][0].fold = 1;
-        }
-        setTimeout(() => {
-          if (this.lastSelectBlock) {
-            this.scrollToBlockItem(this.lastSelectBlock);
-          }
-        }, 0);
-      } else {
-       //RXCore.markVectorBlock(block.index);
-       RXCore.selectVectorBlock(block.index);
-       RXCore.markUpRedraw();
-       
-      }
-
-      if (this.infoPanelVisible) {
-        this.onVectorBlockInfoClick(undefined, block);
-      }
-
-
+      RXCore.selectVectorBlock(block.index);
     }
+
+    RXCore.markUpRedraw();
+    this.rxCoreService.setSelectedVectorBlock(block);
   }
+
+
+  
 
   private scrollToBlockItem(block: IVectorBlock) {
     // The scroolbar is in side-nav-menu, the div with class ".toggleable-panel-body",
@@ -258,7 +221,7 @@ export class BlocksComponent implements OnInit, OnDestroy {
     let listContainer = this.el.nativeElement.querySelector(".vector-blocks-container");
     listContainer = listContainer?.parentElement?.parentElement;
     if (!listContainer) {
-      console.warn("Failed to find scrool-able element!");
+      //console.warn("Failed to find scrool-able element!");
       return;
     }
     const blockDom = listContainer.querySelector(`li[data-index='${block.index}']`);
@@ -281,6 +244,27 @@ export class BlocksComponent implements OnInit, OnDestroy {
     //block.state = !block?.state;
     RXCore.changeVectorBlock(block?.index);
     
+  }
+
+  onVectorBlockInfoClick(event: Event | undefined, block: IVectorBlock | undefined): void {  
+    if (event) {
+      event.stopPropagation();
+    }
+    this.lastSelectBlock = block;
+    this.rxCoreService.setSelectedVectorBlock(block);
+  }
+
+  onVectorBlockInfoDbClick(event: Event): void {
+    // do nothing but prevent the click event
+    event.stopPropagation();
+  }
+
+  onVectorBlockDbClick(block: IVectorBlock): void {
+    RXCore.zoomToBlockInsert(block.index);
+  }
+
+  onSearchTextChange() {
+    this.isSearchResultDirty = true;
   }
 
   private getBlockAttributes(block: IVectorBlock): Array<IBlockAttribute> {
@@ -307,36 +291,7 @@ export class BlocksComponent implements OnInit, OnDestroy {
 
     return arr;
   }
-
-  onVectorBlockInfoClick(event: Event | undefined, block: IVectorBlock | undefined): void {
-    
-    if (event) {
-      event.stopPropagation();
-    }
-
-    // @ts-ignore
-    if (!block || block.hasAttribute !== true) {
-      this.infoData = [];
-      return;
-    }
-    
-    this.infoPanelVisible = true;
-    this.infoData = this.getBlockAttributes(block);
-  }
-
-  onVectorBlockInfoDbClick(event: Event): void {
-    // do nothing but prevent the click event
-    event.stopPropagation();
-  }
-
-  onVectorBlockDbClick(block: IVectorBlock): void {
-    RXCore.zoomToBlockInsert(block.index);
-  }
-
-  onSearchTextChange() {
-    this.isSearchResultDirty = true;
-  }
-
+  
   searchBlockAttributes(attributeName: string, blockName: string) {
     
     this.searchListData = [];

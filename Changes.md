@@ -1,3 +1,25 @@
+
+May 9, 2025
+
+### 1. When the block has no attributes, add the "(No Attribute)" mark after the block name in the tooltip.
+
+
+RxCore version is now 35.89.
+
+Updated and new files
+
+src\assets\scripts\rxcorefunctions.js
+
+src\rxcore\index.ts
+src\app\app.component.ts
+src\app\components\annotation-tools\note-panel\note-panel.component.ts
+src\app\components\bottom-toolbar\bottom-toolbar.component.ts
+src\app\components\side-nav-menu\blocks\blocks.component.html
+src\app\components\side-nav-menu\blocks\blocks.component.ts
+src\app\services\rxcore.service.ts
+
+
+
 May 5, 2025
 
 ### 1. Fixed vector and block selection related bugs.
