@@ -22,6 +22,12 @@ export class TopNavMenuService {
   public openModalPrint: Subject<void> = new Subject<void>();
   public openModalPrint$: Observable<void> = this.openModalPrint.asObservable();
 
+  private _measurePanelState: BehaviorSubject<any> = new BehaviorSubject<any>({});
+  public measurePanelState$: Observable<any> = this._measurePanelState.asObservable();
+  public setMeasurePanelState(any): void {
+    this._measurePanelState.next(any);
+  }
+
   private fileLength: Subject<number> = new Subject<number>();
   public fileLength$: Observable<number> = this.fileLength.asObservable();
   setFileLength(length: number) {

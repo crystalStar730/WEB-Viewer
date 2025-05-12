@@ -26,6 +26,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
 
   MARKUP_TYPES = MARKUP_TYPES;
 
+  isflag: boolean = true;
   visible: boolean = false;
   created: boolean = true;
   type: number = MARKUP_TYPES.MEASURE.LENGTH.type;
@@ -169,8 +170,9 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     });
 
     
-    this.stateSubscription = this.annotationToolsService.measurePanelState$.subscribe(state => {
+    this.stateSubscription = this.annotationToolsService.measurePanelState$.subscribe(state => {      
       this.visible = state.visible;
+      this.isflag = state.isflag;
       // this.service.setMeasureScaleState({ visible: state.visible });
       this.service.setMeasureScaleState({ visible: true });
 
@@ -190,10 +192,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
         }
         this.measuredCalibrateLength = '0';
       }
-      
     });
-
-
 
     this.rxCoreService.guiCalibrateFinished$.subscribe(state => {
       this.calibrateLength = parseFloat(state.data || "0").toFixed(this.countDecimals(this.selectedScalePrecision?.value));
@@ -533,6 +532,44 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     //this.onCloseClick();
   }
 
+  changeScale() {
+    let scaleLabel = `${this.customPageScaleValue} ${this.selectedMetricUnitForPage.label} : ${this.customDisplayScaleValue} ${this.selectedMetricUnitForDisplay.label}`
+    const scaleObj = this.scalesOptions.find(item => item.label === scaleLabel);
+    if(scaleObj) {
+      this.selectedScale = scaleObj;
+      this.applyScale(this.selectedScale);
+      this.onCloseClick();
+      return;
+    }
+    let scale = this.calculateScale();
+    let obj = { 
+      value: scale, 
+      label: scaleLabel,
+      metric: this.selectedMetric,
+      metricUnit: this.selectedMetricUnitForDisplay.label,
+      dimPrecision: this.countDecimals(this.selectedScalePrecision?.value),
+      isSelected: true
+    };
+    this.scalesOptions = this.scalesOptions.filter(item => item.value !== this.selectedScale.value);
+    this.scalesOptions.push(obj);
+    this.selectedScale = obj;
+    this.applyScale(this.selectedScale);
+    
+    this.currentScale = this.selectedScale.label;
+    
+    this.service.setMeasureScaleState({visible: true, value: this.currentScale});
+    
+    this.service.setScaleState({ created: true, scaleLabel: this.selectedScale.label });
+    
+    //set to default value
+    this.customPageScaleValue = 1;
+    this.customDisplayScaleValue = 1;
+    this.selectedMetricUnitForPage = this.metricUnitsOptionsForPage[0];
+    this.selectedMetricUnitForDisplay = this.metricUnitsOptionsForDisplay[0];
+    this.selectedScalePrecision = this.precisionOptions[2];
+    this.onCloseClick();
+  }
+
   addNewScale() {    
     let scaleLabel = `${this.customPageScaleValue} ${this.selectedMetricUnitForPage.label} : ${this.customDisplayScaleValue} ${this.selectedMetricUnitForDisplay.label}`
     const scaleObj = this.scalesOptions.find(item => item.label === scaleLabel);
@@ -553,6 +590,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
       isSelected: true
     };
     this.scalesOptions.push(obj);
+    
     this.selectedScale = obj;
     this.applyScale(this.selectedScale);
     

@@ -175,7 +175,8 @@
     </div>
 
     <div class="top-nav-item current-scale">
-        <span>{{currentScaleValue}}</span>
+        <span *ngIf="!(guiConfig$ | async).disableMarkupMeasureButton" 
+        [class.selected]="isActionLabelSelected['SCALE_SETTING']" (click)="onActionLabelSelect('SCALE_SETTING')">{{currentScaleValue}}</span>
     </div>
 
     <div class="top-nav-item dropdown" *ngIf="fileLength > 0">

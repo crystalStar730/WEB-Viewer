@@ -218,7 +218,6 @@ export class AnnotationToolsComponent implements OnInit {
       this.rxCoreService.resetLeaderLine(true);
     }
 
-
     switch(actionName) {
       case 'TEXT':
         RXCore.markUpTextRect(this.isActionSelected[actionName])
@@ -310,7 +309,7 @@ export class AnnotationToolsComponent implements OnInit {
         break;
 
       case 'SCALE_SETTING':
-          this.service.setMeasurePanelState({ visible: this.isActionSelected[actionName] });
+          this.service.setMeasurePanelState({ visible: this.isActionSelected[actionName], isflag: true });
           break;
   
       case 'IMAGES_LIBRARY':

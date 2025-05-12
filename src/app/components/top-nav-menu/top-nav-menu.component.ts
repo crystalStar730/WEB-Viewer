@@ -30,6 +30,10 @@ export class TopNavMenuComponent implements OnInit {
   @ViewChild('more') more: ElementRef;
   @Input() state: any;;
 
+  isActionLabelSelected = {
+    "SCALE_SETTING": false
+  }
+
   guiConfig$ = this.rxCoreService.guiConfig$;
   guiState$ = this.rxCoreService.guiState$;
   guiMode$ = this.rxCoreService.guiMode$;
@@ -118,6 +122,12 @@ export class TopNavMenuComponent implements OnInit {
     this.service.openModalPrint$.subscribe(() => {
       this.isPrint = true;
     });
+
+/*-------------------------------------------------------------*/
+    this.service.measurePanelState$.subscribe(state => {
+      this.isActionLabelSelected['SCALE_SETTING'] = state.visible;
+    });
+/*-------------------------------------------------------------*/
 
     this.rxCoreService.guiVectorLayers$.subscribe((layers) => {
       this.containLayers = layers.length > 0;
@@ -311,13 +321,13 @@ export class TopNavMenuComponent implements OnInit {
               disableSignature: true,
               disableLinks: true,
               disableSymbol: true,
-
+              
             });
             //const docObj = RXCore.printDoc();
 
             if(RXCore.getDocScales() != undefined && RXCore.getDocScales().length === 0 ){
               //this.scalesOptions = RXCore.getDocScales();
-              this.annotationToolsService.setMeasurePanelState({ visible: true }); 
+              this.annotationToolsService.setMeasurePanelState({ visible: false }); 
             }
         
 
@@ -349,10 +359,7 @@ export class TopNavMenuComponent implements OnInit {
 
           }else{
             this.rxCoreService.resetGuiConfig();
-          }
-  
-
-          
+          }          
         }
       }
 
@@ -429,8 +436,6 @@ export class TopNavMenuComponent implements OnInit {
     }
   }
 
-
-
   onPDFDownloadClick():void{
     if (this.state?.activefile) {
       this.burgerOpened = false;
@@ -439,9 +444,7 @@ export class TopNavMenuComponent implements OnInit {
 
       //RXCore.exportPDF();
     }
-
   }
-
 
   onSearchPanelSelect (): void {
     this.onActionSelect("Search")
@@ -455,6 +458,16 @@ export class TopNavMenuComponent implements OnInit {
     this.collabPanelOpened = !this.collabPanelOpened;
   }
 
+  onActionLabelSelect(actionName: string) {
+    // const selected = this.isActionLabelSelected[actionName];
+    // this.isActionLabelSelected[actionName] = !selected;
+    if (actionName) {
+      this.rxCoreService.resetLeaderLine(true);
+    }
+    if(actionName == "SCALE_SETTING") {
+      this.annotationToolsService.setMeasurePanelState({ visible: true, isflag: false });
+    }
+  }
 
   onActionSelect(actionType: ActionType): void {
     

@@ -133,7 +133,6 @@
                                 </rx-dropdown>
                             </div>
                         </div>
-                        
                     </ng-container>
                 </div> 
             </div>
@@ -154,13 +153,12 @@
             </div>
             <div class="btn-section">
                 <button (click)="onCloseClick()" class="btn btn-light">CANCEL</button>
-                <button (click)="scaleOrCalibrate === 0 ? addNewScale(): applyCalibrate()" class="btn btn-primary">Add New Scale</button>
+                <button *ngIf="isflag == true || isflag == null" (click)="scaleOrCalibrate === 0 ? addNewScale(): applyCalibrate()" class="btn btn-primary">Add New Scale</button>
+                <button *ngIf="isflag == false" (click)="scaleOrCalibrate === 0 ? changeScale(): applyCalibrate()" class="btn btn-primary">Change Scale</button>
+                <!-- <button (click)="scaleOrCalibrate === 0 ? addNewScale(): applyCalibrate()" class="btn btn-primary">Add New Scale</button> -->
             </div>
         </div>
-        
     </div>
-
-
     
     <rx-accordion [collapsing]="false" [expandAll]="true" style="display: none;">
         <rx-accordion-item *ngIf="type == MARKUP_TYPES.MEASURE.LENGTH.type" [title]="'Measure type'">
