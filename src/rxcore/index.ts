@@ -515,6 +515,7 @@ export class RXCore {
     }
 
     public static markUpUndo(): void {
+        console.log("undo")
         RxCore.markUpUndo();
     }
 

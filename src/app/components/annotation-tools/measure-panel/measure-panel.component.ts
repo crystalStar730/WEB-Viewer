@@ -91,24 +91,35 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     this.isCalibrateFinished = false;
     this.isPrecisionChanged = false;
     this.defaultScaleLabel = "1 Millimeter : 1 Millimeter";
-    // this.currentScale = this.defaultScaleLabel;
     this.isDoubleClicked = false;
     this.scaleOrCalibrate = 0;
     this.customPageScaleValue = 1;
     this.customDisplayScaleValue = 1;
     this.isLoadedScales = false;
-    //this.docObj = RXCore.printDoc();
 
+    // Initialize metric units options
     let allMetricUnits = {...this.metricUnits['0'], ...this.metricUnits[1]};
     Object.entries(allMetricUnits).forEach(([key, value]) => {
       let obj = { value: key, label: value };
       this.metricUnitsOptions.push(obj);
-      this.metricUnitsOptionsForDisplay.push(obj);
       if(value === 'Millimeter' || value === 'Inch')
         this.metricUnitsOptionsForPage.push(obj);
     });
+
+    // Set default page unit to Millimeter
+    this.selectedMetricUnitForPage = this.metricUnitsOptionsForPage.find(unit => unit.label === 'Millimeter');
+    
+    // Initialize display units for Millimeter (metric units)
+    this.metricUnitsOptionsForDisplay = [];
+    const metricUnits = ['Millimeter', 'Centimeter', 'Decimeter', 'Meter', 'Kilometer', 'Nautical Miles'];
+    metricUnits.forEach(unit => {
+      const unitKey = Object.entries(this.metricUnits['0']).find(([key, val]) => val === unit)?.[0];
+      if (unitKey) {
+        this.metricUnitsOptionsForDisplay.push({ value: unitKey, label: unit });
+      }
+    });
+
     this.selectedMetricUnit = this.metricUnitsOptions[0];
-    this.selectedMetricUnitForPage = this.metricUnitsOptionsForPage[0];
     this.selectedMetricUnitForDisplay = this.metricUnitsOptionsForDisplay[0];
     this.currentPageMetricUnitCalibrate = 'Millimeter'; 
 
@@ -136,7 +147,6 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this._setDefaults();
-
 
     this.guifileloadSub = this.rxCoreService.guiFileLoadComplete.subscribe((state) => {
     
@@ -238,6 +248,25 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
       this.loadAndSetPageScale();
     });
 
+    // Add subscription for real-time calibration updates
+    this.rxCoreService.guiCalibrate$.subscribe(state => {
+      if (this.isSelectedCalibrate && state.data) {
+        this.calibrateLength = parseFloat(state.data).toFixed(this.countDecimals(this.selectedScalePrecision?.value));
+        // Update the correct distance in real-time
+        if (this.selectedMetricUnit?.label === 'Centimeter') {
+          this.calibrateLength = (parseFloat(state.data) / 10).toFixed(this.countDecimals(this.selectedScalePrecision?.value));
+        } else if (this.selectedMetricUnit?.label === 'Decimeter') {
+          this.calibrateLength = (parseFloat(state.data) / 100).toFixed(this.countDecimals(this.selectedScalePrecision?.value));
+        } else if (this.selectedMetricUnit?.label === 'Meter') {
+          this.calibrateLength = (parseFloat(state.data) / 1000).toFixed(this.countDecimals(this.selectedScalePrecision?.value));
+        } else if (this.selectedMetricUnit?.label === 'Kilometer') {
+          this.calibrateLength = (parseFloat(state.data) / 1000000).toFixed(this.countDecimals(this.selectedScalePrecision?.value));
+        } else if (this.selectedMetricUnit?.label === 'Nautical Miles') {
+          this.calibrateLength = (parseFloat(state.data) / 185200000).toFixed(this.countDecimals(this.selectedScalePrecision?.value));
+        }
+      }
+    });
+
   }
 
   ngOnDestroy(): void {
@@ -270,6 +299,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
   }
 
   onSnapChange(onoff: boolean): void {
+    RXCore.markUpUndo();
     RXCore.changeSnapState(onoff);
   }
 
@@ -327,11 +357,16 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     //select to default scale before calibrate starts
     this.applyScaleToDefault();
 
-    RXCore.onGuiCalibratediag(onCalibrateFinished);
     let rxCoreSvc = this.rxCoreService;
-    function onCalibrateFinished(data) {
-        rxCoreSvc.setCalibrateFinished(true, data);        
-    }
+    // this.annotationToolsService.setMeasurePanelDetailState({ visible: this.isActionSelected[actionName], type: MARKUP_TYPES.MEASURE.LENGTH.type, created: true });
+    // RXCore.markUpDimension(this.isActionSelected[actionName], 0);
+    // RXCore.changeSnapState(this.isActionSelected[actionName]);
+    // Handle both completion and real-time updates
+    RXCore.onGuiCalibratediag((data) => {
+      rxCoreSvc.setCalibrateFinished(true, data);
+      // Also emit for real-time updates
+      rxCoreSvc.setGuiCalibrate({ data: data });
+    });
 
     RXCore.calibrate(selected);
     this.annotationToolsService.setSnapState(true);
@@ -399,6 +434,33 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
   selectMetricUnitForPage(event): void {
     let obj = this.metricUnitsOptionsForPage.find(item => item.value === event.value);
     this.selectedMetricUnitForPage = obj;
+
+    // Update display unit options based on page unit selection
+    this.metricUnitsOptionsForDisplay = [];
+    if (obj.label === 'Millimeter') {
+      // Metric units
+      const metricUnits = ['Millimeter', 'Centimeter', 'Decimeter', 'Meter', 'Kilometer', 'Nautical Miles'];
+      metricUnits.forEach(unit => {
+        const unitKey = Object.entries(this.metricUnits['0']).find(([key, val]) => val === unit)?.[0];
+        if (unitKey) {
+          this.metricUnitsOptionsForDisplay.push({ value: unitKey, label: unit });
+        }
+      });
+    } else if (obj.label === 'Inch') {
+      // Imperial units
+      const imperialUnits = ['Inch', 'Feet', 'Yard', 'Mile'];
+      imperialUnits.forEach(unit => {
+        const unitKey = Object.entries(this.metricUnits['1']).find(([key, val]) => val === unit)?.[0];
+        if (unitKey) {
+          this.metricUnitsOptionsForDisplay.push({ value: unitKey, label: unit });
+        }
+      });
+    }
+
+    // Reset display unit selection to first option
+    if (this.metricUnitsOptionsForDisplay.length > 0) {
+      this.selectedMetricUnitForDisplay = this.metricUnitsOptionsForDisplay[0];
+    }
   };
 
   selectMetricUnitForDisplay(event): void {
@@ -550,7 +612,6 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
       dimPrecision: this.countDecimals(this.selectedScalePrecision?.value),
       isSelected: true
     };
-    this.scalesOptions = this.scalesOptions.filter(item => item.value !== this.selectedScale.value);
     this.scalesOptions.push(obj);
     this.selectedScale = obj;
     this.applyScale(this.selectedScale);
@@ -659,8 +720,36 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     
     if(this.metricUnits[0]?.[obj.value] !== undefined) {
       this.selectedMetric = '0';
+      // Convert the current calibrate length to the new unit
+      if (this.measuredCalibrateLength && this.measuredCalibrateLength !== "0") {
+        const mmValue = parseFloat(this.measuredCalibrateLength);
+        if (obj.label === 'Centimeter') {
+          this.calibrateLength = (mmValue / 10).toFixed(this.countDecimals(this.selectedScalePrecision?.value));
+        } else if (obj.label === 'Decimeter') {
+          this.calibrateLength = (mmValue / 100).toFixed(this.countDecimals(this.selectedScalePrecision?.value));
+        } else if (obj.label === 'Meter') {
+          this.calibrateLength = (mmValue / 1000).toFixed(this.countDecimals(this.selectedScalePrecision?.value));
+        } else if (obj.label === 'Kilometer') {
+          this.calibrateLength = (mmValue / 1000000).toFixed(this.countDecimals(this.selectedScalePrecision?.value));
+        } else if (obj.label === 'Nautical Miles') {
+          this.calibrateLength = (mmValue / 185200000).toFixed(this.countDecimals(this.selectedScalePrecision?.value));
+        }
+      }
     } else {
       this.selectedMetric = '1';
+      // Handle imperial unit conversions if needed
+      if (this.measuredCalibrateLength && this.measuredCalibrateLength !== "0") {
+        const mmValue = parseFloat(this.measuredCalibrateLength);
+        if (obj.label === 'Inch') {
+          this.calibrateLength = (mmValue / 25.4).toFixed(this.countDecimals(this.selectedScalePrecision?.value));
+        } else if (obj.label === 'Feet') {
+          this.calibrateLength = (mmValue / 304.8).toFixed(this.countDecimals(this.selectedScalePrecision?.value));
+        } else if (obj.label === 'Yard') {
+          this.calibrateLength = (mmValue / 914.4).toFixed(this.countDecimals(this.selectedScalePrecision?.value));
+        } else if (obj.label === 'Mile') {
+          this.calibrateLength = (mmValue / 1609344).toFixed(this.countDecimals(this.selectedScalePrecision?.value));
+        }
+      }
     }
   }
 

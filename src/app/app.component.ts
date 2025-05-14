@@ -15,9 +15,6 @@ import { AnnotationStorageService } from './services/annotation-storage.service'
 import { TooltipService } from './components/tooltip/tooltip.service';
 
 
-
-
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -111,14 +108,10 @@ export class AppComponent implements AfterViewInit {
         this.showBlockInfo(block);
       });
     });
-
-    
   }
   
-
   ngAfterViewInit(): void {
     
-
     /*this.guiConfig$.subscribe(config => {
 
       RXCore.convertPDFAnnots(config.convertPDFAnnots);
@@ -201,9 +194,6 @@ export class AppComponent implements AfterViewInit {
       }
       RXCore.markUpRedraw();
       this.rxCoreService.setSelectedVectorBlock(block);
-
-
-      
     });
 
     RXCore.onGui2DBlockHoverEvent((result, mouse) => {
@@ -308,54 +298,27 @@ export class AppComponent implements AfterViewInit {
             this.infoPanelVisible = false;
   
           }
-  
-
         }
         //entity = {type : vectorobj.entityType.type, handle : vectorobj.entityType.handleLow, typename : getvectorType(vectorobj.entityType.type), startp : startpoint, endp : endpoint, length : length};
         if(vectorinfo.Entity.length != undefined && !isNaN(vectorinfo.Entity.length)){
 
           messagetext = messagetext + '<br> Length: ' + vectorinfo.Entity.length.toFixed(2);
-
-        
-
         }
         if(vectorinfo.Entity.area != undefined && !isNaN(vectorinfo.Entity.area)){
 
           messagetext = messagetext + '<br> Area: ' + vectorinfo.Entity.area.toFixed(2);
-
-        
-
         }
 
         if(vectorinfo.Entity.sweep != undefined && !isNaN(vectorinfo.Entity.sweep)){
 
           //entity = {type : vectorobj.entityType.type, handle : vectorobj.entityType.handleLow, typename : getvectorType(vectorobj.entityType.type), length : length, sweep : sweep, radius : radius};
           messagetext = messagetext + '<br> Sweep Angle: ' + vectorinfo.Entity.sweep.toFixed(2);
-
-        
-
         }
-
-
         if(vectorinfo.Entity.radius != undefined && !isNaN(vectorinfo.Entity.radius)){
 
           //entity = {type : vectorobj.entityType.type, handle : vectorobj.entityType.handleLow, typename : getvectorType(vectorobj.entityType.type), length : length, sweep : sweep, radius : radius};
           messagetext = messagetext + '<br> Radius: ' + vectorinfo.Entity.radius.toFixed(2);
-
-        
-
         }
-
-
-
-        //entity = {type : vectorobj.entityType.type, handle : vectorobj.entityType.handleLow, typename : getvectorType(vectorobj.entityType.type), startp : startpoint, endp : endpoint, length : length};
-        /*if(vectorinfo.Entity.length != undefined && !isNaN(vectorinfo.Entity.length)){
-
-          messagetext = messagetext + '\n Length: ' + vectorinfo.Entity.length.toFixed(2);
-                    
-          
-        }*/
-
         const isLeft = screenmouse.x < window.innerWidth / 2;
         const isTop = screenmouse.y < window.innerHeight / 2;
         let offsetX = 0;
@@ -369,25 +332,16 @@ export class AppComponent implements AfterViewInit {
           offsetY = 30;
         } else {
           offsetY = -120;
-
-
         } 
-        
-
-
         this.tooltipService.tooltip({
           title: 'Entity Information',
           message: messagetext,
           duration: 3000,
           position: [screenmouse.x / window.devicePixelRatio + offsetX, screenmouse.y / window.devicePixelRatio + offsetY],
         });
-
-
-        
       }else{
         //console.log("nothing found");
         this.tooltipService.closeTooltip();
-        
       }      
 
     });
@@ -409,33 +363,13 @@ export class AppComponent implements AfterViewInit {
       RXCore.setrxprintdiv(document.getElementById('printdiv'));
 
       this.openInitFile(initialDoc);  
-      
-
-      /*if(this.bguireadycalled){
-        return;
-      }*/
-
-            
-
     });
-
-
     RXCore.onGuiFoxitReady((initialDoc: any) => {
-
-
       this.bfoxitreadycalled = true;
-
-      
       if(this.bguireadycalled){
         this.openInitFile(initialDoc);
       }
-
-
-
       this.rxCoreService.guiFoxitReady.next();
-
-
-
     });
 
     RXCore.onGuiState((state: any) => {
@@ -458,9 +392,6 @@ export class AppComponent implements AfterViewInit {
       }else{
         RXCore.usePanToMarkup(false);
       }
-
-      //
-
     });
 
     RXCore.onGuiPage((state) => {
@@ -558,22 +489,15 @@ export class AppComponent implements AfterViewInit {
           rotation: 45,
           flags : 2
         });
-    
-
       }
-
-      
-      
-
     });
     
     RXCore.onGuiScaleListLoadComplete(() => {
       this.rxCoreService.guiScaleListLoadComplete.next();
     });
 
-    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
     RXCore.onGuiMarkup((annotation: any, operation: any) => {
-      console.log('RxCore GUI_Markup:', annotation, operation);
       if (annotation !== -1 || this.rxCoreService.lastGuiMarkup.markup !== -1) {
         this.rxCoreService.setGuiMarkup(annotation, operation);
 
@@ -635,7 +559,6 @@ export class AppComponent implements AfterViewInit {
     });
 
     RXCore.onGuiMarkupMeasureRealTimeData((annotation: any) => {
-      //console.log('RxCore GUI_MarkupMeasureRealTimeData:', annotation);
       if (annotation !== -1) {
         this.rxCoreService.setGuiMarkupMeasureRealTimeData(annotation);
       }
@@ -651,6 +574,7 @@ export class AppComponent implements AfterViewInit {
     });
 
     RXCore.onRotatePage((degree: number, pageIndex: number) => {
+      console.log("rotate page", degree, pageIndex);
       this.rxCoreService.setGuiRotatePage(degree, pageIndex);
 
     });
@@ -922,6 +846,8 @@ export class AppComponent implements AfterViewInit {
       const fileInfo = RXCore.getCurrentFileInfo();
       roomName = fileInfo.name;
     }
+    console.log("room name", roomName);
+    
     return roomName;
   }
 
