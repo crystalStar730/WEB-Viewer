@@ -218,12 +218,33 @@ export class AnnotationToolsComponent implements OnInit {
     
   }
 
-  onActionSelect(actionName: string) {
+  onActionSelect(actionName: string) {    
     const selected = this.isActionSelected[actionName];
     // Deactivate snap if selecting any other tool
     if (actionName !== 'SNAP' && this.isActionSelected['SNAP']) {
       this.isActionSelected['SNAP'] = false;
       RXCore.changeSnapState(false);
+    } else if (actionName === 'MEASURE_LENGTH') {
+      this.isActionSelected['MEASURE_LENGTH'] = true;
+      RXCore.changeSnapState(true);
+    } else if (actionName === 'MEASURE_RECTANGULAR_AREA') {
+      this.isActionSelected['MEASURE_RECTANGULAR_AREA'] = true;
+      RXCore.changeSnapState(true);
+    } else if (actionName === 'MEASURE_AREA') {
+      this.isActionSelected['MEASURE_AREA'] = true;
+      RXCore.changeSnapState(true);
+    } else if (actionName === 'MEASURE_PATH') {
+      this.isActionSelected['MEASURE_PATH'] = true;
+      RXCore.changeSnapState(true);
+    } else if (actionName === 'MEASURE_ANGLE_CLOCKWISE') {
+      this.isActionSelected['MEASURE_ANGLE_CLOCKWISE'] = true;
+      RXCore.changeSnapState(true);
+    } else if (actionName === 'MEASURE_ANGLE_CCLOCKWISE') {
+      this.isActionSelected['MEASURE_ANGLE_CCLOCKWISE'] = true;
+      RXCore.changeSnapState(true);
+    } else if (actionName === 'COUNT') {
+      this.isActionSelected['COUNT'] = true;
+      RXCore.changeSnapState(true);
     }
     this._deselectAllActions();
     this.isActionSelected[actionName] = !selected;
@@ -337,9 +358,10 @@ export class AnnotationToolsComponent implements OnInit {
       case 'MEASURE_LENGTH':
           this.service.setMeasurePanelDetailState({ visible: this.isActionSelected[actionName], type: MARKUP_TYPES.MEASURE.LENGTH.type, created: true });
           RXCore.markUpDimension(this.isActionSelected[actionName], 0);
+          RXCore.changeSnapState(this.isActionSelected[actionName]);
           if (this.isActionSelected[actionName]) {
             this.isActionSelected['SNAP'] = false;
-            RXCore.changeSnapState(false);
+            // RXCore.changeSnapState(false);
           }
           break;
       case 'IMAGES_LIBRARY':
@@ -366,36 +388,39 @@ export class AnnotationToolsComponent implements OnInit {
         this.service.setMeasurePanelDetailState({ visible: this.isActionSelected[actionName], type: MARKUP_TYPES.MEASURE.AREA.type, created: true });
         //this.service.setPropertiesPanelState({ visible: this.isActionSelected[actionName], markup: MARKUP_TYPES.MEASURE.AREA, readonly: false });
         RXCore.markUpArea(this.isActionSelected[actionName]);
+        RXCore.changeSnapState(this.isActionSelected[actionName]);
         break;
 
-      case 'MEASURE_PATH':
-        console.log("measure path");
-        
+      case 'MEASURE_PATH':        
         this.service.setMeasurePanelDetailState({ visible: this.isActionSelected[actionName], type:  MARKUP_TYPES.MEASURE.PATH.type, created: true });
         //this.service.setPropertiesPanelState({ visible: this.isActionSelected[actionName], markup:  MARKUP_TYPES.MEASURE.PATH, readonly: false });
         RXCore.markupMeasurePath(this.isActionSelected[actionName]);
-                
+        RXCore.changeSnapState(this.isActionSelected[actionName]);                
         break;
 
       case 'MEASURE_ANGLE_CLOCKWISE':
         this.service.setMeasurePanelDetailState({ visible: this.isActionSelected[actionName], type:  MARKUP_TYPES.MEASURE.ANGLECLOCKWISE.type, created: true });
         //this.service.setPropertiesPanelState({ visible: this.isActionSelected[actionName], markup:  MARKUP_TYPES.MEASURE.PATH, readonly: false });
         RXCore.markupAngle(this.isActionSelected[actionName], false);
+        RXCore.changeSnapState(this.isActionSelected[actionName]);
         break;
 
       case 'MEASURE_ANGLE_CCLOCKWISE':
         this.service.setMeasurePanelDetailState({ visible: this.isActionSelected[actionName], type:  MARKUP_TYPES.MEASURE.ANGLECCLOCKWISE.type, created: true });
         //this.service.setPropertiesPanelState({ visible: this.isActionSelected[actionName], markup:  MARKUP_TYPES.MEASURE.PATH, readonly: false });
         RXCore.markupAngle(this.isActionSelected[actionName], true);
+        RXCore.changeSnapState(this.isActionSelected[actionName]);
         break;
               
       case 'MEASURE_RECTANGULAR_AREA':
           this.service.setMeasurePanelDetailState({ visible: this.isActionSelected[actionName], type: MARKUP_TYPES.SHAPE.RECTANGLE.type, created: true });
           RXCore.markupAreaRect(this.isActionSelected[actionName]);
+          RXCore.changeSnapState(this.isActionSelected[actionName]);
           break;         
       case 'COUNT':
         if(!this.isActionSelected[actionName]){
           RXCore.markupCount(this.isActionSelected[actionName]);
+          
         }
         break;
       case 'MARKUP_LOCK' :

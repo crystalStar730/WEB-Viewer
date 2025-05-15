@@ -378,8 +378,6 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
 
   onCalibrateCheckedChange() {
     this.measuredCalibrateLength = "0.00";
-    console.log(this.isSelectedCalibrate);
-    
     this.annotationToolsService.setMeasurePanelDetailState({ visible: this.isSelectedCalibrate, type: MARKUP_TYPES.MEASURE.LENGTH.type, created: true });
     RXCore.markUpDimension(this.isSelectedCalibrate, 1);
     RXCore.changeSnapState(this.isSelectedCalibrate);
