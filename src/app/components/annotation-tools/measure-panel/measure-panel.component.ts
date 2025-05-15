@@ -587,9 +587,6 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
       this.setlabelonfileload = false;
 
     }
-
-    
-
     //this.showSuccess();
     //this.onCloseClick();
   }
@@ -612,6 +609,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
       dimPrecision: this.countDecimals(this.selectedScalePrecision?.value),
       isSelected: true
     };
+    this.scalesOptions = this.scalesOptions.filter(item => item.value !== this.selectedScale.value);
     this.scalesOptions.push(obj);
     this.selectedScale = obj;
     this.applyScale(this.selectedScale);
