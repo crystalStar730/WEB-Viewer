@@ -358,9 +358,13 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     this.applyScaleToDefault();
 
     let rxCoreSvc = this.rxCoreService;
-    // this.annotationToolsService.setMeasurePanelDetailState({ visible: this.isActionSelected[actionName], type: MARKUP_TYPES.MEASURE.LENGTH.type, created: true });
-    // RXCore.markUpDimension(this.isActionSelected[actionName], 0);
-    // RXCore.changeSnapState(this.isActionSelected[actionName]);
+
+    this.annotationToolsService.setMeasurePanelDetailState({ visible: true, type: MARKUP_TYPES.MEASURE.LENGTH.type, created: true });
+    RXCore.markUpDimension(true, 1);
+    RXCore.changeSnapState(true);
+    RXCore.markupAddMulti(true);
+    RXCore.markUpSubType(0);
+    RXCore.setGlobalStyle(true);
     // Handle both completion and real-time updates
     RXCore.onGuiCalibratediag((data) => {
       rxCoreSvc.setCalibrateFinished(true, data);
@@ -374,8 +378,17 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
 
   onCalibrateCheckedChange() {
     this.measuredCalibrateLength = "0.00";
+    console.log(this.isSelectedCalibrate);
+    
+    this.annotationToolsService.setMeasurePanelDetailState({ visible: this.isSelectedCalibrate, type: MARKUP_TYPES.MEASURE.LENGTH.type, created: true });
+    RXCore.markUpDimension(this.isSelectedCalibrate, 1);
+    RXCore.changeSnapState(this.isSelectedCalibrate);
+    RXCore.markupAddMulti(true);
+    RXCore.markUpSubType(0);
+    RXCore.setGlobalStyle(true);
     if(this.isSelectedCalibrate) {
-      this.calibrate(true);
+      // this.calibrate(true);
+      
     } else {
       this.cancelCalibrate();
     }
@@ -807,7 +820,7 @@ export class MeasurePanelComponent implements OnInit, OnDestroy {
     RXCore.setScaleLabel(scaleLabel);    
 
     RXCore.calibrate(false);
-    // this.cancelCalibrate();
+    this.cancelCalibrate();
     this.scaleOrCalibrate = 0;
     RXCore.scale(scaleVaue);
     //set measuredCalibrateLength to 0 once calibration complete
