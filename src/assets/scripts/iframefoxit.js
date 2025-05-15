@@ -3217,7 +3217,7 @@ var foxitViewer = function foxitViewer(zsdivid, divnum, libpath) {
 
         var point = {x : x, y : y};
 
-        console.log(point);
+        // console.log(point);
 
         var mode = [];
         var pgscale = null;
